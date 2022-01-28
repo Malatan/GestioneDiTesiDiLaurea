@@ -8,8 +8,10 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
-public class App {
+public class ControllerLogin {
 	private static Text text;
 	private static Text text_1;
 
@@ -18,12 +20,21 @@ public class App {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+	
+		
 		Display display = Display.getDefault();
 		Shell shlGestionaleDiTesi = new Shell();
 		shlGestionaleDiTesi.setSize(509, 317);
 		shlGestionaleDiTesi.setText("Gestionale di tesi di laurea");
 		
 		Button btnNewButton = new Button(shlGestionaleDiTesi, SWT.NONE);
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+
+			}
+		});
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
