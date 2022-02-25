@@ -13,10 +13,10 @@ public class Database {
 	
 	public Database() {
 
-		this.connectionString="jdbc:mysql://localhost:3306/gestionale?user=root&password=secret";
+		this.connectionString="jdbc:mysql://localhost:3306/gestionaletesi?user=root&password=";
 		
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -47,7 +47,7 @@ public class Database {
 		//}
 	}
 	
-	public Database getInstance() {
+	public static Database getInstance() {
 		if(db != null) {
 			return db;
 		}
@@ -55,9 +55,39 @@ public class Database {
 		return db;
 	}
 	
-	public Boolean VerificaCredenziali(String matricola, String password) {
-		
-		return true;
+	public String[] VerificaCredenziali(String matricola, String password) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+
+			Statement stm = connection.createStatement();
+			System.out.println("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
+			ResultSet rs = stm.executeQuery("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
+			System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+			
+			
+			if (rs.next()) {
+				String[] info = new String[3];
+				info[0] = rs.getString("cognome");
+				info[1] = rs.getString("nome");
+				info[2] = rs.getString("ruolo");
+				
+				
+				return info;
+			}
+		} catch (SQLException e) {
+	    	e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				// gestione errore in chiusura
+			}
+		}
+		return null;
 	}
 	
 	public Boolean RegistraIntentoPartecipazione() {

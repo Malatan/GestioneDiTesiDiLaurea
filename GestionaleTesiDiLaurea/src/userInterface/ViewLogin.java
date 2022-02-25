@@ -12,6 +12,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import businessLogic.ControllerLogin;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class ViewLogin {
 	
@@ -19,6 +20,7 @@ public class ViewLogin {
 	private static Text password;
 	private ControllerLogin controllerLogin;
 	private Shell loginShell;
+	private Label messaggio;
 	
 	public ViewLogin(ControllerLogin cl) {
 		this.controllerLogin = cl;
@@ -28,6 +30,13 @@ public class ViewLogin {
 		loginShell.close();
 	}
 	
+	public void ShowErrorMessage() {
+		messaggio.setText("Matricola o Password non essata");
+	}
+	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void ShowLogin() {
 		Display display = Display.getDefault();
 		loginShell = new Shell();
@@ -62,6 +71,11 @@ public class ViewLogin {
 		Label lblPassword = new Label(loginShell, SWT.NONE);
 		lblPassword.setBounds(72, 111, 55, 15);
 		lblPassword.setText("Password");
+		
+		messaggio = new Label(loginShell, SWT.NONE);
+		messaggio.setAlignment(SWT.CENTER);
+		messaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+		messaggio.setBounds(72, 240, 347, 15);
 
 		loginShell.open();
 		loginShell.layout();
@@ -71,5 +85,4 @@ public class ViewLogin {
 			}
 		}
 	}
-
 }
