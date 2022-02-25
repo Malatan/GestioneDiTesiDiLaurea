@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 25, 2022 alle 13:03
+-- Creato il: Feb 25, 2022 alle 20:42
 -- Versione del server: 10.4.22-MariaDB
 -- Versione PHP: 7.4.27
 
@@ -20,6 +20,27 @@ SET time_zone = "+00:00";
 --
 -- Database: `gestionaletesi`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `appelli`
+--
+
+CREATE TABLE `appelli` (
+  `idAppello` int(11) NOT NULL,
+  `data` datetime NOT NULL,
+  `idPresidente` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dump dei dati per la tabella `appelli`
+--
+
+INSERT INTO `appelli` (`idAppello`, `data`, `idPresidente`) VALUES
+(6, '1999-12-13 14:13:00', 0),
+(7, '1999-12-13 14:14:00', 0),
+(8, '1999-12-13 14:15:00', 0);
 
 -- --------------------------------------------------------
 
@@ -54,6 +75,12 @@ INSERT INTO `users` (`matricola`, `nome`, `cognome`, `password`, `ruolo`) VALUES
 --
 
 --
+-- Indici per le tabelle `appelli`
+--
+ALTER TABLE `appelli`
+  ADD PRIMARY KEY (`idAppello`);
+
+--
 -- Indici per le tabelle `users`
 --
 ALTER TABLE `users`
@@ -62,6 +89,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT per le tabelle scaricate
 --
+
+--
+-- AUTO_INCREMENT per la tabella `appelli`
+--
+ALTER TABLE `appelli`
+  MODIFY `idAppello` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT per la tabella `users`
