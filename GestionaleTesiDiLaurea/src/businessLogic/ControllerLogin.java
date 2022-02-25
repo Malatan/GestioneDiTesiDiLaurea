@@ -1,29 +1,29 @@
 package businessLogic;
 
 import userInterface.ViewLogin;
-import userInterface.ViewStudente;
-import userInterface.ViewAppello;
-import userInterface.ViewDocente;
-import userInterface.ViewPresidenteCorso;
-import userInterface.ViewPresidenteScuola;
-import userInterface.ViewResponsabile;
 
 import org.eclipse.swt.widgets.Text;
 import domainModel.Database;
 import domainModel.Studente;
 
+import businessLogic.ControllerDocente;
+import businessLogic.ControllerPresidenteCorso;
+import businessLogic.ControllerPresidenteScuola;
+import businessLogic.ControllerResponsabile;
+import businessLogic.ControllerStudente;
+
+
 public class ControllerLogin {
 
-	public ViewLogin viewLogin;
-	public ViewStudente viewStudente;
-	public ViewDocente viewDocente;
-	public ViewPresidenteCorso viewPresidenteCorso;
-	public ViewPresidenteScuola viewPresidenteScuola;
-	public ViewResponsabile viewResponsabile;
+	private ViewLogin viewLogin;
+	private ControllerStudente controllerStudente;
+	private ControllerDocente controllerDocente;
+	private ControllerPresidenteCorso controllerPresidenteCorso;
+	private ControllerPresidenteScuola controllerPresidenteScuola;
+	private ControllerResponsabile controllerResponsabile;
 	
 	public ControllerLogin() {
 		viewLogin = new ViewLogin(this);
-		viewStudente = new ViewStudente(this);
 	}
 	
 	public void CheckLogin(Text matricola, Text password) {
@@ -33,27 +33,32 @@ public class ControllerLogin {
 		if(info != null) {
 			//System.out.println(info[0] + " " + info[1] + " di ruolo " + info[2]);
 			viewLogin.Close();
+			controllerDocente = new ControllerDocente(info[0],info[1],info[3]);
 			switch(Integer.parseInt(info[2])) {
 				case 0:					
-					viewStudente.ShowStudenteWidget();		
+					controllerStudente = new ControllerStudente();
+					controllerStudente.ShowStudenteWidget();		
 					break;
 				case 1:
-					viewResponsabile.ShowResponsabileWidget();
+					controllerResponsabile = new ControllerResponsabile(info[0],info[1],info[3]);
+					controllerResponsabile.ShowResponsabileWidget();
 					break;
 				case 2:
-					viewPresidenteScuola.ShowPresidenteScuolaWidget();
+					controllerPresidenteScuola = new ControllerPresidenteScuola(info[0],info[1],info[3]);
+					controllerPresidenteScuola.ShowPresidenteScuolaWidget();
 					break;
 				case 3:
-					viewPresidenteCorso.ShowPresidenteCorsoWidget();
+					controllerPresidenteCorso = new ControllerPresidenteCorso(info[0],info[1],info[3]);
+					controllerPresidenteCorso.ShowPresidenteCorsoWidget();
 					break;
-				case 4:
-					viewDocente.ShowRelatoreWidget();
+				case 4:					
+					controllerDocente.ShowRelatoreWidget();
 					break;
 				case 5:
-					viewDocente.ShowMembroCommissioneWidget();
+					controllerDocente.ShowMembroCommissioneWidget();
 					break;
 				case 6:
-					viewDocente.ShowPresidenteCommissioneWidget();
+					controllerDocente.ShowPresidenteCommissioneWidget();
 					break;
 			}
 		}else {
@@ -62,7 +67,7 @@ public class ControllerLogin {
 	
 		if(matricola.getText().equals("test") && password.getText().equals("test")) {
 			viewLogin.Close();
-			viewStudente.ShowStudenteWidget();			
+			controllerStudente.ShowStudenteWidget();			
 		}
 	}
 	

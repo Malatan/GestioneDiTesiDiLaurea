@@ -7,16 +7,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import businessLogic.ControllerDocente;
 import businessLogic.ControllerLogin;
 
 public class ViewDocente {
-	private ControllerLogin controllerLogin;
+	private ControllerDocente controllerDocente;
 	private Shell relatoreShell;
 	private Shell membroCommissioneShell;
 	private Shell presidenteCommissioneShell;
 	
-	public ViewDocente(ControllerLogin cl) {
-		this.controllerLogin = cl;
+	public ViewDocente(ControllerDocente cd) {
+		this.controllerDocente = cd;
 	}
 
 	 /**

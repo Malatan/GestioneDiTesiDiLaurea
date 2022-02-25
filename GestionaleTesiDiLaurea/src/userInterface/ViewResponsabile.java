@@ -8,49 +8,91 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import businessLogic.ControllerLogin;
+import businessLogic.ControllerResponsabile;
+
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import domainModel.AppelloTesi;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class ViewResponsabile {
 	
-	private ControllerLogin controllerLogin;
+	private ControllerResponsabile controllerResponsabile;
 	private Shell responsabileShell;
+	private Text text;
+	private Label lblData;
+	private Label messaggio;
 	
-	public ViewResponsabile(ControllerLogin cl) {
-		this.controllerLogin = cl;
+	public ViewResponsabile(ControllerResponsabile cr) {
+		this.controllerResponsabile = cr;
+	}
+	
+	public void ShowMessage(String message, int type) {
+		if(type == 1) {
+			messaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+		}else {
+			messaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+		}
+		messaggio.setText(message);
 	}
 
+	
 	 /**
 	  * @wbp.parser.entryPoint
-	  */
+	  */ 
 	 public void ShowResponsabileWidget() {
       
 			Display display = Display.getDefault();
 			responsabileShell = new Shell();
-			responsabileShell.setSize(760, 523);
+			responsabileShell.setSize(754, 491);
 			responsabileShell.setText("Gestionale di tesi di laurea");
 			
 			Composite composite = new Composite(responsabileShell, SWT.NONE);
 			composite.setBounds(20, 22, 281, 80);
 			
 			Label lblMatricola = new Label(composite, SWT.NONE);
-			lblMatricola.setBounds(10, 10, 55, 15);
-			lblMatricola.setText("Matricola:        ");
+			lblMatricola.setBounds(10, 10, 261, 15);
+			lblMatricola.setText("Matricola: "+controllerResponsabile.responsabile.getMatricola());
 			
 			Label lblNome = new Label(composite, SWT.NONE);
-			lblNome.setBounds(10, 31, 55, 15);
-			lblNome.setText("Nome:");
+			lblNome.setBounds(10, 31, 261, 15);
+			lblNome.setText("Nome: " +controllerResponsabile.responsabile.getNome());
 			
 			Label lblCognome = new Label(composite, SWT.NONE);
-			lblCognome.setBounds(10, 52, 55, 15);
-			lblCognome.setText("Cognome:");
+			lblCognome.setBounds(10, 52, 261, 15);
+			lblCognome.setText("Cognome: " + controllerResponsabile.responsabile.getCognome());
 			
 			
 			Button btnCreaAppello = new Button(responsabileShell, SWT.NONE);
-			btnCreaAppello.setBounds(276, 182, 158, 69);
+			btnCreaAppello.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					controllerResponsabile.CreaAppello(text.getText());
+				}
+			});
+			btnCreaAppello.setBounds(225, 174, 264, 41);
 			btnCreaAppello.setText("CREA APPELLO");
 			
 			Button btnVisualizzaAppelli = new Button(responsabileShell, SWT.NONE);
-			btnVisualizzaAppelli.setBounds(276, 300, 158, 80);
+			btnVisualizzaAppelli.setBounds(225, 236, 264, 80);
 			btnVisualizzaAppelli.setText("VISUALIZZA APPELLI");
+			
+			text = new Text(responsabileShell, SWT.BORDER);
+			text.setToolTipText("Inserisci una data");
+			text.setBounds(225, 136, 264, 21);
+			
+			lblData = new Label(responsabileShell, SWT.NONE);
+			lblData.setAlignment(SWT.RIGHT);
+			lblData.setBounds(31, 139, 185, 15);
+			lblData.setText("Data (gg/mm/yyyy hh:mm):");
+			
+			messaggio = new Label(responsabileShell, SWT.NONE);
+			messaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+			messaggio.setAlignment(SWT.CENTER);
+			messaggio.setBounds(225, 373, 264, 15);
 			
 			responsabileShell.open();
 			responsabileShell.layout();
@@ -64,4 +106,35 @@ public class ViewResponsabile {
 			
       
     }
+	 
+	
+	public void ShowListaAppello(AppelloTesi[] appelli) {
+		Display display = Display.getDefault();
+		responsabileShell = new Shell();
+		responsabileShell.setSize(448, 523);
+		responsabileShell.setText("Lista Appelli");		
+		
+		Button btnCreaAppello = new Button(responsabileShell, SWT.NONE);
+		btnCreaAppello.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btnCreaAppello.setBounds(208, 24, 214, 25);
+		btnCreaAppello.setText("ISCRIVITI");
+		
+		Label lblAppello = new Label(responsabileShell, SWT.NONE);
+		lblAppello.setAlignment(SWT.CENTER);
+		lblAppello.setBounds(10, 29, 192, 15);
+		lblAppello.setText("Appello 23/12/2022");
+		
+		responsabileShell.open();
+		responsabileShell.layout();
+		
+		while (!responsabileShell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
 }

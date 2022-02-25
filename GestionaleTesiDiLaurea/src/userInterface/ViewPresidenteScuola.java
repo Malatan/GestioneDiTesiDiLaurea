@@ -8,13 +8,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import businessLogic.ControllerLogin;
+import businessLogic.ControllerPresidenteScuola;
 
 public class ViewPresidenteScuola {
-	private ControllerLogin controllerLogin;
+	private ControllerPresidenteScuola controllerPresidenteScuola;
 	private Shell presidenteScuolaShell;
 	
-	public ViewPresidenteScuola(ControllerLogin cl) {
-		this.controllerLogin = cl;
+	public ViewPresidenteScuola(ControllerPresidenteScuola cps) {
+		this.controllerPresidenteScuola = cps;
 	}
 
 	 /**

@@ -13,14 +13,15 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import businessLogic.ControllerLogin;
+import businessLogic.ControllerStudente;
 
 public class ViewStudente {
 	
-	private ControllerLogin controllerLogin;
+	private ControllerStudente controllerStudente;
 	private Shell studenteShell;
 	
-	public ViewStudente(ControllerLogin cl) {
-		this.controllerLogin = cl;
+	public ViewStudente(ControllerStudente cs) {
+		this.controllerStudente = cs;
 	}
 
 	 /**

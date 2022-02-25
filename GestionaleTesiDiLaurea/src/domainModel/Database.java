@@ -63,14 +63,15 @@ public class Database {
 			Statement stm = connection.createStatement();
 			System.out.println("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
 			ResultSet rs = stm.executeQuery("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
-			System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
 			
 			
 			if (rs.next()) {
-				String[] info = new String[3];
-				info[0] = rs.getString("cognome");
+				String[] info = new String[4];
+				info[0] = rs.getString("matricola");
 				info[1] = rs.getString("nome");
 				info[2] = rs.getString("ruolo");
+				info[3] = rs.getString("cognome");
 				
 				
 				return info;
@@ -102,7 +103,43 @@ public class Database {
 		return true;
 	}
 	
-	public Boolean AggiungiAppello() {
+	public Boolean AggiungiAppello(String data) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			
+			Statement stm = connection.createStatement();
+
+			System.out.println("SELECT idAppello from appelli WHERE data = " + data);
+			ResultSet rs = stm.executeQuery("SELECT idAppello from appelli WHERE data = '" + data + "'" );
+			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+			
+			
+			if (rs.next()) {
+				connection.close();
+				return false;
+			}
+			
+			PreparedStatement prepared = connection.prepareStatement("insert into appelli (data, idPresidente) values (?,?)");
+			prepared.setString(1, data);
+			prepared.setInt(2, 0);
+			prepared.executeUpdate();
+			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				 //gestione errore in chiusura
+			}
+		}
 		return true;
 	}
 	
@@ -129,5 +166,7 @@ public class Database {
 	public Boolean InserisciGiustificazione(String matricola, String note) {
 		return true;
 	}
+	
+
 	
 }
