@@ -27,8 +27,6 @@ public class ViewStudente {
 	  * @wbp.parser.entryPoint
 	  */
 	 public void ShowStudenteWidget() {
-		 
-		 	System.out.println("test");
       
 			Display display = Display.getDefault();
 			studenteShell = new Shell();
