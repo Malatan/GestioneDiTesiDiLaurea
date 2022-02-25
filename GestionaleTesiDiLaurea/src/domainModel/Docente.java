@@ -1,5 +1,7 @@
 package domainModel;
 
-public class Docente {
-
+interface Docente{
+	public String getNome();
+	public String getCognome();
+	public String getMatricola();
 }
