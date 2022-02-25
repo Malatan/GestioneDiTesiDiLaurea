@@ -143,6 +143,44 @@ public class Database {
 		return true;
 	}
 	
+	public AppelloTesi[] GetAppelli() {
+				
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+
+			ResultSet rs = stm.executeQuery("SELECT * from appelli ");
+			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+			
+			rs.last();
+			int rowsCount = rs.getRow();
+			rs.first();
+			
+			AppelloTesi[] appelli = new AppelloTesi[rowsCount];
+			
+			int index = 0;
+			while (rs.next()) {
+				appelli[index] = new AppelloTesi(rs.getInt("idAppello"),rs.getString("data"), rs.getInt("idPresidente"));
+				index++;
+			}
+			
+			
+			connection.close();
+			return appelli;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		} 
+		
+	}
+	
 	public Boolean ValidaComposizioneCommissione(Boolean accettato) {
 		return true;
 	}

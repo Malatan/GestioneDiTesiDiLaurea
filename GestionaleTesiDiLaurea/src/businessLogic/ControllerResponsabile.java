@@ -8,7 +8,7 @@ import java.util.Date;
 
 import domainModel.Responsabile;
 import userInterface.ViewResponsabile;
-
+import domainModel.AppelloTesi;
 import domainModel.Database;
 
 public class ControllerResponsabile {
@@ -24,6 +24,12 @@ public class ControllerResponsabile {
 	
 	public void ShowResponsabileWidget() {
 		viewResponsabile.ShowResponsabileWidget();
+	}
+	
+	public void ShowListaAppelli() {
+		AppelloTesi[] appelli = Database.getInstance().GetAppelli();
+		
+		viewResponsabile.ShowListaAppello(appelli);
 	}
 
 	public boolean CreaAppello(String date) {

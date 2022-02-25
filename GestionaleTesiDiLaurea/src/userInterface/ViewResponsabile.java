@@ -40,9 +40,6 @@ public class ViewResponsabile {
 	}
 
 	
-	 /**
-	  * @wbp.parser.entryPoint
-	  */ 
 	 public void ShowResponsabileWidget() {
       
 			Display display = Display.getDefault();
@@ -77,6 +74,12 @@ public class ViewResponsabile {
 			btnCreaAppello.setText("CREA APPELLO");
 			
 			Button btnVisualizzaAppelli = new Button(responsabileShell, SWT.NONE);
+			btnVisualizzaAppelli.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					controllerResponsabile.ShowListaAppelli();
+				}
+			});
 			btnVisualizzaAppelli.setBounds(225, 236, 264, 80);
 			btnVisualizzaAppelli.setText("VISUALIZZA APPELLI");
 			
@@ -107,34 +110,40 @@ public class ViewResponsabile {
       
     }
 	 
-	
+	 /**
+	  * @wbp.parser.entryPoint
+	  */ 
 	public void ShowListaAppello(AppelloTesi[] appelli) {
 		Display display = Display.getDefault();
 		responsabileShell = new Shell();
 		responsabileShell.setSize(448, 523);
 		responsabileShell.setText("Lista Appelli");		
-		
-		Button btnCreaAppello = new Button(responsabileShell, SWT.NONE);
-		btnCreaAppello.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
+
+		int num = 0;
+		System.out.println(appelli[0].getData());
+		for(AppelloTesi at :appelli) {
+			if(at != null) {
+			Button btnCreaAppello = new Button(responsabileShell, SWT.NONE);
+			btnCreaAppello.setBounds(155, 24 + 45 * num, 116, 25);
+			btnCreaAppello.setText("ISCRIVITI");
+			
+			Label lblAppello = new Label(responsabileShell, SWT.NONE);
+			lblAppello.setAlignment(SWT.CENTER);
+			lblAppello.setBounds(10, 29 + 45 * num, 116, 15);
+			lblAppello.setText(at.getData());
+			
+			Button btnProgramma = new Button(responsabileShell, SWT.NONE);
+			btnProgramma.setText("PROGRAMMA");
+			btnProgramma.setBounds(287, 24 + 45 * num, 116, 25);
+			
+			num++;
 			}
-		});
-		btnCreaAppello.setBounds(208, 24, 214, 25);
-		btnCreaAppello.setText("ISCRIVITI");
-		
-		Label lblAppello = new Label(responsabileShell, SWT.NONE);
-		lblAppello.setAlignment(SWT.CENTER);
-		lblAppello.setBounds(10, 29, 192, 15);
-		lblAppello.setText("Appello 23/12/2022");
+		}
+
 		
 		responsabileShell.open();
 		responsabileShell.layout();
 		
-		while (!responsabileShell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
+
 	}
 }
