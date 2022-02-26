@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 25, 2022 alle 20:42
+-- Creato il: Feb 26, 2022 alle 15:27
 -- Versione del server: 10.4.22-MariaDB
 -- Versione PHP: 7.4.27
 
@@ -30,17 +30,45 @@ SET time_zone = "+00:00";
 CREATE TABLE `appelli` (
   `idAppello` int(11) NOT NULL,
   `data` datetime NOT NULL,
-  `idPresidente` int(11) NOT NULL
+  `idPresidente` int(11) NOT NULL,
+  `idAula` int(11) DEFAULT NULL,
+  `informazioni` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dump dei dati per la tabella `appelli`
 --
 
-INSERT INTO `appelli` (`idAppello`, `data`, `idPresidente`) VALUES
-(6, '1999-12-13 14:13:00', 0),
-(7, '1999-12-13 14:14:00', 0),
-(8, '1999-12-13 14:15:00', 0);
+INSERT INTO `appelli` (`idAppello`, `data`, `idPresidente`, `idAula`, `informazioni`) VALUES
+(6, '1999-12-13 14:13:00', 0, 8, 'L\'appello si svolgerà il 13/01/2000 alle ore 13:12 Link meet: https://....com'),
+(7, '1999-12-13 14:14:00', 0, NULL, NULL),
+(8, '1999-12-13 14:15:00', 0, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `aule`
+--
+
+CREATE TABLE `aule` (
+  `id` int(11) NOT NULL,
+  `numAula` varchar(512) NOT NULL,
+  `libera` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dump dei dati per la tabella `aule`
+--
+
+INSERT INTO `aule` (`id`, `numAula`, `libera`) VALUES
+(1, '1', 1),
+(2, '2', 1),
+(5, '3', 1),
+(6, '4', 1),
+(7, '100', 1),
+(8, 'Auditorium A', 0),
+(9, '102', 1),
+(10, '103', 1);
 
 -- --------------------------------------------------------
 
@@ -81,6 +109,12 @@ ALTER TABLE `appelli`
   ADD PRIMARY KEY (`idAppello`);
 
 --
+-- Indici per le tabelle `aule`
+--
+ALTER TABLE `aule`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indici per le tabelle `users`
 --
 ALTER TABLE `users`
@@ -95,6 +129,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `appelli`
   MODIFY `idAppello` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT per la tabella `aule`
+--
+ALTER TABLE `aule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT per la tabella `users`
