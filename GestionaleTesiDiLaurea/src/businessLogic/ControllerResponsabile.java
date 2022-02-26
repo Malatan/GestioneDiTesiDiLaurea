@@ -9,6 +9,7 @@ import java.util.Date;
 import domainModel.Responsabile;
 import userInterface.ViewResponsabile;
 import domainModel.AppelloTesi;
+import domainModel.Aula;
 import domainModel.Database;
 
 public class ControllerResponsabile {
@@ -30,6 +31,12 @@ public class ControllerResponsabile {
 		AppelloTesi[] appelli = Database.getInstance().GetAppelli();
 		
 		viewResponsabile.ShowListaAppello(appelli);
+	}
+	
+	public void ShowListaAule(int idAppello, String currentAula) {
+		Aula[] aule = Database.getInstance().GetAule();
+		
+		viewResponsabile.ShowListaAule(aule,idAppello,currentAula);
 	}
 
 	public boolean CreaAppello(String date) {
@@ -65,7 +72,24 @@ public class ControllerResponsabile {
 		return true;
 	}
 	
+	public boolean PrenotaAula(int idAula, int idAppello, String currentAula) {
+		if(Database.getInstance().PrenotaAula(idAula, idAppello,currentAula)) {
+			
+			return true;
+		}
+		return false;
+	}
 	
+	public void ShowProgrammaInformazioniAppelloWidget(AppelloTesi currentAppelloTesi) {
+		String informazioni = Database.getInstance().GetInformazioniAppello(currentAppelloTesi.getId());
+		viewResponsabile.ShowProgrammaInformazioniAppelloWidget(currentAppelloTesi,informazioni);
+	}
 	
+	public Boolean ProgrammaInformazioniPerAppello(int idAppello, String informazioni) {
+		if(Database.getInstance().ProgrammaInformazioniPerAppello(idAppello, informazioni)) {
+			return true;
+		}
+		return false;
+	}
 	
 }

@@ -152,18 +152,28 @@ public class Database {
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 
-			ResultSet rs = stm.executeQuery("SELECT * from appelli ");
+			ResultSet rs = stm.executeQuery("SELECT * from appelli as a LEFT JOIN aule as au ON a.idAula = au.id");
 			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
 			
 			rs.last();
 			int rowsCount = rs.getRow();
-			rs.first();
+			rs.beforeFirst();
 			
 			AppelloTesi[] appelli = new AppelloTesi[rowsCount];
 			
 			int index = 0;
 			while (rs.next()) {
-				appelli[index] = new AppelloTesi(rs.getInt("idAppello"),rs.getString("data"), rs.getInt("idPresidente"));
+				System.out.print(rs.getInt("idAppello") + " " +
+						rs.getString("data") + " " +
+						rs.getInt("idPresidente") + " " +
+						rs.getInt("idAula") + " " +
+						rs.getString("numAula"));
+				appelli[index] = new AppelloTesi(rs.getInt("idAppello"),
+						rs.getString("data"),
+						rs.getInt("idPresidente"),
+						rs.getInt("idAula"),
+						rs.getString("numAula")
+						);
 				index++;
 			}
 			
@@ -179,6 +189,160 @@ public class Database {
 			return null;
 		} 
 		
+	}
+	
+	public Aula[] GetAule() {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+
+			ResultSet rs = stm.executeQuery("SELECT * from aule");
+			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+			
+			rs.last();
+			int rowsCount = rs.getRow();
+			rs.beforeFirst();
+			
+			System.out.println("How many rows of aule? " + rowsCount);
+			
+			Aula[] aule = new Aula[rowsCount];
+			
+			int index = 0;
+			while (rs.next()) {
+				System.out.println("Get Num Aula: " + rs.getString("numAula"));
+				aule[index] = new Aula(rs.getInt("id"),rs.getString("numAula"), rs.getInt("libera"));
+				index++;
+			}
+			
+			
+			connection.close();
+			return aule;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		} 
+
+	}
+	
+	public Boolean PrenotaAula(int idAula, int idAppello, String currentAula) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			
+			Statement stm = connection.createStatement();
+
+			System.out.println("SELECT id from aule WHERE libera = 0 AND id="+idAula);
+			ResultSet rs = stm.executeQuery("SELECT id from aule WHERE libera = 0 AND id="+idAula);
+			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+			
+			
+			if (rs.next()) {
+				System.out.println("aula id: " + idAula+ " gia prenotata");
+				connection.close();
+				return false;
+			}
+			
+			PreparedStatement prepared = connection.prepareStatement("UPDATE aule SET libera = 0 WHERE id = ?");
+			prepared.setInt(1, idAula);
+			prepared.executeUpdate();
+			
+			prepared = connection.prepareStatement("UPDATE appelli SET idAula = ? WHERE idAppello = ?");
+			prepared.setInt(1, idAula);
+			prepared.setInt(2, idAppello);
+			prepared.executeUpdate();
+			
+			if(!currentAula.equals("")) {
+				prepared = connection.prepareStatement("UPDATE aule SET libera = 1 WHERE numAula = ?");
+				prepared.setString(1, currentAula);
+				prepared.executeUpdate();
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				 //gestione errore in chiusura
+			}
+		}
+		return true;
+	}
+	
+	public Boolean ProgrammaInformazioniPerAppello(int idAppello, String informazioni) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			
+
+			
+			PreparedStatement prepared = connection.prepareStatement("UPDATE appelli SET informazioni = ? WHERE idAppello = ?");
+			prepared.setString(1, informazioni);
+			prepared.setInt(2, idAppello);
+			prepared.executeUpdate();
+			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				 //gestione errore in chiusura
+			}
+		}
+		return true;
+	}
+	
+	public String GetInformazioniAppello(int idAppello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+
+			ResultSet rs = stm.executeQuery("SELECT informazioni from appelli WHERE idAppello = " + idAppello);
+			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
+
+			
+			
+			if (rs.next()) {
+				 
+				String informazioni = new String(rs.getString("informazioni"));
+				connection.close();
+				return informazioni;
+			}
+			
+			
+			
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		} 
+		return null;
 	}
 	
 	public Boolean ValidaComposizioneCommissione(Boolean accettato) {

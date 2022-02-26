@@ -1,6 +1,12 @@
 package domainModel;
 
 public class AppelloTesi {
+	
+	private int id;
+	private String data;
+	private int idMatricolaPresidente;
+	private int idAula;
+	private String numAula;
 
 	public int getId() {
 		return id;
@@ -26,13 +32,32 @@ public class AppelloTesi {
 		this.idMatricolaPresidente = idMatricolaPresidente;
 	}
 
-	private int id;
-	private String data;
-	private int idMatricolaPresidente;
+	public int getIdAula() {
+		return idAula;
+	}
+
+	public void setIdAula(int idAula) {
+		this.idAula = idAula;
+	}
+
+	public String getNumAula() {
+		return new String(numAula);
+	}
+
+	public void setNumAula(String numAula) {
+		this.numAula = numAula;
+	}
 	
-	public AppelloTesi(int idAppello, String d, int idPre) {
+	public AppelloTesi(int idAppello, String d, int idPre, int idA, String numA) {
 		this.id = idAppello;
 		this.data = d;
 		this.idMatricolaPresidente = idPre;
+				
+		this.idAula = idA;
+		if(numA == null) {
+			this.numAula = new String("");
+		}else {
+			this.numAula = new String(numA);
+		}
 	}
 }
