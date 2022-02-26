@@ -3,7 +3,7 @@ package businessLogic;
 import userInterface.ViewLogin;
 
 import org.eclipse.swt.widgets.Text;
-import domainModel.Database;
+
 import domainModel.Studente;
 
 import businessLogic.ControllerDocente;
@@ -11,6 +11,7 @@ import businessLogic.ControllerPresidenteCorso;
 import businessLogic.ControllerPresidenteScuola;
 import businessLogic.ControllerResponsabile;
 import businessLogic.ControllerStudente;
+import databaseAccessObject.Database;
 
 
 public class ControllerLogin {

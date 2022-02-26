@@ -4,13 +4,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;  
+import java.util.Date;
 
+import databaseAccessObject.Database;
 import domainModel.Responsabile;
 import userInterface.ViewResponsabile;
 import domainModel.AppelloTesi;
 import domainModel.Aula;
-import domainModel.Database;
+
 
 public class ControllerResponsabile {
 	
@@ -64,7 +65,7 @@ public class ControllerResponsabile {
         if(Database.getInstance().AggiungiAppello(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(cal.getTime()))) {
         	viewResponsabile.ShowMessage("Messaggio: Inserimento appello con successo!",1);
         }else {
-        	viewResponsabile.ShowMessage("Errore: La data dell'appello esista di già",0);
+        	viewResponsabile.ShowMessage("Errore: La data dell'appello esista di giï¿½",0);
         }
         
         

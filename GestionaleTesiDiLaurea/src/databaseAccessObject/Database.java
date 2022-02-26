@@ -1,4 +1,4 @@
-package domainModel;
+package databaseAccessObject;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import domainModel.*;
 
 public class Database {
 	private static Database db;
