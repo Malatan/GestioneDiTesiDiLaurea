@@ -1,16 +1,9 @@
 package businessLogic;
 
 import userInterface.ViewLogin;
-
 import org.eclipse.swt.widgets.Text;
-
-import domainModel.Studente;
-
-import businessLogic.ControllerDocente;
-import businessLogic.ControllerPresidenteCorso;
-import businessLogic.ControllerPresidenteScuola;
-import businessLogic.ControllerResponsabile;
-import businessLogic.ControllerStudente;
+import domainModel.*;
+import businessLogic.*;
 import databaseAccessObject.Database;
 
 
