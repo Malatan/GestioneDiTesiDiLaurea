@@ -17,15 +17,15 @@ public class ControllerDocente {
 		viewDocente = new ViewDocente(this);
 	}
 	
-	public void ShowRelatoreWidget() {
-		viewDocente.ShowRelatoreWidget();
+	public void showRelatoreWidget() {
+		viewDocente.createAndRun();
 	}
 	
-	public void ShowMembroCommissioneWidget() {
+	public void showMembroCommissioneWidget() {
 		viewDocente.ShowMembroCommissioneWidget();
 	}
 	
-	public void ShowPresidenteCommissioneWidget() {
+	public void showPresidenteCommissioneWidget() {
 		viewDocente.ShowPresidenteCommissioneWidget();
 	}
 }

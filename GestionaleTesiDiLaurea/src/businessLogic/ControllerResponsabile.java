@@ -24,23 +24,23 @@ public class ControllerResponsabile {
 		viewResponsabile = new ViewResponsabile(this);
 	}
 	
-	public void ShowResponsabileWidget() {
+	public void showResponsabileWidget() {
 		viewResponsabile.ShowResponsabileWidget();
 	}
 	
-	public void ShowListaAppelli() {
-		AppelloTesi[] appelli = Database.getInstance().GetAppelli();
+	public void showListaAppelli() {
+		AppelloTesi[] appelli = Database.getInstance().getAppelli();
 		
 		viewResponsabile.ShowListaAppello(appelli);
 	}
 	
-	public void ShowListaAule(int idAppello, String currentAula) {
-		Aula[] aule = Database.getInstance().GetAule();
+	public void showListaAule(int idAppello, String currentAula) {
+		Aula[] aule = Database.getInstance().getAule();
 		
 		viewResponsabile.ShowListaAule(aule,idAppello,currentAula);
 	}
 
-	public boolean CreaAppello(String date) {
+	public boolean creaAppello(String date) {
 		System.out.println(date);
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
@@ -62,10 +62,10 @@ public class ControllerResponsabile {
         cal.setTime(dataAppello);
         
         System.out.println(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(cal.getTime()));
-        if(Database.getInstance().AggiungiAppello(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(cal.getTime()))) {
-        	viewResponsabile.ShowMessage("Messaggio: Inserimento appello con successo!",1);
+        if(Database.getInstance().aggiungiAppello(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(cal.getTime()))) {
+        	viewResponsabile.showMessage("Messaggio: Inserimento appello con successo!",1);
         }else {
-        	viewResponsabile.ShowMessage("Errore: La data dell'appello esista di gi�",0);
+        	viewResponsabile.showMessage("Errore: La data dell'appello esista di gi�",0);
         }
         
         
@@ -73,21 +73,21 @@ public class ControllerResponsabile {
 		return true;
 	}
 	
-	public boolean PrenotaAula(int idAula, int idAppello, String currentAula) {
-		if(Database.getInstance().PrenotaAula(idAula, idAppello,currentAula)) {
+	public boolean prenotaAula(int idAula, int idAppello, String currentAula) {
+		if(Database.getInstance().prenotaAula(idAula, idAppello,currentAula)) {
 			
 			return true;
 		}
 		return false;
 	}
 	
-	public void ShowProgrammaInformazioniAppelloWidget(AppelloTesi currentAppelloTesi) {
-		String informazioni = Database.getInstance().GetInformazioniAppello(currentAppelloTesi.getId());
+	public void showProgrammaInformazioniAppelloWidget(AppelloTesi currentAppelloTesi) {
+		String informazioni = Database.getInstance().getInformazioniAppello(currentAppelloTesi.getId());
 		viewResponsabile.ShowProgrammaInformazioniAppelloWidget(currentAppelloTesi,informazioni);
 	}
 	
-	public Boolean ProgrammaInformazioniPerAppello(int idAppello, String informazioni) {
-		if(Database.getInstance().ProgrammaInformazioniPerAppello(idAppello, informazioni)) {
+	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
+		if(Database.getInstance().programmaInformazioniPerAppello(idAppello, informazioni)) {
 			return true;
 		}
 		return false;

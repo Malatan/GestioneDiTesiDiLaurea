@@ -1,11 +1,14 @@
 package databaseAccessObject;
 
+import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
 import domainModel.*;
 
@@ -57,7 +60,19 @@ public class Database {
 		return db;
 	}
 	
-	public String[] VerificaCredenziali(String matricola, String password) {
+	public Boolean isConnected() {
+		try {
+			if(DriverManager.getConnection(connectionString) != null)
+				return true;
+			else
+				return false;
+		} catch (SQLException e) {
+			System.out.println("Connessione al db fallita");
+			return false;
+		}
+	}
+	
+	public String[] verificaCredenziali(String matricola, String password) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -67,45 +82,33 @@ public class Database {
 			ResultSet rs = stm.executeQuery("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
 			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
 			
-			
 			if (rs.next()) {
 				String[] info = new String[4];
 				info[0] = rs.getString("matricola");
 				info[1] = rs.getString("nome");
 				info[2] = rs.getString("ruolo");
 				info[3] = rs.getString("cognome");
-				
-				
 				return info;
 			}
 		} catch (SQLException e) {
-	    	e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		} finally {
-			try {
-				if (connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				// gestione errore in chiusura
-			}
-		}
+			System.out.println("2222222");
+		} 
 		return null;
 	}
 	
-	public Boolean RegistraIntentoPartecipazione() {
+	public Boolean registraIntentoPartecipazione() {
 		return true;
 	}
 	
-	public Boolean CaricaTesi() {
+	public Boolean caricaTesi() {
 		return true;
 	}
 	
-	public Boolean RimuoviCandidato(String matricola) {
+	public Boolean rimuoviCandidato(String matricola) {
 		return true;
 	}
 	
-	public Boolean AggiungiAppello(String data) {
+	public Boolean aggiungiAppello(String data) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -128,24 +131,27 @@ public class Database {
 			prepared.executeUpdate();
 			
 
+		} catch (CommunicationsException e) {
+			System.out.println("22");
+			return false;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("2");
 			return false;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("1");
 			return false;
 		} finally {
 			try {
 				if (connection != null)
 					connection.close();
 			} catch (SQLException e) {
-				 //gestione errore in chiusura
+				System.out.println("3");
 			}
 		}
 		return true;
 	}
 	
-	public AppelloTesi[] GetAppelli() {
+	public AppelloTesi[] getAppelli() {
 				
 		Connection connection = null;
 		try {
@@ -193,7 +199,7 @@ public class Database {
 		
 	}
 	
-	public Aula[] GetAule() {
+	public Aula[] getAule() {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -233,7 +239,7 @@ public class Database {
 
 	}
 	
-	public Boolean PrenotaAula(int idAula, int idAppello, String currentAula) {
+	public Boolean prenotaAula(int idAula, int idAppello, String currentAula) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -283,7 +289,7 @@ public class Database {
 		return true;
 	}
 	
-	public Boolean ProgrammaInformazioniPerAppello(int idAppello, String informazioni) {
+	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -313,7 +319,7 @@ public class Database {
 		return true;
 	}
 	
-	public String GetInformazioniAppello(int idAppello) {
+	public String getInformazioniAppello(int idAppello) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -347,27 +353,27 @@ public class Database {
 		return null;
 	}
 	
-	public Boolean ValidaComposizioneCommissione(Boolean accettato) {
+	public Boolean validaComposizioneCommissione(Boolean accettato) {
 		return true;
 	}
 	
-	public Boolean SalvaDate(String Appello) {
+	public Boolean salvaDate(String Appello) {
 		return true;
 	}
 	
-	public Boolean InserisciPresidenteCommissioneTesi(String matricola, String idAppello) {
+	public Boolean inserisciPresidenteCommissioneTesi(String matricola, String idAppello) {
 		return true;
 	}
 	
-	public Boolean ValidaPartecipazioneTesi(Boolean v) {
+	public Boolean validaPartecipazioneTesi(Boolean v) {
 		return true;
 	}
 	
-	public Boolean ApprovaTesi(Boolean appr) {
+	public Boolean approvaTesi(Boolean appr) {
 		return true;
 	}
 	
-	public Boolean InserisciGiustificazione(String matricola, String note) {
+	public Boolean inserisciGiustificazione(String matricola, String note) {
 		return true;
 	}
 	

@@ -12,9 +12,9 @@ public class ControllerStudente {
 		viewStudente = new ViewStudente(this);
 	}
 	
-	public void ShowStudenteWidget() {
-		viewStudente.ShowStudenteWidget();
+	public void showStudenteWidget() {
+		viewStudente.createAndRun();
 	}
-	
+
 	
 }

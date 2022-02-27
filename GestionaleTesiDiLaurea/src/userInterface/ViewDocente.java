@@ -23,7 +23,7 @@ public class ViewDocente {
 	 /**
 	  * @wbp.parser.entryPoint
 	  */
-	 public void ShowRelatoreWidget() {
+	 public void createAndRun() {
       
 			Display display = Display.getDefault();
 			relatoreShell = new Shell();

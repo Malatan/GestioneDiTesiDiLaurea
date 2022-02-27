@@ -21,7 +21,7 @@ public class ViewPresidenteScuola {
 	 /**
 	  * @wbp.parser.entryPoint
 	  */
-	 public void ShowPresidenteScuolaWidget() {
+	 public void createAndRun() {
       
 			Display display = Display.getDefault();
 			presidenteScuolaShell = new Shell();

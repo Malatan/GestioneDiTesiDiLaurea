@@ -35,7 +35,7 @@ public class ViewResponsabile {
 		this.controllerResponsabile = cr;
 	}
 	
-	public void ShowMessage(String message, int type) {
+	public void showMessage(String message, int type) {
 		if(type == 1) {
 			messaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 		}else {
@@ -72,7 +72,7 @@ public class ViewResponsabile {
 			btnCreaAppello.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					controllerResponsabile.CreaAppello(text.getText());
+					controllerResponsabile.creaAppello(text.getText());
 				}
 			});
 			btnCreaAppello.setBounds(225, 174, 264, 41);
@@ -82,7 +82,7 @@ public class ViewResponsabile {
 			btnVisualizzaAppelli.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					controllerResponsabile.ShowListaAppelli();
+					controllerResponsabile.showListaAppelli();
 				}
 			});
 			btnVisualizzaAppelli.setBounds(225, 236, 264, 80);
@@ -155,7 +155,7 @@ public class ViewResponsabile {
 					@Override
 					public void mouseDown(MouseEvent e) {
 						listaAppelloShell.close();
-						controllerResponsabile.ShowListaAule(idAppello,at.getNumAula());
+						controllerResponsabile.showListaAule(idAppello,at.getNumAula());
 					}
 				});
 				
@@ -169,7 +169,7 @@ public class ViewResponsabile {
 					@Override
 					public void mouseDown(MouseEvent e) {
 						listaAppelloShell.close();
-						controllerResponsabile.ShowProgrammaInformazioniAppelloWidget(currentAppelloTesi);
+						controllerResponsabile.showProgrammaInformazioniAppelloWidget(currentAppelloTesi);
 					}
 				});
 				
@@ -192,7 +192,7 @@ public class ViewResponsabile {
 		auleShell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellClosed(ShellEvent e) {
-				controllerResponsabile.ShowListaAppelli();
+				controllerResponsabile.showListaAppelli();
 			}
 		});
 		auleShell.setSize(370, 236);
@@ -233,7 +233,7 @@ public class ViewResponsabile {
 					    switch (rc) {
 						    case SWT.OK:
 						    case SWT.YES:
-						      if(controllerResponsabile.PrenotaAula(idAula,callerIdAppello,currentAula)) {
+						      if(controllerResponsabile.prenotaAula(idAula,callerIdAppello,currentAula)) {
 
 								    								    
 								    MessageBox messageBox2 = new MessageBox(auleShell, SWT.ICON_INFORMATION);
@@ -263,7 +263,7 @@ public class ViewResponsabile {
 		programmaShell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellClosed(ShellEvent e) {
-				controllerResponsabile.ShowListaAppelli();
+				controllerResponsabile.showListaAppelli();
 			}
 		});
 		programmaShell.setSize(738, 504);
@@ -279,7 +279,7 @@ public class ViewResponsabile {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				
-				if(controllerResponsabile.ProgrammaInformazioniPerAppello(currentAppelloTesi.getId(), text_1.getText())) {
+				if(controllerResponsabile.programmaInformazioniPerAppello(currentAppelloTesi.getId(), text_1.getText())) {
 				    MessageBox messageBox2 = new MessageBox(programmaShell, SWT.ICON_INFORMATION);
 				    messageBox2.setMessage("Invio di informazioni appello avvenuta con successo!");
 				    messageBox2.open();

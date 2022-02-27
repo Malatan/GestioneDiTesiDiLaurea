@@ -11,8 +11,8 @@ public class ControllerPresidenteScuola {
 		viewPresidenteScuola = new ViewPresidenteScuola(this);
 	}
 	
-	public void ShowPresidenteScuolaWidget() {
-		viewPresidenteScuola.ShowPresidenteScuolaWidget();
+	public void showPresidenteScuolaWidget() {
+		viewPresidenteScuola.createAndRun();
 	}
 
 

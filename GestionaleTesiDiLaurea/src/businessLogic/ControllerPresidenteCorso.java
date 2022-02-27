@@ -12,8 +12,8 @@ public class ControllerPresidenteCorso {
 		viewPresidenteCorso = new ViewPresidenteCorso(this);
 	}
 
-	public void ShowPresidenteCorsoWidget() {
-		viewPresidenteCorso.ShowPresidenteCorsoWidget();
+	public void showPresidenteCorsoWidget() {
+		viewPresidenteCorso.createAndRun();
 		
 	}
 

@@ -16,66 +16,71 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 public class ViewLogin {
 	
-	private static Text matricola;
-	private static Text password;
+	private static Text textFieldMatricola;
+	private static Text textFieldPassword;
 	private ControllerLogin controllerLogin;
 	private Shell loginShell;
-	private Label messaggio;
+	private Label lblMessaggio;
 	
 	public ViewLogin(ControllerLogin cl) {
 		this.controllerLogin = cl;
 	}
 	
-	public void Close() {
+	public void close() {
 		loginShell.close();
 	}
 	
-	public void ShowErrorMessage() {
-		messaggio.setText("Matricola o Password non essata");
+	public void showErrorMessage(String msg) {
+		lblMessaggio.setText(msg);
 	}
 	
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public void ShowLogin() {
+	public void createAndRun() {
 		Display display = Display.getDefault();
 		loginShell = new Shell();
 		loginShell.setSize(509, 317);
 		loginShell.setText("Gestionale di tesi di laurea");
 		
-		Button btnNewButton = new Button(loginShell, SWT.NONE);
-		btnNewButton.addMouseListener(new MouseAdapter() {
+		Button btnLogin = new Button(loginShell, SWT.NONE);
+		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				controllerLogin.CheckLogin(matricola, password);
+				controllerLogin.checkLogin(textFieldMatricola, textFieldPassword);
 			}
 		});
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
+		btnLogin.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 			}
 		});
-		btnNewButton.setBounds(158, 163, 184, 40);
-		btnNewButton.setText("Login");
+		btnLogin.setBounds(158, 194, 184, 40);
+		btnLogin.setText("Login");
 		
-		matricola = new Text(loginShell, SWT.BORDER);
-		matricola.setBounds(141, 68, 227, 21);
+		textFieldMatricola = new Text(loginShell, SWT.BORDER);
+		textFieldMatricola.setBounds(141, 90, 227, 21);
 		
-		password = new Text(loginShell, SWT.BORDER);
-		password.setBounds(141, 111, 227, 21);
+		textFieldPassword = new Text(loginShell, SWT.BORDER);
+		textFieldPassword.setBounds(141, 140, 227, 21);
 		
 		Label lblMatricola = new Label(loginShell, SWT.NONE);
-		lblMatricola.setBounds(72, 68, 55, 15);
+		lblMatricola.setBounds(72, 93, 55, 15);
 		lblMatricola.setText("Matricola");
 		
 		Label lblPassword = new Label(loginShell, SWT.NONE);
-		lblPassword.setBounds(72, 111, 55, 15);
+		lblPassword.setBounds(72, 143, 55, 15);
 		lblPassword.setText("Password");
 		
-		messaggio = new Label(loginShell, SWT.NONE);
-		messaggio.setAlignment(SWT.CENTER);
-		messaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
-		messaggio.setBounds(72, 240, 347, 15);
+		lblMessaggio = new Label(loginShell, SWT.NONE);
+		lblMessaggio.setAlignment(SWT.CENTER);
+		lblMessaggio.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+		lblMessaggio.setBounds(72, 240, 347, 15);
+		
+		Label lblTitolo = new Label(loginShell, SWT.NONE);
+		lblTitolo.setFont(SWTResourceManager.getFont("Segoe UI", 20, SWT.NORMAL));
+		lblTitolo.setBounds(72, 26, 347, 40);
+		lblTitolo.setText("Gestione Delle Tesi di Laurea");
 
 		loginShell.open();
 		loginShell.layout();

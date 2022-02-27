@@ -21,7 +21,7 @@ public class ViewPresidenteCorso {
 	 /**
 	  * @wbp.parser.entryPoint
 	  */
-	 public void ShowPresidenteCorsoWidget() {
+	 public void createAndRun() {
       
 			Display display = Display.getDefault();
 			presidenteCorsoShell = new Shell();
