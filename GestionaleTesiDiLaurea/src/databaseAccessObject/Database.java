@@ -1,16 +1,14 @@
 package databaseAccessObject;
 
-import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
-
 import domainModel.*;
+import utils.*;
 
 public class Database {
 	private static Database db;
@@ -62,12 +60,14 @@ public class Database {
 	
 	public Boolean isConnected() {
 		try {
-			if(DriverManager.getConnection(connectionString) != null)
+			if(DriverManager.getConnection(connectionString) != null) {
+				Console.print("Connessione al db con successo", "db");
 				return true;
+			}
 			else
 				return false;
 		} catch (SQLException e) {
-			System.out.println("Connessione al db fallita");
+			Console.print("Connessione al db fallita", "db");
 			return false;
 		}
 	}
@@ -76,9 +76,9 @@ public class Database {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-
 			Statement stm = connection.createStatement();
-			System.out.println("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
+			Console.print("SELECT matricola, nome, cognome, ruolo from users "
+					+ "WHERE matricola = '" + matricola + "' AND password= '" + password +"'", "sql");
 			ResultSet rs = stm.executeQuery("SELECT matricola, nome, cognome, ruolo from users WHERE matricola = '" + matricola + "' AND password= '" + password +"'");
 			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
 			
@@ -108,45 +108,20 @@ public class Database {
 		return true;
 	}
 	
-	public Boolean aggiungiAppello(String data) {
+	public boolean aggiungiAppello(String data) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			
-			Statement stm = connection.createStatement();
-
-			System.out.println("SELECT idAppello from appelli WHERE data = " + data);
-			ResultSet rs = stm.executeQuery("SELECT idAppello from appelli WHERE data = '" + data + "'" );
-			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
-			
-			
-			if (rs.next()) {
-				connection.close();
-				return false;
-			}
-			
-			PreparedStatement prepared = connection.prepareStatement("insert into appelli (data, idPresidente) values (?,?)");
+			String query = "insert into appelli (data, idPresidente) values (?,?)";
+			PreparedStatement prepared = connection.prepareStatement(query);
 			prepared.setString(1, data);
 			prepared.setInt(2, 0);
+			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
-			
-
-		} catch (CommunicationsException e) {
-			System.out.println("22");
-			return false;
 		} catch (SQLException e) {
-			System.out.println("2");
 			return false;
 		} catch (Exception e) {
-			System.out.println("1");
 			return false;
-		} finally {
-			try {
-				if (connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				System.out.println("3");
-			}
 		}
 		return true;
 	}
