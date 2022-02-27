@@ -12,7 +12,7 @@ public class ControllerStudente {
 		viewStudente = new ViewStudente(this);
 	}
 	
-	public void showStudenteWidget() {
+	public void run() {
 		viewStudente.createAndRun();
 	}
 
