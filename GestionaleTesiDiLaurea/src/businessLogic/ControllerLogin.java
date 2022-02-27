@@ -1,9 +1,6 @@
 package businessLogic;
 
 import userInterface.ViewLogin;
-
-import java.sql.SQLException;
-
 import org.eclipse.swt.widgets.Text;
 import domainModel.*;
 import businessLogic.*;
@@ -24,10 +21,10 @@ public class ControllerLogin {
 	}
 	
 	public void checkLogin(Text matricola, Text password) {
-		System.out.println(matricola.getText()+ " " + password.getText());
 		if(Database.getInstance().isConnected()) {
 			String[] info = Database.getInstance().verificaCredenziali(matricola.getText(), password.getText());
 			if(info != null) {
+				
 				//System.out.println(info[0] + " " + info[1] + " di ruolo " + info[2]);
 				viewLogin.close();
 				controllerDocente = new ControllerDocente(info[0],info[1],info[3]);
@@ -64,10 +61,6 @@ public class ControllerLogin {
 		}
 		else {
 			viewLogin.showErrorMessage("Connessione al database fallita");
-		}
-		if(matricola.getText().equals("test") && password.getText().equals("test")) {
-			viewLogin.close();
-			controllerStudente.showStudenteWidget();			
 		}
 	}
 	
