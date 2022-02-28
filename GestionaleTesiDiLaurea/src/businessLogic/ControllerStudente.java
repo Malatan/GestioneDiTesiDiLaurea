@@ -61,7 +61,7 @@ public class ControllerStudente {
 	
 	public boolean iscrizione(int id_corso) {
 		LocalDate today = LocalDate.now();
-		String data = today.getYear() + "-" + (today.getMonthValue() + 1) + "-" + today.getDayOfMonth();
+		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().iscrizioneTesi(studente, data, id_corso);
 			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Iscrizione e' avvenuta con successo!");
