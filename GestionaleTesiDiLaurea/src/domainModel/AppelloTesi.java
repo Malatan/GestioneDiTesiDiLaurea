@@ -4,10 +4,16 @@ public class AppelloTesi {
 	
 	private int id;
 	private String data;
-	private int idMatricolaPresidente;
-	private int idAula;
-	private String numAula;
-
+	private String informazione;
+	private boolean iscritto;
+	
+	public AppelloTesi(int idAppello, String d, String informazioni) {
+		this.id = idAppello;
+		this.data = d;
+		this.informazione = informazioni;
+		this.iscritto = false;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -24,40 +30,19 @@ public class AppelloTesi {
 		this.data = data;
 	}
 
-	public int getIdMatricolaPresidente() {
-		return idMatricolaPresidente;
+	public String getInformazione() {
+		return informazione;
 	}
 
-	public void setIdMatricolaPresidente(int idMatricolaPresidente) {
-		this.idMatricolaPresidente = idMatricolaPresidente;
+	public void setInformazione(String informazione) {
+		this.informazione = informazione;
 	}
 
-	public int getIdAula() {
-		return idAula;
+	public boolean isIscrizione() {
+		return iscritto;
 	}
 
-	public void setIdAula(int idAula) {
-		this.idAula = idAula;
-	}
-
-	public String getNumAula() {
-		return new String(numAula);
-	}
-
-	public void setNumAula(String numAula) {
-		this.numAula = numAula;
-	}
-	
-	public AppelloTesi(int idAppello, String d, int idPre, int idA, String numA) {
-		this.id = idAppello;
-		this.data = d;
-		this.idMatricolaPresidente = idPre;
-				
-		this.idAula = idA;
-		if(numA == null) {
-			this.numAula = new String("");
-		}else {
-			this.numAula = new String(numA);
-		}
+	public void setIscrizione(boolean iscrizione) {
+		this.iscritto = iscrizione;
 	}
 }

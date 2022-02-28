@@ -1,6 +1,15 @@
 package domainModel;
 
 public class Aula {
+	private int id;
+	private String numAula;
+	private int libera;
+	
+	public Aula(int idAula, String numAula, int libera) {
+		this.id = idAula;
+		this.numAula = numAula;
+		this.libera = libera;
+	}
 	
 	public int getId() {
 		return id;
@@ -23,16 +32,6 @@ public class Aula {
 	}
 
 	public void setLibera(int libera) {
-		this.libera = libera;
-	}
-
-	private int id;
-	private String numAula;
-	private int libera;
-	
-	public Aula(int idAula, String numAula, int libera) {
-		this.id = idAula;
-		this.numAula = numAula;
 		this.libera = libera;
 	}
 }
