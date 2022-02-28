@@ -8,7 +8,12 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
 public class Utils {
-
+	public static void setShellToCenterParent(Shell sh, Shell parentsh) {
+		Rectangle bounds = parentsh.getBounds();
+		Rectangle rect = sh.getBounds();
+		sh.setLocation(bounds.x + (bounds.width - rect.width) / 2, bounds.y + (bounds.height - rect.height) / 2);
+	}
+	
 	public static void setShellToCenterMonitor(Shell sh, Display d) {
 		Monitor primary = d.getPrimaryMonitor();
 		Rectangle bounds = primary.getBounds();
@@ -25,6 +30,20 @@ public class Utils {
 	
 	public static void createErrorDialog(Shell s, String title, String text) {
 		MessageBox messageBox = new MessageBox(s, SWT.ICON_ERROR | SWT.YES);
+		messageBox.setMessage(text);
+		messageBox.setText(title);
+		messageBox.open();
+	}
+	
+	public static void createWarningDialog(Shell s, String title, String text) {
+		MessageBox messageBox = new MessageBox(s, SWT.ICON_WARNING | SWT.YES);
+		messageBox.setMessage(text);
+		messageBox.setText(title);
+		messageBox.open();
+	}
+	
+	public static void createCancelDialog(Shell s, String title, String text) {
+		MessageBox messageBox = new MessageBox(s, SWT.ICON_CANCEL | SWT.YES);
 		messageBox.setMessage(text);
 		messageBox.setText(title);
 		messageBox.open();
