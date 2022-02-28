@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.DateTime;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerStudente;
 import domainModel.Studente;
+import utils.Console;
 import utils.Pair;
 import utils.Utils;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -30,12 +31,30 @@ public class ViewStudente {
 	private Shell studenteShell;
 	private int idCorso;
 	
+	private Label lblStatusTesi;
+	private Button btnIscrizione;
+	private Button btnRitira;
 	public ViewStudente(ControllerStudente cs) {
 		this.controllerStudente = cs;
 	}
 	
 	public Shell getShell() {
 		return this.studenteShell;
+	}
+	
+	public void aggiornaPagina() {
+		lblStatusTesi.setText(controllerStudente.getStatusTesi());
+		Studente studente = controllerStudente.getStudente();
+		switch(studente.getStatusTesi()) {
+			case 0:
+				btnIscrizione.setVisible(true);
+				btnRitira.setVisible(false);
+				break;
+			case 1:
+				btnIscrizione.setVisible(false);
+				btnRitira.setVisible(true);
+			case 2:	
+		}
 	}
 	
 	/**
@@ -53,23 +72,35 @@ public class ViewStudente {
 		compositeUserInfo.setBounds(20, 22, 340, 80);
 
 		Label lblMatricola = new Label(compositeUserInfo, SWT.NONE);
-		lblMatricola.setBounds(10, 10, 261, 15);
+		lblMatricola.setBounds(10, 10, 200, 15);
 		lblMatricola.setText("Matricola: " + studente.getMatricola());
 
 		Label lblNome = new Label(compositeUserInfo, SWT.NONE);
-		lblNome.setBounds(10, 31, 261, 15);
+		lblNome.setBounds(10, 31, 200, 15);
 		lblNome.setText("Nome: " + studente.getNome());
 
 		Label lblCognome = new Label(compositeUserInfo, SWT.NONE);
-		lblCognome.setBounds(10, 52, 261, 15);
+		lblCognome.setBounds(10, 52, 200, 15);
 		lblCognome.setText("Cognome: " + studente.getCognome());
 		
-		Label lblStatusTesi = new Label(studenteShell, SWT.BORDER | SWT.WRAP);
+		Button btnLogOut = new Button(compositeUserInfo, SWT.NONE);
+		btnLogOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				studenteShell.close();
+				controllerStudente = null;
+				ControllerLogin cl = new ControllerLogin();
+				cl.run();
+			}
+		});
+		btnLogOut.setBounds(261, 51, 75, 25);
+		btnLogOut.setText("LogOut");
+		
+		lblStatusTesi = new Label(studenteShell, SWT.BORDER | SWT.WRAP);
 		lblStatusTesi.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
 		lblStatusTesi.setBounds(20, 121, 340, 100);
-		lblStatusTesi.setText(controllerStudente.getStatusTesi());
 		
-		Button btnIscrizione = new Button(studenteShell, SWT.NONE);
+		btnIscrizione = new Button(studenteShell, SWT.NONE);
 		btnIscrizione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -78,7 +109,19 @@ public class ViewStudente {
 		});
 		btnIscrizione.setBounds(90, 271, 200, 25);
 		btnIscrizione.setText("Iscrizione Tesi");
-
+		
+		btnRitira = new Button(studenteShell, SWT.NONE);
+		btnRitira.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				controllerStudente.ritiraDomanda();
+				aggiornaPagina();
+			}
+		});
+		btnRitira.setBounds(90, 271, 200, 25);
+		btnRitira.setText("Ritira domanda");
+		
+		aggiornaPagina();
 		studenteShell.open();
 		studenteShell.layout();
 
@@ -106,14 +149,19 @@ public class ViewStudente {
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				for(Pair<Integer, String> p : corsi) {
-					if(comboCorsi.getText().equals(p.second)) {
-						idCorso = p.first;
-						break;
+				if (comboCorsi.getSelectionIndex() != -1) {
+					for(Pair<Integer, String> p : corsi) {
+						if(comboCorsi.getText().equals(p.second)) {
+							idCorso = p.first;
+							break;
+						}
 					}
+					if (controllerStudente.iscrizione(idCorso))
+						aggiornaPagina();
+					child.close();
+				} else {
+					Utils.createWarningDialog(child, "Messaggio", "Seleziona un corso!");
 				}
-				controllerStudente.iscrizione(idCorso);
-				child.close();
 			}
 		});
 		btnYes.setBounds(30, 66, 75, 25);

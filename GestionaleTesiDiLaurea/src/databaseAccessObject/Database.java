@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -129,6 +130,21 @@ public class Database {
 			prepared.setInt(3, id_corso);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+		} catch (SQLIntegrityConstraintViolationException e) {
+			Console.print("Duplicate entry key: " + studente.getMatricola(), "db");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	public void ritiraDomanda(String matricola) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "DELETE FROM DOMANDATESI WHERE MATRICOLA = " + matricola;
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 

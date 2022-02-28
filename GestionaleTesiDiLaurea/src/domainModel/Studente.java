@@ -5,6 +5,7 @@ public class Studente {
 	private String nome;
 	private String cognome;
 	private String matricola;
+	private int statusTesi;
 	
 	public Studente(String nome, String cognome, String matricola) {
 		super();
@@ -39,6 +40,14 @@ public class Studente {
 	
 	public void setMatricola(String matricola) {
 		this.matricola = matricola;
+	}
+
+	public int getStatusTesi() {
+		return statusTesi;
+	}
+
+	public void setStatusTesi(int statusTesi) {
+		this.statusTesi = statusTesi;
 	}
 	
 }

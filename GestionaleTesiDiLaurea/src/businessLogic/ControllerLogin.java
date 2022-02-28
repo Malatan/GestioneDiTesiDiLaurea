@@ -18,8 +18,6 @@ public class ControllerLogin {
 	}
 	
 	public void checkLogin(Text matricola, Text password) {
-		matricola.setText("10001");
-		password.setText("123");
 		if(matricola.getText().equals("") || password.getText().equals("")) {
 			Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
 		} else {
