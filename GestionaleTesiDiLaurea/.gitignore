@@ -1,6 +1,7 @@
 .settings/
 bin/
 tmp/
+src/userInterface/test.java
 .metadata
 .classpath
 .project
