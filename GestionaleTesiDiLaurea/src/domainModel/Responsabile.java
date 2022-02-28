@@ -23,4 +23,8 @@ public class Responsabile {
 	public String getMatricola() {
 		return new String(matricola);
 	}
+	
+	public int getMatricolaInt() {
+		return Integer.parseInt(matricola);
+	}
 }

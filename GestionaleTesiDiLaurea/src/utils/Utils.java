@@ -1,5 +1,7 @@
 package utils;
 
+import java.time.LocalDate;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -58,5 +60,11 @@ public class Utils {
         	return true;
         else
         	return false;
+	}
+	
+	public static String getTodayDate() {
+		LocalDate today = LocalDate.now();
+		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
+		return data;
 	}
 }

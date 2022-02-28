@@ -20,7 +20,11 @@ public class ControllerResponsabile {
 	public void run() {
 		viewResponsabile.createAndRun();
 	}
-
+	
+	public Responsabile getResponsabile() {
+		return responsabile;
+	}
+	
 	public AppelloTesi[] getAppelliFromDB() {
 		AppelloTesi[] appelli = null;
 		if (Database.getInstance().isConnected()) {
@@ -33,7 +37,7 @@ public class ControllerResponsabile {
 
 	public boolean creaAppello() {
 		if (Database.getInstance().isConnected()) {
-			if (Database.getInstance().aggiungeAppello()) {
+			if (Database.getInstance().aggiungeAppello(responsabile.getMatricolaInt(), Utils.getTodayDate())) {
 				Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Nuovo appello pubblicato");
 				Console.print("Creazione appello con successo", "app");
 				return true;

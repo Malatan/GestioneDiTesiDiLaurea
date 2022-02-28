@@ -150,6 +150,23 @@ public class Database {
 		} 
 	}
 	
+	public boolean prenotaAula(String data, int id_aula, String matricola) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO prenotazione_aula_giorno (id_aula, data, personale) VALUES(?,?,?)";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id_aula);
+			prepared.setString(2, data);
+			prepared.setInt(3, Integer.parseInt(matricola));
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
+	}
+	
 	public void addRepo(String file, String matricola) {
 		Connection connection = null;
 		try {
@@ -182,16 +199,18 @@ public class Database {
 		return s;
 	}
 	
-	public boolean aggiungeAppello(int matricola) {
+	public boolean aggiungeAppello(int matricola, String data) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "insert into appello (pubblicato_da) values (?)";
+			String query = "insert into appello (pubblicato_da, pub_data) values (?,?)";
 			PreparedStatement prepared = connection.prepareStatement(query);
 			prepared.setInt(1, matricola);
+			prepared.setString(2, data);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		} catch (Exception e) {
 			return false;
@@ -230,44 +249,24 @@ public class Database {
 		
 	}
 	
-	public Aula[] getAule() {
+	public ArrayList<Pair<Integer, String>> getAule() {
 		Connection connection = null;
+		ArrayList<Pair<Integer, String>> aule = new ArrayList<Pair<Integer, String>>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-
-			ResultSet rs = stm.executeQuery("SELECT * from aule");
-			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
-			
-			rs.last();
-			int rowsCount = rs.getRow();
-			rs.beforeFirst();
-			
-			System.out.println("How many rows of aule? " + rowsCount);
-			
-			Aula[] aule = new Aula[rowsCount];
-			
-			int index = 0;
+			String query = "SELECT * FROM AULA";
+			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
-				System.out.println("Get Num Aula: " + rs.getString("numAula"));
-				aule[index] = new Aula(rs.getInt("id"),rs.getString("numAula"), rs.getInt("libera"));
-				index++;
+				aule.add(Pair.of(rs.getInt("id_aula"), rs.getString("nome")));
 			}
-			
-			
 			connection.close();
 			return aule;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return null;
-		} 
-
+		}
+		return aule;
 	}
 	
 	public ArrayList<Pair<Integer, String>> getCorsi() {
@@ -289,57 +288,7 @@ public class Database {
 		}
 		return corsi;
 	}
-	
-	public Boolean prenotaAula(int idAula, int idAppello, String currentAula) {
-		Connection connection = null;
-		try {
-			connection = DriverManager.getConnection(connectionString);
-			
-			Statement stm = connection.createStatement();
 
-			System.out.println("SELECT id from aule WHERE libera = 0 AND id="+idAula);
-			ResultSet rs = stm.executeQuery("SELECT id from aule WHERE libera = 0 AND id="+idAula);
-			//System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + " di ruolo " + rs.getInt("ruolo"));
-			
-			
-			if (rs.next()) {
-				System.out.println("aula id: " + idAula+ " gia prenotata");
-				connection.close();
-				return false;
-			}
-			
-			PreparedStatement prepared = connection.prepareStatement("UPDATE aule SET libera = 0 WHERE id = ?");
-			prepared.setInt(1, idAula);
-			prepared.executeUpdate();
-			
-			prepared = connection.prepareStatement("UPDATE appelli SET idAula = ? WHERE idAppello = ?");
-			prepared.setInt(1, idAula);
-			prepared.setInt(2, idAppello);
-			prepared.executeUpdate();
-			
-			if(!currentAula.equals("")) {
-				prepared = connection.prepareStatement("UPDATE aule SET libera = 1 WHERE numAula = ?");
-				prepared.setString(1, currentAula);
-				prepared.executeUpdate();
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return false;
-		} finally {
-			try {
-				if (connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				 //gestione errore in chiusura
-			}
-		}
-		return true;
-	}
-	
 	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
 		Connection connection = null;
 		try {

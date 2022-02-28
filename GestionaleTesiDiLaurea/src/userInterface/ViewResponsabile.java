@@ -173,7 +173,7 @@ public class ViewResponsabile {
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					ControllerAppello ca = new ControllerAppello(a, responsabileShell);
+					ControllerAppello ca = new ControllerAppello(a, responsabileShell, controllerResponsabile.getResponsabile().getMatricola());
 					ca.run();
 				}
 			});
@@ -182,7 +182,7 @@ public class ViewResponsabile {
 			
 			if(!skip) {
 				Label lblSeperator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
-				lblSeperator.setBounds(10, offset_y - 5, 500, 2);
+				lblSeperator.setBounds(10, offset_y - 5, 325, 2);
 			}
 			
 			skip = false;
