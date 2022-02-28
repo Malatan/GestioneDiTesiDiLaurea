@@ -16,6 +16,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import businessLogic.ControllerAppello;
+import businessLogic.ControllerLogin;
 import businessLogic.ControllerResponsabile;
 import domainModel.AppelloTesi;
 import domainModel.Aula;
@@ -44,12 +45,12 @@ public class ViewResponsabile {
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		responsabileShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		responsabileShell.setSize(600, 600);
+		responsabileShell.setSize(400, 500);
 		responsabileShell.setText("Gestionale di tesi di laurea - Responsabile");
 		Utils.setShellToCenterMonitor(responsabileShell, display);
 
 		Composite compositeUserInfo = new Composite(responsabileShell, SWT.BORDER);
-		compositeUserInfo.setBounds(20, 22, 281, 80);
+		compositeUserInfo.setBounds(20, 22, 345, 80);
 
 		Label lblMatricola = new Label(compositeUserInfo, SWT.NONE);
 		lblMatricola.setBounds(10, 10, 261, 15);
@@ -64,25 +65,13 @@ public class ViewResponsabile {
 		lblCognome.setText("Cognome: " + controllerResponsabile.responsabile.getCognome());
 
 		Composite compositeMenu = new Composite(responsabileShell, SWT.BORDER);
-		compositeMenu.setBounds(20, 127, 541, 410);
-		
-		Button btnCreaAppello = new Button(compositeMenu, SWT.NONE);
-		btnCreaAppello.setLocation(172, 83);
-		btnCreaAppello.setSize(200, 50);
-		btnCreaAppello.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				creazioneAppelloDialog();
-			}
-		});
-		btnCreaAppello.setText("Crea Appello");
+		compositeMenu.setBounds(20, 127, 345, 322);
 		
 		ScrolledComposite scrolledCompositeListaAppelli = new ScrolledComposite(responsabileShell, SWT.BORDER | SWT.V_SCROLL);
-		scrolledCompositeListaAppelli.setBounds(20, 152, 540, 385);
+		scrolledCompositeListaAppelli.setBounds(20, 152, 345, 297);
 		scrolledCompositeListaAppelli.setExpandVertical(true);
-		
 		compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
-		compositeListaAppelli.setBounds(20, 152, 540, 385);
+		compositeListaAppelli.setBounds(20, 152, 345, 322);
 		
 		Label lblId = new Label(responsabileShell, SWT.NONE);
 		lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
@@ -96,15 +85,18 @@ public class ViewResponsabile {
 		lblData.setBounds(100, 126, 100, 15);
 		lblData.setText("Data");
 		
-		Label lblIscrizione = new Label(responsabileShell, SWT.NONE);
-		lblIscrizione.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-		lblIscrizione.setAlignment(SWT.CENTER);
-		lblIscrizione.setBounds(230, 126, 130, 15);
-		lblIscrizione.setText("Iscrizione studente");
+		Button btnCreaAppello = new Button(compositeMenu, SWT.NONE);
+		btnCreaAppello.setBounds(70, 80, 200, 30);
+		btnCreaAppello.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				creazioneAppelloDialog();
+			}
+		});
+		btnCreaAppello.setText("Pubblica appello");
 		
 		Button btnVisualizzaAppelli = new Button(compositeMenu, SWT.NONE);
-		btnVisualizzaAppelli.setLocation(172, 230);
-		btnVisualizzaAppelli.setSize(200, 50);
+		btnVisualizzaAppelli.setBounds(70, 120, 200, 30);
 		btnVisualizzaAppelli.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -115,7 +107,19 @@ public class ViewResponsabile {
 				scrolledCompositeListaAppelli.setMinSize(compositeListaAppelli.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			}
 		});
-		btnVisualizzaAppelli.setText("VISUALIZZA APPELLI");
+		btnVisualizzaAppelli.setText("Lista appelli");
+		
+		Button btnLogOut = new Button(compositeMenu, SWT.NONE);
+		btnLogOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				responsabileShell.close();
+				ControllerLogin cl = new ControllerLogin();
+				cl.run();
+			}
+		});
+		btnLogOut.setBounds(70, 160, 200, 30);
+		btnLogOut.setText("Log out");
 		
 		Button btnIndietro = new Button(responsabileShell, SWT.NONE);
 		btnIndietro.addMouseListener(new MouseAdapter() {
@@ -128,8 +132,7 @@ public class ViewResponsabile {
 				compositeListaAppelli.setBounds(20, 152, 540, 385);
 			}
 		});
-		btnIndietro.setLocation(486, 127);
-		btnIndietro.setSize(75, 25);
+		btnIndietro.setBounds(290, 127, 75, 25);
 		btnIndietro.setText("Indietro");
 		
 		responsabileShell.open();
@@ -144,38 +147,9 @@ public class ViewResponsabile {
 	}
 	
 	public void creazioneAppelloDialog() {
-		Shell child = new Shell(responsabileShell, SWT.APPLICATION_MODAL | SWT.TITLE);
-		child.setSize(250, 150);
-		child.setText("Creazione appello");
-		Utils.setShellToCenterParent(child, responsabileShell);
-		DateTime dateTimeAppello = new DateTime(child, SWT.BORDER);
-		dateTimeAppello.setBounds(66, 22, 96, 24);
-		LocalDate today = LocalDate.now();
-		dateTimeAppello.setTime(today.getYear(), today.getMonthValue(), today.getDayOfMonth());
-
-		Button btnYes = new Button(child, SWT.NONE);
-		btnYes.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String data = dateTimeAppello.getYear() + "-" + (dateTimeAppello.getMonth() + 1)+ "-"
-						+ dateTimeAppello.getDay();
-				if (controllerResponsabile.creaAppello(data))
-					child.close();
-			}
-		});
-		btnYes.setBounds(30, 66, 75, 25);
-		btnYes.setText("Crea");
-
-		Button btnNo = new Button(child, SWT.NONE);
-		btnNo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				child.close();
-			}
-		});
-		btnNo.setBounds(125, 66, 75, 25);
-		btnNo.setText("Indietro");
-		child.open();
+		if(Utils.createYesNoDialog(responsabileShell, "Conferma", "Vuoi pubblicare un nuovo appello?")) {
+			controllerResponsabile.creaAppello();
+		}
 	}
 	
 	public void visualizzaListaAppelli(Composite c) {
@@ -195,12 +169,6 @@ public class ViewResponsabile {
 			lblData.setBounds(90, offset_y, 80, 25);
 			lblData.setText(a.getData());
 			
-			Label lblIscrizione = new Label(c, SWT.NONE);
-			lblIscrizione.setAlignment(SWT.CENTER);
-			lblIscrizione.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-			lblIscrizione.setBounds(230, offset_y, 80, 25);
-			lblIscrizione.setText(a.isIscrizione() ? "Si" : "No");
-			
 			Button btnDettaglio = new Button(c, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
@@ -209,7 +177,7 @@ public class ViewResponsabile {
 					ca.run();
 				}
 			});
-			btnDettaglio.setBounds(400, offset_y, 75, 25);
+			btnDettaglio.setBounds(230, offset_y, 75, 25);
 			btnDettaglio.setText("Dettaglio");
 			
 			if(!skip) {

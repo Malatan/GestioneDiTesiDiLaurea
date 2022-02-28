@@ -181,13 +181,12 @@ public class Database {
 		return s;
 	}
 	
-	public boolean aggiungiAppello(String data) {
+	public boolean aggiungeAppello() {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "insert into appello (data) values (?)";
+			String query = "insert into appello values ()";
 			PreparedStatement prepared = connection.prepareStatement(query);
-			prepared.setString(1, data);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
 		} catch (SQLException e) {

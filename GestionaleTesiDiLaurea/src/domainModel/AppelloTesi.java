@@ -4,14 +4,18 @@ public class AppelloTesi {
 	
 	private int id;
 	private String data;
-	private String informazione;
-	private boolean iscritto;
+	private String nota;
 	
-	public AppelloTesi(int idAppello, String d, String informazioni) {
+	public AppelloTesi(int idAppello, String data, String nota) {
 		this.id = idAppello;
-		this.data = d;
-		this.informazione = informazioni;
-		this.iscritto = false;
+		if (data != null)
+			this.data = data;
+		else
+			this.data = "-";
+		if (nota != null)
+			this.nota = nota;
+		else
+			this.nota = "-";
 	}
 	
 	public int getId() {
@@ -30,19 +34,11 @@ public class AppelloTesi {
 		this.data = data;
 	}
 
-	public String getInformazione() {
-		return informazione;
+	public String getNota() {
+		return nota;
 	}
 
-	public void setInformazione(String informazione) {
-		this.informazione = informazione;
-	}
-
-	public boolean isIscrizione() {
-		return iscritto;
-	}
-
-	public void setIscrizione(boolean iscrizione) {
-		this.iscritto = iscrizione;
+	public void setNota(String informazione) {
+		this.nota = informazione;
 	}
 }

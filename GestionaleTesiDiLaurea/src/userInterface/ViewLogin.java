@@ -68,7 +68,7 @@ public class ViewLogin {
 		lblTitolo.setBounds(72, 26, 347, 40);
 		lblTitolo.setText("Gestione Delle Tesi di Laurea");
 		
-		textFieldMatricola.setText("10001");
+		textFieldMatricola.setText("10002");
 		textFieldPassword.setText("123");
 		loginShell.open();
 		loginShell.layout();

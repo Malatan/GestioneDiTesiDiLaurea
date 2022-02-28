@@ -31,51 +31,41 @@ public class ControllerResponsabile {
 		return appelli;
 	}
 
-	public boolean creaAppello(String data) {
-		String msg = "Vuoi creare l'appello nella data di " + data + " ?";
-		if(Utils.createYesNoDialog(viewResponsabile.getShell(), "Messaggio", msg)){
-			if (Database.getInstance().isConnected()) {
-				if (Database.getInstance().aggiungiAppello(data)) {
-					msg = "L'appello del "+ data + " inserito con successo.";
-					Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", msg);
-					Console.print("Creazione appello(" + data + ") con successo", "app");
-					return true;
-				} else {
-					Utils.createErrorDialog(viewResponsabile.getShell(), "Messaggio", "Inserimento fallito");
-				}
+	public boolean creaAppello() {
+		if (Database.getInstance().isConnected()) {
+			if (Database.getInstance().aggiungeAppello()) {
+				Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Nuovo appello pubblicato");
+				Console.print("Creazione appello con successo", "app");
+				return true;
 			} else {
-				Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+				Utils.createErrorDialog(viewResponsabile.getShell(), "Messaggio", "Inserimento fallito");
 			}
 		} else {
-			Console.print("Creazione appello(" + data + ") non confermato", "app");
+			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
-	
+
 	/*
-	public boolean prenotaAula(int idAula, int idAppello, String currentAula) {
-		if (Database.getInstance().prenotaAula(idAula, idAppello, currentAula)) {
-
-			return true;
-		}
-		return false;
-	}
-	
-	public void showListaAule(int idAppello, String currentAula) {
-		Aula[] aule = Database.getInstance().getAule();
-
-		viewResponsabile.ShowListaAule(aule, idAppello, currentAula);
-	}
-	
-	public void showProgrammaInformazioniAppelloWidget(AppelloTesi currentAppelloTesi) {
-		String informazioni = Database.getInstance().getInformazioniAppello(currentAppelloTesi.getId());
-		viewResponsabile.ShowProgrammaInformazioniAppelloWidget(currentAppelloTesi, informazioni);
-	}
-
-	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
-		if (Database.getInstance().programmaInformazioniPerAppello(idAppello, informazioni)) {
-			return true;
-		}
-		return false;
-	}*/
+	 * public boolean prenotaAula(int idAula, int idAppello, String currentAula) {
+	 * if (Database.getInstance().prenotaAula(idAula, idAppello, currentAula)) {
+	 * 
+	 * return true; } return false; }
+	 * 
+	 * public void showListaAule(int idAppello, String currentAula) { Aula[] aule =
+	 * Database.getInstance().getAule();
+	 * 
+	 * viewResponsabile.ShowListaAule(aule, idAppello, currentAula); }
+	 * 
+	 * public void showProgrammaInformazioniAppelloWidget(AppelloTesi
+	 * currentAppelloTesi) { String informazioni =
+	 * Database.getInstance().getInformazioniAppello(currentAppelloTesi.getId());
+	 * viewResponsabile.ShowProgrammaInformazioniAppelloWidget(currentAppelloTesi,
+	 * informazioni); }
+	 * 
+	 * public Boolean programmaInformazioniPerAppello(int idAppello, String
+	 * informazioni) { if
+	 * (Database.getInstance().programmaInformazioniPerAppello(idAppello,
+	 * informazioni)) { return true; } return false; }
+	 */
 }
