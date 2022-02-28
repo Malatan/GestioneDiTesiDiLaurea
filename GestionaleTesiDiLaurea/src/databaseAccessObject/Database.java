@@ -150,6 +150,37 @@ public class Database {
 		} 
 	}
 	
+	public void caricaFile(String file, String matricola) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "UPDATE DOMANDATESI SET FILE = '" + file + "' WHERE MATRICOLA = " + matricola;
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	public String getFileCaricato(String matricola) {
+		Connection connection = null;
+		String s = "";
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT FILE FROM DOMANDATESI WHERE MATRICOLA = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				s = rs.getString("file");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+	
 	public boolean aggiungiAppello(String data) {
 		Connection connection = null;
 		try {

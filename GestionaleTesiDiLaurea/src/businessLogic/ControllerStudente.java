@@ -83,4 +83,24 @@ public class ControllerStudente {
 		return false;
 	}
 	
+	public boolean caricaFile(String file) {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().caricaFile(file, studente.getMatricola());
+			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Il file e' stato caricato con successo");
+			return true;
+		}else {
+			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public String getFileCaricatoFromDB() {
+		String s = "";
+		if(Database.getInstance().isConnected()) {
+			s = Database.getInstance().getFileCaricato(studente.getMatricola());
+		}else {
+			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return s;
+	}
 }
