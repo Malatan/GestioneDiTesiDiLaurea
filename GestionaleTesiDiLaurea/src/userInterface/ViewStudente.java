@@ -34,7 +34,7 @@ public class ViewStudente {
 	private Label lblStatusTesi;
 	private Button btnIscrizione;
 	private Button btnRitira;
-	private Button btnCaricaFile;
+	private Button btnAddRepo;
 	private Button btnAppello;
 	public ViewStudente(ControllerStudente cs) {
 		this.controllerStudente = cs;
@@ -51,13 +51,13 @@ public class ViewStudente {
 			case 0:
 				btnIscrizione.setEnabled(true);
 				btnRitira.setEnabled(false);
-				btnCaricaFile.setEnabled(false);
+				btnAddRepo.setEnabled(false);
 				btnAppello.setEnabled(false);
 				break;
 			case 1:
 				btnIscrizione.setEnabled(false);
 				btnRitira.setEnabled(true);
-				btnCaricaFile.setEnabled(true);
+				btnAddRepo.setEnabled(true);
 			case 2:	
 		}
 	}
@@ -113,15 +113,15 @@ public class ViewStudente {
 		btnRitira.setBounds(90, 270, 200, 25);
 		btnRitira.setText("Ritira domanda");
 		
-		btnCaricaFile = new Button(studenteShell, SWT.NONE);
-		btnCaricaFile.addMouseListener(new MouseAdapter() {
+		btnAddRepo = new Button(studenteShell, SWT.NONE);
+		btnAddRepo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				caricaFileDialog();
+				addRepoDialog();
 			}
 		});
-		btnCaricaFile.setBounds(90, 301, 200, 25);
-		btnCaricaFile.setText("Carica file tesi");
+		btnAddRepo.setBounds(90, 301, 200, 25);
+		btnAddRepo.setText("Repository tesi");
 		
 		btnAppello = new Button(studenteShell, SWT.NONE);
 		btnAppello.setBounds(90, 332, 200, 25);
@@ -151,26 +151,26 @@ public class ViewStudente {
 		}
 	}
 	
-	public void caricaFileDialog() {
+	public void addRepoDialog() {
 		Shell child = new Shell(studenteShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
-		child.setText("Carica file tesi");
+		child.setText("Repository tesi");
 		Utils.setShellToCenterParent(child, studenteShell);
-		String original = controllerStudente.getFileCaricatoFromDB();
+		String original = controllerStudente.getRepositoryFromDB();
 		
-		Text file = new Text(child, SWT.BORDER);
-		file.setBounds(30, 20, 171, 23);
-		file.setText(original);
+		Text textRepository = new Text(child, SWT.BORDER);
+		textRepository.setBounds(30, 20, 171, 23);
+		textRepository.setText(original);
 		
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String s = file.getText();
+				String s = textRepository.getText();
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
 				} else if (!s.equals(original)){
-					controllerStudente.caricaFile(s);
+					controllerStudente.addRepo(s);
 					child.close();
 				} else {
 					child.close();

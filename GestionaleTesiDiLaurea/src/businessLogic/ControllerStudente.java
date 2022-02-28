@@ -83,10 +83,10 @@ public class ControllerStudente {
 		return false;
 	}
 	
-	public boolean caricaFile(String file) {
+	public boolean addRepo(String file) {
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().caricaFile(file, studente.getMatricola());
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Il file e' stato caricato con successo");
+			Database.getInstance().addRepo(file, studente.getMatricola());
+			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Il repository e' stato aggiornato");
 			return true;
 		}else {
 			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
@@ -94,13 +94,16 @@ public class ControllerStudente {
 		return false;
 	}
 	
-	public String getFileCaricatoFromDB() {
+	public String getRepositoryFromDB() {
 		String s = "";
 		if(Database.getInstance().isConnected()) {
-			s = Database.getInstance().getFileCaricato(studente.getMatricola());
+			s = Database.getInstance().getRepository(studente.getMatricola());
 		}else {
 			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
 		}
-		return s;
+		if (s != null)
+			return s;
+		else
+			return "";
 	}
 }

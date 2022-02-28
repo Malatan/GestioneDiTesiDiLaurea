@@ -150,12 +150,12 @@ public class Database {
 		} 
 	}
 	
-	public void caricaFile(String file, String matricola) {
+	public void addRepo(String file, String matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "UPDATE DOMANDATESI SET FILE = '" + file + "' WHERE MATRICOLA = " + matricola;
+			String query = "UPDATE DOMANDATESI SET repository = '" + file + "' WHERE MATRICOLA = " + matricola;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
 		} catch (SQLException e) {
@@ -163,17 +163,18 @@ public class Database {
 		} 
 	}
 	
-	public String getFileCaricato(String matricola) {
+	public String getRepository(String matricola) {
 		Connection connection = null;
 		String s = "";
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT FILE FROM DOMANDATESI WHERE MATRICOLA = " + matricola;
+			String query = "SELECT repository FROM DOMANDATESI WHERE MATRICOLA = " + matricola;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
-				s = rs.getString("file");
+				s = rs.getString("repository");
+				System.out.println(s);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -181,12 +182,13 @@ public class Database {
 		return s;
 	}
 	
-	public boolean aggiungeAppello() {
+	public boolean aggiungeAppello(int matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "insert into appello values ()";
+			String query = "insert into appello (pubblicato_da) values (?)";
 			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, matricola);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
 		} catch (SQLException e) {
