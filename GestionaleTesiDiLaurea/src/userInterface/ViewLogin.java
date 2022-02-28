@@ -37,7 +37,7 @@ public class ViewLogin {
 	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
-		loginShell = new Shell(display, SWT.CLOSE | SWT.TITLE);
+		loginShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		loginShell.setSize(509, 317);
 		loginShell.setText("Gestionale di tesi di laurea");
 		Utils.setShellToCenterMonitor(loginShell, display);

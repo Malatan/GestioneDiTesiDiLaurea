@@ -1,11 +1,5 @@
 package businessLogic;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import databaseAccessObject.Database;
 import domainModel.Responsabile;
 import userInterface.ViewResponsabile;
@@ -27,34 +21,38 @@ public class ControllerResponsabile {
 		viewResponsabile.createAndRun();
 	}
 
-	public void showListaAppelli() {
-		AppelloTesi[] appelli = Database.getInstance().getAppelli();
-
-		viewResponsabile.ShowListaAppello(appelli);
+	public AppelloTesi[] getAppelliFromDB() {
+		AppelloTesi[] appelli = null;
+		if (Database.getInstance().isConnected()) {
+			appelli = Database.getInstance().getAppelli();
+		} else {
+			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return appelli;
 	}
 
-	public void showListaAule(int idAppello, String currentAula) {
-		Aula[] aule = Database.getInstance().getAule();
-
-		viewResponsabile.ShowListaAule(aule, idAppello, currentAula);
-	}
-
-	public void creaAppello(String data) {
+	public boolean creaAppello(String data) {
 		String msg = "Vuoi creare l'appello nella data di " + data + " ?";
 		if(Utils.createYesNoDialog(viewResponsabile.getShell(), "Messaggio", msg)){
 			if (Database.getInstance().isConnected()) {
 				if (Database.getInstance().aggiungiAppello(data)) {
 					msg = "L'appello del "+ data + " inserito con successo.";
 					Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", msg);
+					Console.print("Creazione appello(" + data + ") con successo", "app");
+					return true;
 				} else {
 					Utils.createErrorDialog(viewResponsabile.getShell(), "Messaggio", "Inserimento fallito");
 				}
 			} else {
 				Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
 			}
+		} else {
+			Console.print("Creazione appello(" + data + ") non confermato", "app");
 		}
+		return false;
 	}
-
+	
+	/*
 	public boolean prenotaAula(int idAula, int idAppello, String currentAula) {
 		if (Database.getInstance().prenotaAula(idAula, idAppello, currentAula)) {
 
@@ -62,7 +60,13 @@ public class ControllerResponsabile {
 		}
 		return false;
 	}
+	
+	public void showListaAule(int idAppello, String currentAula) {
+		Aula[] aule = Database.getInstance().getAule();
 
+		viewResponsabile.ShowListaAule(aule, idAppello, currentAula);
+	}
+	
 	public void showProgrammaInformazioniAppelloWidget(AppelloTesi currentAppelloTesi) {
 		String informazioni = Database.getInstance().getInformazioniAppello(currentAppelloTesi.getId());
 		viewResponsabile.ShowProgrammaInformazioniAppelloWidget(currentAppelloTesi, informazioni);
@@ -73,6 +77,5 @@ public class ControllerResponsabile {
 			return true;
 		}
 		return false;
-	}
-
+	}*/
 }

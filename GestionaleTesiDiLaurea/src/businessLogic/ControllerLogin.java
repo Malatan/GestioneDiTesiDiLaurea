@@ -18,8 +18,8 @@ public class ControllerLogin {
 	}
 	
 	public void checkLogin(Text matricola, Text password) {
-		matricola.setText("1");
-		password.setText("test");
+		matricola.setText("10001");
+		password.setText("123");
 		if(matricola.getText().equals("") || password.getText().equals("")) {
 			Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
 		} else {
@@ -31,7 +31,7 @@ public class ControllerLogin {
 					controllerDocente = new ControllerDocente(info[0],info[1],info[3]);
 					switch(Integer.parseInt(info[2])) {
 						case 0:					
-							ControllerStudente controllerStudente = new ControllerStudente();
+							ControllerStudente controllerStudente = new ControllerStudente(info[0],info[1],info[3]);
 							controllerStudente.run();		
 							break;
 						case 1:
