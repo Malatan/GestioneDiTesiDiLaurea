@@ -33,7 +33,7 @@ public class ControllerDocente {
 	
 	public ArrayList<DomandaTesi> getDomandeTesiFromDB(){
 		if(Database.getInstance().isConnected()) {
-			return Database.getInstance().getDomandeTesi();
+			return Database.getInstance().getDomandeTesi(Integer.parseInt(docente.getMatricola()));
 		}else {
 			Utils.createErrorDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
 		}

@@ -282,7 +282,7 @@ public class Database {
 		return true;
 	}
 	
-	public ArrayList<DomandaTesi> getDomandeTesi() {
+	public ArrayList<DomandaTesi> getDomandeTesi(int matricola_docente) {
 		Connection connection = null;
 		ArrayList<DomandaTesi> domande = new ArrayList<DomandaTesi>();
 		try {
@@ -291,7 +291,8 @@ public class Database {
 			String query = "SELECT d.matricola, s.nome as studente_nome, s.cognome as studente_cognome, d.id_corso, c.nome as nome_corso, "
 					+ "d.relatore, r.nome as relatore_nome, r.cognome as relatore_cognome, d.data, d.repository, d.approvato "
 					+ "FROM domandatesi d, corso c, utente r, utente s "
-					+ "where d.id_corso = c.id_corso and d.relatore = r.matricola and d.matricola = s.matricola";
+					+ "where d.id_corso = c.id_corso and d.relatore = r.matricola "
+					+ "and d.matricola = s.matricola and r.matricola = " + matricola_docente;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
