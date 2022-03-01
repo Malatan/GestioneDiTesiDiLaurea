@@ -1,11 +1,16 @@
 package domainModel;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import utils.Pair;
 
 public class AppelloTesi {
 	
 	private int id;
-	private String data;
+	private String date;
 	private Pair<Integer, String> aula;
 	private int startTime;
 	private String linkTeleconferenza;
@@ -13,7 +18,7 @@ public class AppelloTesi {
 	
 	public AppelloTesi(int idAppello, String data, int startTime, Pair<Integer, String> aula, String linkTeleconferenza, String nota) {
 		this.id = idAppello;
-		this.data = data;
+		this.date = data;
 		this.startTime = startTime;
 		this.aula = aula;
 		this.linkTeleconferenza = linkTeleconferenza;
@@ -28,19 +33,24 @@ public class AppelloTesi {
 		this.id = id;
 	}
 
-	public String getDataString() {
-		if (data == null)
+	public String getDateString() {
+
+		if (date == null)
 			return "INDEFINITO";
-		else
-			return new String(data);
+		else {
+		    
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			return new String(LocalDate.parse(date, formatter).format(formatter2));
+		}
 	}
 	
 	public String getData() {
-		return data;
+		return date;
 	}
 
 	public void setData(String data) {
-		this.data = data;
+		this.date = date;
 	}
 
 	public String getNota() {

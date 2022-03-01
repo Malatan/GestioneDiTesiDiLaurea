@@ -1,5 +1,7 @@
 package businessLogic;
 
+import java.util.ArrayList;
+
 import databaseAccessObject.Database;
 import domainModel.Responsabile;
 import userInterface.ViewResponsabile;
@@ -35,8 +37,8 @@ public class ControllerResponsabile {
 		return appello;
 	}
 	
-	public AppelloTesi[] getAppelliFromDB() {
-		AppelloTesi[] appelli = null;
+	public ArrayList<AppelloTesi> getAppelliFromDB() {
+		ArrayList<AppelloTesi> appelli = null;
 		if (Database.getInstance().isConnected()) {
 			appelli = Database.getInstance().getAppelli();
 		} else {

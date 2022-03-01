@@ -33,7 +33,7 @@ public class ViewPresidenteScuola {
 			
 			Label lblMatricola = new Label(composite, SWT.NONE);
 			lblMatricola.setBounds(10, 10, 55, 15);
-			lblMatricola.setText("Matricola:        ");
+			lblMatricola.setText("Matricola: ");
 			
 			Label lblNome = new Label(composite, SWT.NONE);
 			lblNome.setBounds(10, 31, 55, 15);

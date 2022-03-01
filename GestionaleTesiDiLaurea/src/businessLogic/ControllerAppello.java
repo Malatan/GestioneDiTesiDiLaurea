@@ -1,12 +1,18 @@
 package businessLogic;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.eclipse.swt.widgets.Shell;
 
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import userInterface.ViewAppello;
+import utils.Console;
 import utils.Pair;
 import utils.Utils;
 
@@ -59,6 +65,33 @@ public class ControllerAppello {
 			return s;
 		else
 			return "";
+	}
+	
+	
+	public boolean addDateToAppello(String date) {
+		if(Database.getInstance().isConnected()) {
+			
+			try {
+				java.util.Date utilDate = new SimpleDateFormat("dd/MM/yyyy").parse(date);
+				java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+				
+				Console.print(sqlDate.toString(),"GUI");
+				
+				Database.getInstance().addDateToAppello(sqlDate.toString(), appello.getId());
+				Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "La data dell'appello e' stata inserita correttamente!");
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+			
+			
+
+			return true;
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
 	}
 	
 	public boolean addLinkTele(String link) {

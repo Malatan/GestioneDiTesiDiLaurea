@@ -227,6 +227,19 @@ public class Database {
 		} 
 	}
 	
+	public void addDateToAppello(String Date, int id_appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "UPDATE appello SET data = '" + Date + "' WHERE id_appello = " + id_appello;
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public String getRepository(String matricola) {
 		Connection connection = null;
 		String s = "";
@@ -262,6 +275,7 @@ public class Database {
 		}
 		return s;
 	}
+	
 	
 	public boolean aggiungeAppello(int matricola, String data) {
 		Connection connection = null;
@@ -327,23 +341,23 @@ public class Database {
 		return appello;
 	}
 	
-	public AppelloTesi[] getAppelli() {
+	public ArrayList<AppelloTesi> getAppelli() {
 		Connection connection = null;
+		ArrayList<AppelloTesi> appelli = new ArrayList<AppelloTesi>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			String query = "SELECT id_appello, data from appello";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
-			rs.last();
-			int rowsCount = rs.getRow();
-			rs.beforeFirst();
-			AppelloTesi[] appelli = new AppelloTesi[rowsCount];
-			int index = 0;
+			
+			
+
+
 			while (rs.next()) {
-				appelli[index] = new AppelloTesi(rs.getInt("id_appello"), rs.getString("data"), -1, null, null, null);
-				index++;
+				appelli.add(new AppelloTesi(rs.getInt("id_appello"), rs.getString("data"), -1, null, null, null));
 			}
+			
 			connection.close();
 			return appelli;
 		} catch (SQLException e) {
@@ -414,6 +428,26 @@ public class Database {
 			e.printStackTrace();
 		}
 		return docenti;
+	}
+	
+	public String getDateFromDB(int idAppello){
+		Connection connection = null;
+		String dataAppello = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT id_appello, data FROM appello where id_appello = " + String.valueOf(idAppello);
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				if(rs.getString("data") != null) {
+					dataAppello = new String(rs.getString("data"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dataAppello;
 	}
 	
 	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {

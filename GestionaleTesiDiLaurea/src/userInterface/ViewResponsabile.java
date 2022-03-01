@@ -1,6 +1,7 @@
 package userInterface;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -153,7 +154,7 @@ public class ViewResponsabile {
 	}
 	
 	public void visualizzaListaAppelli(Composite c) {
-		AppelloTesi[] appelli = controllerResponsabile.getAppelliFromDB();
+		ArrayList<AppelloTesi> appelli = controllerResponsabile.getAppelliFromDB();
 		int offset_y = 10;
 		for(AppelloTesi a : appelli) {
 			Label lblId = new Label(c, SWT.NONE);
@@ -166,7 +167,7 @@ public class ViewResponsabile {
 			lblData.setAlignment(SWT.CENTER);
 			lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblData.setBounds(90, offset_y+3, 80, 25);
-			lblData.setText(a.getDataString());
+			lblData.setText(a.getDateString());
 			
 			Button btnDettaglio = new Button(c, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {

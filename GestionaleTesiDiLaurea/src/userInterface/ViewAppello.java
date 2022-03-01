@@ -48,7 +48,7 @@ public class ViewAppello {
 		AppelloTesi appello = controllerAppello.getAppello();
 		String no_value = "INDEFINITO";
 		if (appello.getData() != null) {
-			lblData.setText(appello.getDataString());
+			lblData.setText(appello.getDateString());
 		} else {
 			lblData.setText(no_value);
 		}
@@ -133,6 +133,7 @@ public class ViewAppello {
 				break;
 			case 3:
 				appelloShell.setText(appelloShell.getText()+" - Presidente Corso");
+				createPresidenteCorsoComposite();
 				break;
 		}
 		
@@ -144,6 +145,84 @@ public class ViewAppello {
 				display.sleep();
 			}
 		}
+	}
+	
+	public void createPresidenteCorsoComposite() {
+		Composite compositeResponsabile = new Composite(appelloShell, SWT.BORDER);
+		compositeResponsabile.setBounds(10, 370, 465, 80);
+		
+		Button btnData = new Button(compositeResponsabile, SWT.NONE);
+		btnData.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				aggiungereDataDialog();
+			}
+		});
+		btnData.setBounds(10, 10, 120, 25);
+		btnData.setText("Inserisci Data");
+		
+		Button btnIdentificaMembri = new Button(compositeResponsabile, SWT.NONE);
+		btnIdentificaMembri.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				aggiungereDataDialog();
+			}
+		});
+		btnIdentificaMembri.setBounds(136, 10, 120, 25);
+		btnIdentificaMembri.setText("Identifica Membri");
+		
+		Button btnNominaPresidente = new Button(compositeResponsabile, SWT.NONE);
+		btnNominaPresidente.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				aggiungereDataDialog();
+			}
+		});
+		btnNominaPresidente.setBounds(262, 10, 120, 25);
+		btnNominaPresidente.setText("Nomina Presidente");
+	}
+	
+	public void aggiungereDataDialog() {
+		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setSize(250, 150);
+		child.setText("Data dell'appello");
+		Utils.setShellToCenterParent(child, appelloShell);
+		String original = controllerAppello.getAppello().getDateString();
+		
+		Text textRepository = new Text(child, SWT.BORDER);
+		textRepository.setBounds(30, 20, 171, 23);
+		textRepository.setText(original);
+		
+		Button btnYes = new Button(child, SWT.NONE);
+		btnYes.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String s = textRepository.getText();
+				if (s.equals("")) {
+					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
+				} else if (!s.equals(original)){
+					controllerAppello.addDateToAppello(s);
+					controllerAppello.updateAppelloFromDB();
+					aggiornaPagina();
+					child.close();
+				} else {
+					child.close();
+				}
+			}
+		});
+		btnYes.setBounds(30, 66, 75, 25);
+		btnYes.setText("Conferma");
+	
+ 		Button btnNo = new Button(child, SWT.NONE);
+		btnNo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				child.close();
+			}
+		});
+		btnNo.setBounds(125, 66, 75, 25);
+		btnNo.setText("Indietro");
+		child.open();
 	}
 	
 	public void createResponsabileComposite() {
@@ -268,7 +347,7 @@ public class ViewAppello {
 							break;
 						}
 					}
-					String data = dateTimeAula.getYear() + "-" + (dateTimeAula.getMonth() + 1) + "-" + dateTimeAula.getDay();
+					String data = dateTimeAula.getDay() + "/" + (dateTimeAula.getMonth() + 1) + "/" + dateTimeAula.getYear();
 					if (controllerAppello.prenotaAula(id_aula, data)) {
 						child.close();
 					}
