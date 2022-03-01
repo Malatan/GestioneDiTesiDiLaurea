@@ -9,6 +9,11 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
+import domainModel.PresidenteCorso;
+import domainModel.PresidenteScuola;
+import domainModel.Responsabile;
+import domainModel.Studente;
+
 public class Utils {
 	public static void setShellToCenterParent(Shell sh, Shell parentsh) {
 		Rectangle bounds = parentsh.getBounds();
@@ -66,5 +71,18 @@ public class Utils {
 		LocalDate today = LocalDate.now();
 		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		return data;
+	}
+	
+	public static int getRuolo(Object o) {
+		if (o instanceof Studente) {
+			return 0;
+		} else if (o instanceof Responsabile) {
+			return 1;
+		} else if (o instanceof PresidenteScuola) {
+			return 2;
+		} else if (o instanceof PresidenteCorso) {
+			return 3;
+		}
+		return -1;
 	}
 }
