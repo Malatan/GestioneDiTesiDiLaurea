@@ -22,13 +22,32 @@ CREATE TABLE corso(
 CREATE TABLE appello(
 	id_appello int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	data date DEFAULT NULL,
-	nota text DEFAULT NULL
+	pubblicato_da int NOT NULL,
+	pub_data date NOT NULL,
+	teleconferenza varchar(50) DEFAULT NULL,
+	nota text DEFAULT NULL,
+	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola)
 )AUTO_INCREMENT=30000;
 
 CREATE TABLE dipartimento(
 	id_dipartimento int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	nome varchar(50) DEFAULT NULL
 )AUTO_INCREMENT=40000;
+
+CREATE TABLE aula(
+	id_aula int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	nome varchar(50) NOT NULL
+)AUTO_INCREMENT=50000;
+
+CREATE TABLE prenotazione_aula_giorno(
+	id_aula int NOT NULL,
+	id_appello int NOT NULL,
+	personale int NOT NULL,
+	FOREIGN KEY (id_aula) REFERENCES aula(id_aula),
+	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
+	FOREIGN KEY (personale ) REFERENCES utente(matricola),
+	PRIMARY KEY (id_aula, id_appello)
+);
 
 CREATE TABLE docente_dipartimento(
 	id_dipartimento int NOT NULL,
@@ -47,10 +66,14 @@ CREATE TABLE appello_docente(
 );*/
 
 CREATE TABLE domandatesi(
-	matricola int NOT NULL,
+	matricola int NOT NULL PRIMARY KEY,
+	relatore int NOT NULL,
 	data date NOT NULL,
 	id_corso int NOT NULL,
+	repository varchar(50) DEFAULT NULL,
+	approvato boolean DEFAULT 0,
 	FOREIGN KEY (matricola) REFERENCES utente(matricola),
+	FOREIGN KEY (relatore) REFERENCES utente(matricola),
 	FOREIGN KEY (id_corso) REFERENCES corso(id_corso)
 );
 
@@ -101,6 +124,19 @@ VALUES("Dipartimento di Medicina Sperimentale e Clinica"),
 ("Dipartimento di Ingegneria dell'Informazione"), 
 ("Dipartimento di Ingegneria Industriale"), 
 ("Dipartimento di Biologia");
+
+-- popolamento aula
+INSERT INTO aula (nome)
+VALUES("Aula 101"), 
+("Aula 102"), 
+("Aula 103"), 
+("Aula 104"),
+("Aula 105"),
+("Aula 106"),
+("Aula 107"),
+("Aula 108"),
+("Aula 109"),
+("Aula 110");
 
 -- docente-dipartimento
 INSERT INTO docente_dipartimento (id_dipartimento, matricola)
