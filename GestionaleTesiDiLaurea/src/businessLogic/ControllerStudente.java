@@ -36,34 +36,31 @@ public class ControllerStudente {
 		return null;
 	}
 	
-	public String getStatusTesi() {
-		String s = "";
+	public ArrayList<Pair<Integer, String>> getDocentiFromDB() {
 		if(Database.getInstance().isConnected()) {
-			studente.setStatusTesi(Database.getInstance().getStatusTesi(studente.getMatricolaInt()));
-			switch(studente.getStatusTesi()) {
-				case 0:
-					s = "Non hai ancora prensetato nessuna domanda";
-					break;
-				case 1:
-					s = "Hai presentato la domanda per la tesi.\n"
-							+ "Attenta la conferma da parte del tuo relatore e l'assegnazione all'appello.";
-					break;
-				case 2:
-					break;
-				default:
-					s = "Errore";
-			}		
+			return Database.getInstance().getDocenti();
 		}else {
 			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
 		}
-		return s;
+		return null;
 	}
 	
-	public boolean iscrizione(int id_corso) {
+	public String getStatusTesi() {
+		Pair<Integer, String> status = Pair.of(-1, "");
+		if(Database.getInstance().isConnected()) {
+			status = Database.getInstance().getStatusTesi(studente.getMatricolaInt());
+			studente.setStatusTesi(status.first);	
+		}else {
+			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return status.second;
+	}
+	
+	public boolean iscrizione(int id_corso, int matricola_relatore) {
 		LocalDate today = LocalDate.now();
 		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().iscrizioneTesi(studente, data, id_corso);
+			Database.getInstance().iscrizioneTesi(studente, data, id_corso, matricola_relatore);
 			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Iscrizione e' avvenuta con successo!");
 			return true;
 		}else {

@@ -25,6 +25,16 @@ public class ControllerResponsabile {
 		return responsabile;
 	}
 	
+	public AppelloTesi getAppelloFromDB(int id_appello) {
+		AppelloTesi appello = null;
+		if (Database.getInstance().isConnected()) {
+			appello = Database.getInstance().getAppello(id_appello);
+		} else {
+			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return appello;
+	}
+	
 	public AppelloTesi[] getAppelliFromDB() {
 		AppelloTesi[] appelli = null;
 		if (Database.getInstance().isConnected()) {

@@ -29,8 +29,10 @@ import org.eclipse.swt.custom.ScrolledComposite;
 public class ViewResponsabile {
 	private ControllerResponsabile controllerResponsabile;
 	private Shell responsabileShell;
-	private Composite compositeListaAppelli;
 	
+	private ScrolledComposite scrolledCompositeListaAppelli;
+	private Label lblId;
+	private Label lblData;
 	public ViewResponsabile(ControllerResponsabile cr) {
 		this.controllerResponsabile = cr;
 	}
@@ -67,24 +69,7 @@ public class ViewResponsabile {
 		Composite compositeMenu = new Composite(responsabileShell, SWT.BORDER);
 		compositeMenu.setBounds(20, 127, 345, 322);
 		
-		ScrolledComposite scrolledCompositeListaAppelli = new ScrolledComposite(responsabileShell, SWT.BORDER | SWT.V_SCROLL);
-		scrolledCompositeListaAppelli.setBounds(20, 152, 345, 297);
-		scrolledCompositeListaAppelli.setExpandVertical(true);
-		compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
-		compositeListaAppelli.setBounds(20, 152, 345, 322);
-		
-		Label lblId = new Label(responsabileShell, SWT.NONE);
-		lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-		lblId.setAlignment(SWT.CENTER);
-		lblId.setBounds(40, 126, 50, 15);
-		lblId.setText("ID");
-		
-		Label lblData = new Label(responsabileShell, SWT.NONE);
-		lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-		lblData.setAlignment(SWT.CENTER);
-		lblData.setBounds(100, 126, 100, 15);
-		lblData.setText("Data");
-		
+
 		Button btnCreaAppello = new Button(compositeMenu, SWT.NONE);
 		btnCreaAppello.setBounds(70, 80, 200, 30);
 		btnCreaAppello.addMouseListener(new MouseAdapter() {
@@ -101,7 +86,23 @@ public class ViewResponsabile {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				compositeMenu.setVisible(false);
-				compositeListaAppelli.setVisible(true);
+				scrolledCompositeListaAppelli = new ScrolledComposite(responsabileShell, SWT.BORDER | SWT.V_SCROLL);
+				scrolledCompositeListaAppelli.setBounds(20, 152, 345, 297);
+				scrolledCompositeListaAppelli.setExpandVertical(true);
+				Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
+				compositeListaAppelli.setBounds(20, 152, 345, 322);
+				
+				lblId = new Label(responsabileShell, SWT.NONE);
+				lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+				lblId.setAlignment(SWT.CENTER);
+				lblId.setBounds(40, 126, 50, 15);
+				lblId.setText("ID");
+				
+				lblData = new Label(responsabileShell, SWT.NONE);
+				lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+				lblData.setAlignment(SWT.CENTER);
+				lblData.setBounds(100, 126, 100, 15);
+				lblData.setText("Data");
 				visualizzaListaAppelli(compositeListaAppelli);
 				scrolledCompositeListaAppelli.setContent(compositeListaAppelli);
 				scrolledCompositeListaAppelli.setMinSize(compositeListaAppelli.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -118,7 +119,7 @@ public class ViewResponsabile {
 				cl.run();
 			}
 		});
-		btnLogOut.setBounds(70, 160, 200, 30);
+		btnLogOut.setBounds(70, 278, 200, 30);
 		btnLogOut.setText("Log out");
 		
 		Button btnIndietro = new Button(responsabileShell, SWT.NONE);
@@ -126,10 +127,9 @@ public class ViewResponsabile {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				compositeMenu.setVisible(true);
-				compositeListaAppelli.setVisible(false);
-				compositeListaAppelli.dispose();
-				compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
-				compositeListaAppelli.setBounds(20, 152, 540, 385);
+				scrolledCompositeListaAppelli.dispose();
+				lblId.dispose();
+				lblData.dispose();
 			}
 		});
 		btnIndietro.setBounds(290, 127, 75, 25);
@@ -155,37 +155,36 @@ public class ViewResponsabile {
 	public void visualizzaListaAppelli(Composite c) {
 		AppelloTesi[] appelli = controllerResponsabile.getAppelliFromDB();
 		int offset_y = 10;
-		boolean skip = true;
 		for(AppelloTesi a : appelli) {
 			Label lblId = new Label(c, SWT.NONE);
 			lblId.setAlignment(SWT.CENTER);
 			lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-			lblId.setBounds(10, offset_y, 60, 25);
+			lblId.setBounds(10, offset_y+3, 60, 25);
 			lblId.setText(a.getId()+"");
 			
 			Label lblData = new Label(c, SWT.NONE);
 			lblData.setAlignment(SWT.CENTER);
 			lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-			lblData.setBounds(90, offset_y, 80, 25);
-			lblData.setText(a.getData());
+			lblData.setBounds(90, offset_y+3, 80, 25);
+			lblData.setText(a.getDataString());
 			
 			Button btnDettaglio = new Button(c, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					ControllerAppello ca = new ControllerAppello(a, responsabileShell, controllerResponsabile.getResponsabile().getMatricola());
+					AppelloTesi appello = controllerResponsabile.getAppelloFromDB(a.getId());
+					ControllerAppello ca = new ControllerAppello(appello, responsabileShell, 
+							controllerResponsabile.getResponsabile().getMatricola(),
+							Utils.getRuolo(controllerResponsabile.getResponsabile()));
 					ca.run();
 				}
 			});
 			btnDettaglio.setBounds(230, offset_y, 75, 25);
 			btnDettaglio.setText("Dettaglio");
 			
-			if(!skip) {
-				Label lblSeperator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
-				lblSeperator.setBounds(10, offset_y - 5, 325, 2);
-			}
+			Label lblSeperator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
+			lblSeperator.setBounds(10, offset_y - 5, 325, 2);
 			
-			skip = false;
 			offset_y = offset_y + 35;
 		}
 	}

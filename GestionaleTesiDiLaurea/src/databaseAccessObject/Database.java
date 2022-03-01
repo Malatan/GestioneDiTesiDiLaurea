@@ -63,13 +63,13 @@ public class Database {
 	public Boolean isConnected() {
 		try {
 			if(DriverManager.getConnection(connectionString) != null) {
-				Console.print("Connessione al db con successo", "db");
+				//Console.print("Connessione al db con successo", "db");
 				return true;
 			}
 			else
 				return false;
 		} catch (SQLException e) {
-			Console.print("Connessione al db fallita", "db");
+			//Console.print("Connessione al db fallita", "db");
 			e.printStackTrace();
 			return false;
 		}
@@ -100,34 +100,54 @@ public class Database {
 	/*0 = non e' presenta la domanda, 
 	  1 = e' presente la domanda ma non ancora in appello,
 	  2 = e' stato assegnato ad un appello*/
-	public int getStatusTesi(int matricola) {
+	public Pair<Integer, String> getStatusTesi(int matricola) {
 		Connection connection = null;
+		int status = -1;
+		String s = "";
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT * FROM DOMANDATESI WHERE MATRICOLA = " + matricola;
+			String query = "SELECT d.id_corso, c.nome as nome_corso, d.relatore, u.nome as relatore_nome, "
+					+ "u.cognome as relatore_cognome, d.data, d.repository, d.approvato "
+					+ "FROM domandatesi d, corso c, utente u "
+					+ "where d.id_corso = c.id_corso and d.relatore = u.matricola and d.matricola = " + matricola;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
-				return 1;
+				s = "Hai presentato la domanda di tesi per il corso " + rs.getString("nome_corso") + ".\n"
+						+ "Il relatore della tesi: " + rs.getString("relatore_nome") + " " + rs.getString("relatore_cognome") + ".\n"
+						+ "Data domanda tesi: " + rs.getString("data") + ".\n";
+				if(rs.getString("repository") == null || rs.getString("repository").equals("")) {
+					s += "Repository Tesi: Inserisci il link del tuo repository di tesi.\n";
+				} else {
+					s += "Repository Tesi: " + rs.getString("repository") + ".\n";
+				}
+				if(!rs.getBoolean("approvato")) {
+					s += "Attenta l'approvazione da parte del relatore.";
+				} else {
+					s += "Domanda approvata. Attenta l'assegnazione all'appello.";
+				}
+				status = 1;
 			} else {
-				return 0;
+				s = "Non hai ancora prensetato nessuna domanda";
+				status = 0;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
-		return 0;
+		return Pair.of(status, s);
 	}
 	
-	public void iscrizioneTesi(Studente studente, String data, int id_corso) {
+	public void iscrizioneTesi(Studente studente, String data, int id_corso, int matricola_relatore) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "insert into domandatesi (matricola, data, id_corso) values (?,?,?)";
+			String query = "insert into domandatesi (matricola, relatore, data, id_corso) values (?,?,?,?)";
 			PreparedStatement prepared = connection.prepareStatement(query);
 			prepared.setInt(1, studente.getMatricolaInt());
-			prepared.setString(2, data);
-			prepared.setInt(3, id_corso);
+			prepared.setInt(2, matricola_relatore);
+			prepared.setString(3, data);
+			prepared.setInt(4, id_corso);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -150,15 +170,16 @@ public class Database {
 		} 
 	}
 	
-	public boolean prenotaAula(String data, int id_aula, String matricola) {
+	public boolean prenotaAula(String data, int id_aula, int id_appello, String matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "INSERT INTO prenotazione_aula_giorno (id_aula, data, personale) VALUES(?,?,?)";
+			String query = "INSERT INTO prenotazione_aula_giorno (id_aula, id_appello, data, personale) VALUES(?,?,?,?)";
 			PreparedStatement prepared = connection.prepareStatement(query);
 			prepared.setInt(1, id_aula);
-			prepared.setString(2, data);
-			prepared.setInt(3, Integer.parseInt(matricola));
+			prepared.setInt(2, id_appello);
+			prepared.setString(3, data);
+			prepared.setInt(4, Integer.parseInt(matricola));
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
 		} catch (SQLException e) {
@@ -180,6 +201,19 @@ public class Database {
 		} 
 	}
 	
+	public void addLinkTele(String link, int id_appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "UPDATE appello SET teleconferenza = '" + link + "' WHERE id_appello = " + id_appello;
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public String getRepository(String matricola) {
 		Connection connection = null;
 		String s = "";
@@ -191,7 +225,24 @@ public class Database {
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
 				s = rs.getString("repository");
-				System.out.println(s);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+	
+	public String getLinkTele(int id_appello) {
+		Connection connection = null;
+		String s = "";
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT teleconferenza FROM appello WHERE id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				s = rs.getString("teleconferenza");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -218,12 +269,32 @@ public class Database {
 		return true;
 	}
 	
+	public AppelloTesi getAppello(int id_appello) {
+		Connection connection = null;
+		AppelloTesi appello = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT * FROM appello where id_appello = " + id_appello;
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				appello = new AppelloTesi(
+						rs.getInt("id_appello"), rs.getString("data"), -1, null, 
+						rs.getString("teleconferenza"), rs.getString("nota"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appello;
+	}
+	
 	public AppelloTesi[] getAppelli() {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT * from appello";
+			String query = "SELECT id_appello, data from appello";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			rs.last();
@@ -232,9 +303,7 @@ public class Database {
 			AppelloTesi[] appelli = new AppelloTesi[rowsCount];
 			int index = 0;
 			while (rs.next()) {
-				appelli[index] = new AppelloTesi(rs.getInt("id_appello"),
-						rs.getString("data"),
-						rs.getString("nota"));
+				appelli[index] = new AppelloTesi(rs.getInt("id_appello"), rs.getString("data"), -1, null, null, null);
 				index++;
 			}
 			connection.close();
@@ -288,7 +357,27 @@ public class Database {
 		}
 		return corsi;
 	}
-
+	
+	public ArrayList<Pair<Integer, String>> getDocenti() {
+		Connection connection = null;
+		ArrayList<Pair<Integer, String>> docenti = new ArrayList<Pair<Integer, String>>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT matricola, nome, cognome FROM utente where ruolo = 4";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				docenti.add(Pair.of(rs.getInt("matricola"), 
+									rs.getString("nome") + " " + rs.getString("cognome"))
+				);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return docenti;
+	}
+	
 	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
 		Connection connection = null;
 		try {

@@ -9,9 +9,6 @@ import databaseAccessObject.Database;
 
 public class ControllerLogin {
 	private ViewLogin viewLogin;
-	private ControllerDocente controllerDocente;
-	private ControllerPresidenteCorso controllerPresidenteCorso;
-	private ControllerPresidenteScuola controllerPresidenteScuola;
 	
 	public ControllerLogin() {
 		viewLogin = new ViewLogin(this);
@@ -26,7 +23,6 @@ public class ControllerLogin {
 				if(info != null) {
 					Console.print("Utente matricola: " + matricola.getText() + " password: " + password.getText() + " loggato", "app");
 					viewLogin.close();
-					controllerDocente = new ControllerDocente(info[0],info[1],info[3]);
 					switch(Integer.parseInt(info[2])) {
 						case 0:					
 							ControllerStudente controllerStudente = new ControllerStudente(info[0],info[1],info[3]);
@@ -37,21 +33,16 @@ public class ControllerLogin {
 							controllerResponsabile.run();
 							break;
 						case 2:
-							controllerPresidenteScuola = new ControllerPresidenteScuola(info[0],info[1],info[3]);
+							ControllerPresidenteScuola controllerPresidenteScuola = new ControllerPresidenteScuola(info[0],info[1],info[3]);
 							controllerPresidenteScuola.showPresidenteScuolaWidget();
 							break;
 						case 3:
-							controllerPresidenteCorso = new ControllerPresidenteCorso(info[0],info[1],info[3]);
+							ControllerPresidenteCorso controllerPresidenteCorso = new ControllerPresidenteCorso(info[0],info[1],info[3]);
 							controllerPresidenteCorso.showPresidenteCorsoWidget();
 							break;
-						case 4:					
-							controllerDocente.showRelatoreWidget();
-							break;
-						case 5:
-							controllerDocente.showMembroCommissioneWidget();
-							break;
-						case 6:
-							controllerDocente.showPresidenteCommissioneWidget();
+						case 4:		
+							ControllerDocente controllerDocente = new ControllerDocente(info[0],info[1],info[3]);
+							controllerDocente.run();
 							break;
 					}
 				}else {
