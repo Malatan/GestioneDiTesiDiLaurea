@@ -12,7 +12,7 @@ public class ControllerPresidenteCorso {
 		viewPresidenteCorso = new ViewPresidenteCorso(this);
 	}
 
-	public void showPresidenteCorsoWidget() {
+	public void run() {
 		viewPresidenteCorso.createAndRun();
 		
 	}

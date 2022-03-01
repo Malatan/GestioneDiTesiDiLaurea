@@ -34,11 +34,11 @@ public class ControllerLogin {
 							break;
 						case 2:
 							ControllerPresidenteScuola controllerPresidenteScuola = new ControllerPresidenteScuola(info[0],info[1],info[3]);
-							controllerPresidenteScuola.showPresidenteScuolaWidget();
+							controllerPresidenteScuola.run();
 							break;
 						case 3:
 							ControllerPresidenteCorso controllerPresidenteCorso = new ControllerPresidenteCorso(info[0],info[1],info[3]);
-							controllerPresidenteCorso.showPresidenteCorsoWidget();
+							controllerPresidenteCorso.run();
 							break;
 						case 4:		
 							ControllerDocente controllerDocente = new ControllerDocente(info[0],info[1],info[3]);

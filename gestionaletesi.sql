@@ -9,7 +9,7 @@ CREATE TABLE utente(
 	nome varchar(50) NOT NULL,
 	cognome varchar(50) DEFAULT NULL,
 	password  varchar(50) NOT NULL,
-	ruolo int not NULL
+	ruolo int not NULL COMMENT '0 = studente, 1 = responsabile, 2 = presidente scuola, 3 = presidente corso, 4 = docente'
 )AUTO_INCREMENT=10000;
 
 CREATE TABLE corso(

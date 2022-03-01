@@ -35,6 +35,7 @@ public class ViewStudente {
 	private Button btnRitira;
 	private Button btnAddRepo;
 	private Button btnAppello;
+	private Composite compositeUserInfo_1;
 	public ViewStudente(ControllerStudente cs) {
 		this.controllerStudente = cs;
 	}
@@ -61,6 +62,13 @@ public class ViewStudente {
 		}
 	}
 	
+	public void creazioneRitiraDomandaDialog() {
+		if(Utils.createYesNoDialog(studenteShell, "Conferma", "Confermi di volerti ritirare dall'appello?")) {
+			controllerStudente.ritiraDomanda();
+			aggiornaPagina();
+		}
+	}
+	
 	/**
 	 * @wbp.parser.entryPoint
 	 */
@@ -68,12 +76,12 @@ public class ViewStudente {
 		Studente studente = controllerStudente.getStudente();
 		Display display = Display.getDefault();
 		studenteShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		studenteShell.setSize(400, 500);
+		studenteShell.setSize(400, 567);
 		studenteShell.setText("Gestionale di tesi di laurea - Studente");
 		Utils.setShellToCenterMonitor(studenteShell, display);
 		
 		Composite compositeUserInfo = new Composite(studenteShell, SWT.BORDER);
-		compositeUserInfo.setBounds(20, 22, 340, 80);
+		compositeUserInfo.setBounds(20, 10, 340, 80);
 
 		Label lblMatricola = new Label(compositeUserInfo, SWT.NONE);
 		lblMatricola.setBounds(10, 10, 200, 15);
@@ -89,44 +97,52 @@ public class ViewStudente {
 		
 		textStatusTesi = new Text(studenteShell, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		textStatusTesi.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
-		textStatusTesi.setBounds(20, 121, 340, 150);
+		textStatusTesi.setBounds(20, 119, 340, 150);
 		
-		btnIscrizione = new Button(studenteShell, SWT.NONE);
+		compositeUserInfo_1 = new Composite(studenteShell, SWT.BORDER);
+		compositeUserInfo_1.setBounds(20, 298, 340, 218);
+		
+		btnIscrizione = new Button(compositeUserInfo_1, SWT.NONE);
+		btnIscrizione.setLocation(62, 15);
+		btnIscrizione.setSize(200, 25);
 		btnIscrizione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				sceglieCorsoDialog();
 			}
 		});
-		btnIscrizione.setBounds(90, 277, 200, 25);
 		btnIscrizione.setText("Iscrizione Tesi");
 		
-		btnRitira = new Button(studenteShell, SWT.NONE);
+		btnRitira = new Button(compositeUserInfo_1, SWT.NONE);
+		btnRitira.setLocation(63, 55);
+		btnRitira.setSize(200, 25);
 		btnRitira.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				controllerStudente.ritiraDomanda();
-				aggiornaPagina();
+				creazioneRitiraDomandaDialog();
 			}
 		});
-		btnRitira.setBounds(90, 308, 200, 25);
 		btnRitira.setText("Ritira domanda");
 		
-		btnAddRepo = new Button(studenteShell, SWT.NONE);
+		btnAddRepo = new Button(compositeUserInfo_1, SWT.NONE);
+		btnAddRepo.setLocation(63, 95);
+		btnAddRepo.setSize(200, 25);
 		btnAddRepo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				addRepoDialog();
 			}
 		});
-		btnAddRepo.setBounds(90, 339, 200, 25);
 		btnAddRepo.setText("Repository tesi");
 		
-		btnAppello = new Button(studenteShell, SWT.NONE);
-		btnAppello.setBounds(90, 370, 200, 25);
+		btnAppello = new Button(compositeUserInfo_1, SWT.NONE);
+		btnAppello.setLocation(63, 135);
+		btnAppello.setSize(200, 25);
 		btnAppello.setText("Visualizza Appello");
 		
-		Button btnLogOut = new Button(studenteShell, SWT.NONE);
+		Button btnLogOut = new Button(compositeUserInfo_1, SWT.NONE);
+		btnLogOut.setLocation(63, 175);
+		btnLogOut.setSize(200, 25);
 		btnLogOut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -136,7 +152,6 @@ public class ViewStudente {
 				cl.run();
 			}
 		});
-		btnLogOut.setBounds(90, 425, 200, 25);
 		btnLogOut.setText("Log out");
 		
 		aggiornaPagina();

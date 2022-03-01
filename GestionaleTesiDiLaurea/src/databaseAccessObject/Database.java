@@ -123,7 +123,7 @@ public class Database {
 					s += "Repository Tesi: " + rs.getString("repository") + ".\n";
 				}
 				if(!rs.getBoolean("approvato")) {
-					s += "Attenta l'approvazione da parte del relatore.";
+					s += "Attendi l'approvazione da parte del relatore.";
 				} else {
 					s += "Domanda approvata. Attenta l'assegnazione all'appello.";
 				}
