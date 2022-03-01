@@ -188,6 +188,19 @@ public class Database {
 		return true;
 	}
 	
+	public void approvaDomandaTesi(DomandaTesi domanda) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "UPDATE domandatesi SET approvato = 1 where matricola = " + domanda.getMatricolaStudente();
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public void addRepo(String file, String matricola) {
 		Connection connection = null;
 		try {

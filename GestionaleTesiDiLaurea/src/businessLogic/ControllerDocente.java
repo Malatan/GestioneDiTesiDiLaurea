@@ -35,8 +35,19 @@ public class ControllerDocente {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getDomandeTesi();
 		}else {
-			Utils.createConfirmDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
+	}
+	
+	public boolean approvaDomandaTesi(DomandaTesi domanda) {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().approvaDomandaTesi(domanda);
+			Utils.createConfirmDialog(viewDocente.getShell(), "Messaggio", "Domanda tesi approvata");
+			return true;
+		}else {
+			Utils.createErrorDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
 	}
 }

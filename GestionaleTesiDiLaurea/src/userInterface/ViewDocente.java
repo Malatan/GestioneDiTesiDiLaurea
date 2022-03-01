@@ -184,7 +184,7 @@ public class ViewDocente {
 			Text textRepository = new Text(c, SWT.NONE | SWT.READ_ONLY);
 			textRepository.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			textRepository.setBounds(430, offset_y+3, 130, 25);
-			textRepository.setText("www.gooooooooooooooooogle.it");
+			textRepository.setText(d.getRepository());
 			
 			Button btnApprova = new Button(c, SWT.NONE);
 			if (d.isApprovato()) {
@@ -195,7 +195,14 @@ public class ViewDocente {
 				btnApprova.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-						
+						if (textRepository.getText().equals("")) {
+							Utils.createWarningDialog(docenteShell, "Attenzione", "Repository tesi vuoto");
+						} else {
+							controllerDocente.approvaDomandaTesi(d);
+							btnApprova.setText("Domanda approvata");
+							btnApprova.setEnabled(false);
+							d.setApprovato(true);
+						}
 					}
 				});
 			}
