@@ -9,9 +9,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import businessLogic.ControllerLogin;
+import utils.Console;
 import utils.Utils;
 
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 
 public class ViewLogin {
 	private ControllerLogin controllerLogin;
@@ -35,6 +38,7 @@ public class ViewLogin {
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		loginShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
+
 		loginShell.setSize(509, 317);
 		loginShell.setText("Gestionale di tesi di laurea");
 		Utils.setShellToCenterMonitor(loginShell, display);
@@ -64,12 +68,38 @@ public class ViewLogin {
 		lblPassword.setText("Password");
 		
 		Label lblTitolo = new Label(loginShell, SWT.NONE);
+		lblTitolo.setAlignment(SWT.CENTER);
 		lblTitolo.setFont(SWTResourceManager.getFont("Segoe UI", 20, SWT.NORMAL));
-		lblTitolo.setBounds(72, 26, 347, 40);
-		lblTitolo.setText("Gestione Delle Tesi di Laurea");
+		lblTitolo.setBounds(0, 10, 493, 40);
+		lblTitolo.setText("Gestionale Di Tesi Di Laurea");
 		
-		textFieldMatricola.setText("10000");
+		textFieldMatricola.setText("10006");
 		textFieldPassword.setText("123");
+		
+		Label label = new Label(loginShell, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setBounds(0, 56, 493, 4);
+		
+		//PRESS ENTER TO LOGIN
+		textFieldMatricola.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				Console.print(String.valueOf(e.keyCode), "DEBUG");
+				if(e.keyCode==SWT.CR || e.keyCode==SWT.KEYPAD_CR) {
+					controllerLogin.checkLogin(textFieldMatricola, textFieldPassword);
+				}
+			}
+		});
+		
+		textFieldPassword.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				Console.print(String.valueOf(e.keyCode), "DEBUG");
+				if(e.keyCode==SWT.CR || e.keyCode==SWT.KEYPAD_CR) {
+					controllerLogin.checkLogin(textFieldMatricola, textFieldPassword);
+				}
+			}
+		});
+		
 		loginShell.open();
 		loginShell.layout();
 		while (!loginShell.isDisposed()) {

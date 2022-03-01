@@ -47,6 +47,7 @@ public class ViewStudente {
 	public void aggiornaPagina() {
 		textStatusTesi.setText(controllerStudente.getStatusTesi());
 		Studente studente = controllerStudente.getStudente();
+		Console.print("Status tesi: " + studente.getStatusTesi(),"DEBUG");
 		switch(studente.getStatusTesi()) {
 			case 0:
 				btnIscrizione.setEnabled(true);

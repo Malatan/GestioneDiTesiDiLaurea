@@ -9,7 +9,12 @@ public class ControllerPresidenteCorso {
 	private PresidenteCorso presidenteCorso;
 	
 	public ControllerPresidenteCorso(String matricola, String nome, String cognome) {
+		presidenteCorso = new PresidenteCorso(nome,cognome,matricola);
 		viewPresidenteCorso = new ViewPresidenteCorso(this);
+	}
+	
+	public PresidenteCorso getPresidenteCorso() {
+		return presidenteCorso;
 	}
 
 	public void run() {

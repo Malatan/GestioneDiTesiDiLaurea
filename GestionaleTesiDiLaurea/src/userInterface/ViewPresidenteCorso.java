@@ -25,11 +25,11 @@ public class ViewPresidenteCorso {
       
 			Display display = Display.getDefault();
 			presidenteCorsoShell = new Shell();
-			presidenteCorsoShell.setSize(760, 523);
+			presidenteCorsoShell.setSize(377, 325);
 			presidenteCorsoShell.setText("Gestionale di tesi di laurea");
 			
-			Composite composite = new Composite(presidenteCorsoShell, SWT.NONE);
-			composite.setBounds(20, 22, 281, 80);
+			Composite composite = new Composite(presidenteCorsoShell, SWT.BORDER);
+			composite.setBounds(10, 22, 341, 80);
 			
 			Label lblMatricola = new Label(composite, SWT.NONE);
 			lblMatricola.setBounds(10, 10, 55, 15);
@@ -43,10 +43,18 @@ public class ViewPresidenteCorso {
 			lblCognome.setBounds(10, 52, 55, 15);
 			lblCognome.setText("Cognome:");
 			
+			Composite composite_1 = new Composite(presidenteCorsoShell, SWT.BORDER);
+			composite_1.setBounds(10, 130, 341, 146);
 			
-			Button btnCreaAppello = new Button(presidenteCorsoShell, SWT.NONE);
-			btnCreaAppello.setBounds(276, 182, 158, 69);
-			btnCreaAppello.setText("ORGANIZZAZIONE");
+			
+			Button btnCreaAppello = new Button(composite_1, SWT.NONE);
+			btnCreaAppello.setLocation(10, 10);
+			btnCreaAppello.setSize(317, 25);
+			btnCreaAppello.setText("Visualizza Gli Appelli\r\n");
+			
+			Button btnLogout = new Button(composite_1, SWT.NONE);
+			btnLogout.setText("Logout");
+			btnLogout.setBounds(10, 107, 317, 25);
 			
 			presidenteCorsoShell.open();
 			presidenteCorsoShell.layout();

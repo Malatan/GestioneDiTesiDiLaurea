@@ -82,12 +82,12 @@ INSERT INTO utente (nome, cognome, password, ruolo)
 VALUES("Tizio", "Caio", 123, 0), 
 ("Riccardo", "Cremonesi", 123, 0), 
 ("Gianni", "Manfrin", 123, 1),
-("Raniero", "Calabrese", 123, 2), 
-("Libero", "Siciliano", 123, 3), 
-("Gofreddo", "Lombardi", 123, 3), 
-("Delfino", "Pirozzi", 123, 3), 
-("Brancaleone", "Lucciano", 123, 3), 
-("Biagio", "Bellucci", 123, 3), 
+("Raniero", "Calabrese", 123, 2), -- 10003 Presidente della scuola
+("Libero", "Siciliano", 123, 3), -- 10004 Presidente del corso di Biomedica 
+("Gofreddo", "Lombardi", 123, 3), -- 10005 Presidente del corso di Elettronica 
+("Delfino", "Pirozzi", 123, 3), -- 10006 Presidente del corso di Informatica 
+("Brancaleone", "Lucciano", 123, 3), -- 10007 Presidente del corso di Meccanica 
+("Biagio", "Bellucci", 123, 3), -- 10008 Presidente del corso di Edile 
 ("Liberato", "Zetticci", 123, 4), 
 ("Cristiano", "Calabresi", 123, 4), 
 ("Marino", "Lorenzo", 123, 4), 

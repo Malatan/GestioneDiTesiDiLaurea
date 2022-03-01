@@ -17,6 +17,7 @@ public class ControllerStudente {
 	public ControllerStudente(String matricola, String nome, String cognome) {
 		this.studente = new Studente(nome, cognome, matricola);
 		viewStudente = new ViewStudente(this);
+		
 	}
 	
 	public Studente getStudente() {

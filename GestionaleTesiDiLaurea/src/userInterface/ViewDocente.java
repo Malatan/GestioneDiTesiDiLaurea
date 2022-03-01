@@ -40,6 +40,7 @@ public class ViewDocente {
 		return this.docenteShell;
 	}
 	
+
 	/**
 	 * @wbp.parser.entryPoint
 	 */
@@ -66,7 +67,7 @@ public class ViewDocente {
 		lblCognome.setText("Cognome: " + controllerDocente.getDocente().getCognome());
 			
 		Composite compositeMenu = new Composite(docenteShell, SWT.BORDER);
-		compositeMenu.setBounds(20, 120, 711, 320);
+		compositeMenu.setBounds(20, 119, 711, 321);
 		
 		Button btnDomandeTesi = new Button(compositeMenu, SWT.NONE);
 		btnDomandeTesi.addMouseListener(new MouseAdapter() {
@@ -140,7 +141,7 @@ public class ViewDocente {
 				lblRepositoryLabel.dispose();
 			}
 		});
-		btnIndietro.setBounds(656, 121, 75, 25);
+		btnIndietro.setBounds(656, 118, 75, 25);
 		btnIndietro.setText("Indietro");
 		
 		docenteShell.open();
@@ -153,6 +154,7 @@ public class ViewDocente {
 		}
 	}
 	
+
 	public void visualizzaDomandeTesi(Composite c) {
 		ArrayList<DomandaTesi> domande = controllerDocente.getDomandeTesiFromDB();
 		int offset_y = 10;
@@ -196,12 +198,13 @@ public class ViewDocente {
 					@Override
 					public void mouseDown(MouseEvent e) {
 						if (textRepository.getText().equals("")) {
-							Utils.createWarningDialog(docenteShell, "Attenzione", "Repository tesi vuoto");
+							Utils.createWarningDialog(docenteShell, "Attenzione", "Impossibile approvare la tesi, lo studente non ha ancora inserito un repository tesi");
 						} else {
-							controllerDocente.approvaDomandaTesi(d);
-							btnApprova.setText("Domanda approvata");
-							btnApprova.setEnabled(false);
-							d.setApprovato(true);
+							if(controllerDocente.approvaDomandaTesi(d)) {
+								btnApprova.setText("Domanda approvata");
+								btnApprova.setEnabled(false);
+								d.setApprovato(true);
+							}
 						}
 					}
 				});

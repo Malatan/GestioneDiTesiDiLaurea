@@ -42,9 +42,13 @@ public class ControllerDocente {
 	
 	public boolean approvaDomandaTesi(DomandaTesi domanda) {
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().approvaDomandaTesi(domanda);
-			Utils.createConfirmDialog(viewDocente.getShell(), "Messaggio", "Domanda tesi approvata");
-			return true;
+			if(Utils.createYesNoDialog(viewDocente.getShell(), "Conferma", "Vuole confermare l'approvazione della domanda di tesi dello studente?")) {
+				Database.getInstance().approvaDomandaTesi(domanda);
+				Utils.createConfirmDialog(viewDocente.getShell(), "Messaggio", "Domanda di tesi approvata");
+				return true;
+			}
+
+			return false;
 		}else {
 			Utils.createErrorDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
 		}
