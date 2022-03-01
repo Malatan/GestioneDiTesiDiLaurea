@@ -11,6 +11,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
+import domainModel.Docente;
+import domainModel.Studente;
 import userInterface.ViewAppello;
 import utils.Console;
 import utils.Pair;
@@ -67,6 +69,25 @@ public class ControllerAppello {
 			return "";
 	}
 	
+	public ArrayList<Studente> getStudentiFromDB(){
+		ArrayList<Studente> studenti = null;
+		if (Database.getInstance().isConnected()) {
+			studenti = Database.getInstance().getStudenti();
+		} else {
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return studenti;
+	}
+	
+	public ArrayList<Pair<Integer,String>> getDocentiFromDB(){
+		ArrayList<Pair<Integer,String>> docenti = new ArrayList<Pair<Integer,String>>();
+		if (Database.getInstance().isConnected()) {
+			docenti = Database.getInstance().getDocenti();
+		} else {
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return docenti;
+	}
 	
 	public boolean addDateToAppello(String date) {
 		if(Database.getInstance().isConnected()) {

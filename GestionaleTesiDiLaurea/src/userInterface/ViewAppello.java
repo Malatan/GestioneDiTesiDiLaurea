@@ -12,9 +12,12 @@ import org.eclipse.swt.widgets.Text;
 
 import businessLogic.ControllerAppello;
 import domainModel.AppelloTesi;
+import domainModel.Docente;
+import domainModel.Studente;
 import utils.Pair;
 import utils.Utils;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -69,9 +72,6 @@ public class ViewAppello {
 		}
 	}
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		appelloShell = new Shell(parentShell, SWT.CLOSE | SWT.TITLE | SWT.APPLICATION_MODAL);
@@ -165,7 +165,7 @@ public class ViewAppello {
 		btnIdentificaMembri.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				aggiungereDataDialog();
+				scegliStudentiDocentiDialog();
 			}
 		});
 		btnIdentificaMembri.setBounds(136, 10, 120, 25);
@@ -175,7 +175,7 @@ public class ViewAppello {
 		btnNominaPresidente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				aggiungereDataDialog();
+				scegliStudentiDocentiDialog();
 			}
 		});
 		btnNominaPresidente.setBounds(262, 10, 120, 25);
@@ -367,6 +367,86 @@ public class ViewAppello {
 			}
 		});
 		btnNo.setBounds(125, 66, 75, 25);
+		btnNo.setText("Indietro");
+		child.open();
+	}
+	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
+	public void scegliStudentiDocentiDialog() {
+		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setSize(597, 269);
+		child.setText("Domanda Tesi");
+		Utils.setShellToCenterParent(child, appelloShell);
+		ArrayList<Studente> studenti = controllerAppello.getStudentiFromDB();
+		ArrayList<Pair<Integer,String>> docenti = controllerAppello.getDocentiFromDB();
+		
+		Label lblCorsoLabel = new Label(child, SWT.NONE);
+		lblCorsoLabel.setBounds(30, 28, 45, 15);
+		lblCorsoLabel.setText("Studenti:");
+		
+		Combo comboCorsi = new Combo(child, SWT.READ_ONLY);
+		comboCorsi.setBounds(92, 25, 160, 23);
+		for(int i = 0 ; i < studenti.size() ; i++) {
+			comboCorsi.add(studenti.get(i).getCognome() + " " + studenti.get(i).getNome());
+		}
+		
+		Label lblRelatoreLabel = new Label(child, SWT.NONE);
+		lblRelatoreLabel.setBounds(30, 68, 55, 15);
+		lblRelatoreLabel.setText("Docenti:");
+		
+		Combo comboDocenti = new Combo(child, SWT.READ_ONLY);
+		comboDocenti.setBounds(92, 65, 160, 23);
+		for(int i = 0 ; i < docenti.size() ; i++) {
+			comboDocenti.add(docenti.get(i).second);
+		}
+		
+		List list = new List(child, SWT.BORDER);
+		list.setBounds(289, 24, 282, 196);
+		
+		Button btnNewButton = new Button(child, SWT.NONE);
+		btnNewButton.setBounds(59, 117, 146, 25);
+		btnNewButton.setText("Aggiungi");
+		
+		Button btnYes = new Button(child, SWT.NONE);
+		btnYes.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (comboCorsi.getSelectionIndex() != -1 && comboDocenti.getSelectionIndex() != -1) {
+					int id_corso = 0;
+					int matricola_relatore = 0;
+					for(Studente p : studenti) {
+						if(comboCorsi.getText().equals(p.getCognome() + " " + p.getNome())) {
+							id_corso = Integer.valueOf(p.getMatricola());
+							break;
+						}
+					}
+					for(Pair<Integer, String> d : docenti) {
+						if(comboDocenti.getText().equals(d.second)) {
+							matricola_relatore = d.first;
+							break;
+						}
+					}
+					//if (controllerStudente.iscrizione(id_corso, matricola_relatore))
+					//	aggiornaPagina();
+					child.close();
+				} else {
+					Utils.createWarningDialog(child, "Messaggio", "Completa i campi vuoti!");
+				}
+			}
+		});
+		btnYes.setBounds(30, 195, 75, 25);
+		btnYes.setText("Conferma");
+	
+ 		Button btnNo = new Button(child, SWT.NONE);
+		btnNo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				child.close();
+			}
+		});
+		btnNo.setBounds(177, 195, 75, 25);
 		btnNo.setText("Indietro");
 		child.open();
 	}

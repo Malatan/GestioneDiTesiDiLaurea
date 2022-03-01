@@ -18,6 +18,9 @@ import businessLogic.ControllerLogin;
 import businessLogic.ControllerPresidenteCorso;
 import domainModel.AppelloTesi;
 import utils.Utils;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.List;
 
 public class ViewPresidenteCorso {
 	private ControllerPresidenteCorso controllerPresidenteCorso;
@@ -43,7 +46,7 @@ public class ViewPresidenteCorso {
 			Display display = Display.getDefault();
 			presidenteCorsoShell = new Shell();
 			presidenteCorsoShell.setSize(400, 500);
-			presidenteCorsoShell.setText("Gestionale di tesi di laurea");
+			presidenteCorsoShell.setText("Gestionale di tesi di laurea - Presidente del Corso");
 			Utils.setShellToCenterMonitor(presidenteCorsoShell, display);
 			
 			Composite composite = new Composite(presidenteCorsoShell, SWT.BORDER);
@@ -174,5 +177,4 @@ public class ViewPresidenteCorso {
 			offset_y = offset_y + 35;
 		}
 	}
-	
 }

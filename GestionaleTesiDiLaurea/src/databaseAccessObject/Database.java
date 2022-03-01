@@ -450,6 +450,33 @@ public class Database {
 		return dataAppello;
 	}
 	
+	public ArrayList<Studente> getStudenti(){
+		Connection connection = null;
+		ArrayList<Studente> studenti = new ArrayList<Studente>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT matricola, relatore, data, id_corso, repository, approvato data from domandatesi WHERE approvato = 1";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			
+
+			while (rs.next()) {
+				studenti.add(new Studente(rs.getString("nome"), rs.getString("cognome"), rs.getString("matricola")));
+			}
+			
+			connection.close();
+			return studenti;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		} 
+	}
+	
+	
 	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
 		Connection connection = null;
 		try {

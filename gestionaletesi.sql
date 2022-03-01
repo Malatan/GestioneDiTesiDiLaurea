@@ -56,14 +56,15 @@ CREATE TABLE docente_dipartimento(
 	FOREIGN KEY (matricola) REFERENCES utente(matricola)
 );
 
-/*
-CREATE TABLE appello_studente(
 
+CREATE TABLE appello_studentedocente(
+	id_appello int NOT NULL,
+	matricola int NOT NULL,
+	ruolo int DEFAULT 0 COMMENT '0 = Studente, 1 = Membro Della Commissione, 2 = Presidente della commissione',
+	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
+	FOREIGN KEY (matricola) REFERENCES utente(matricola),
+	PRIMARY KEY (id_appello, matricola)
 );
-
-CREATE TABLE appello_docente(
-
-);*/
 
 CREATE TABLE domandatesi(
 	matricola int NOT NULL PRIMARY KEY,
