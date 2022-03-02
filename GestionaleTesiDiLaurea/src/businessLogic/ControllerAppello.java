@@ -69,8 +69,8 @@ public class ControllerAppello {
 			return "";
 	}
 	
-	public ArrayList<Studente> getStudentiFromDB(){
-		ArrayList<Studente> studenti = null;
+	public ArrayList<Pair<Integer,String>> getStudentiFromDB(){
+		ArrayList<Pair<Integer,String>> studenti = new ArrayList<Pair<Integer,String>>();
 		if (Database.getInstance().isConnected()) {
 			studenti = Database.getInstance().getStudenti();
 		} else {

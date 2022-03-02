@@ -379,17 +379,17 @@ public class ViewAppello {
 		child.setSize(597, 269);
 		child.setText("Domanda Tesi");
 		Utils.setShellToCenterParent(child, appelloShell);
-		ArrayList<Studente> studenti = controllerAppello.getStudentiFromDB();
+		ArrayList<Pair<Integer,String>> studenti = controllerAppello.getStudentiFromDB();
 		ArrayList<Pair<Integer,String>> docenti = controllerAppello.getDocentiFromDB();
 		
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
 		lblCorsoLabel.setBounds(30, 28, 45, 15);
 		lblCorsoLabel.setText("Studenti:");
 		
-		Combo comboCorsi = new Combo(child, SWT.READ_ONLY);
-		comboCorsi.setBounds(92, 25, 160, 23);
+		Combo comboStudenti = new Combo(child, SWT.READ_ONLY);
+		comboStudenti.setBounds(92, 25, 160, 23);
 		for(int i = 0 ; i < studenti.size() ; i++) {
-			comboCorsi.add(studenti.get(i).getCognome() + " " + studenti.get(i).getNome());
+			comboStudenti.add(studenti.get(i).second);
 		}
 		
 		Label lblRelatoreLabel = new Label(child, SWT.NONE);
@@ -406,6 +406,48 @@ public class ViewAppello {
 		list.setBounds(289, 24, 282, 196);
 		
 		Button btnNewButton = new Button(child, SWT.NONE);
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			
+			private void setStudenti() {
+				if(!comboStudenti.getText().equals("")) {
+			        for(String element : list.getItems()) {
+			        	if(element.equals(comboStudenti.getText() + "(Studente)")) {
+			        		comboStudenti.deselectAll();
+			        		return;
+			        	}
+			        }
+			    
+					list.add(comboStudenti.getText() + "(Studente)");
+					comboStudenti.deselectAll();
+				}
+			}
+			
+			private void setDocenti() {
+				if(!comboDocenti.getText().equals("")) {
+			        for(String element : list.getItems()) {
+			        	if(element.equals(comboDocenti.getText() + "(Docente)")) {
+			        		comboDocenti.deselectAll();
+			        		return;
+			        	}
+			        }
+			    
+		        
+					list.add(comboDocenti.getText() + "(Docente)");
+					comboDocenti.deselectAll();
+		        }
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+				setStudenti();
+				setDocenti();
+
+				
+
+				
+			}
+		});
 		btnNewButton.setBounds(59, 117, 146, 25);
 		btnNewButton.setText("Aggiungi");
 		
@@ -413,18 +455,18 @@ public class ViewAppello {
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (comboCorsi.getSelectionIndex() != -1 && comboDocenti.getSelectionIndex() != -1) {
-					int id_corso = 0;
-					int matricola_relatore = 0;
-					for(Studente p : studenti) {
-						if(comboCorsi.getText().equals(p.getCognome() + " " + p.getNome())) {
-							id_corso = Integer.valueOf(p.getMatricola());
+				if (comboStudenti.getSelectionIndex() != -1 && comboDocenti.getSelectionIndex() != -1) {
+					int matricola = 0;
+					int matricola_docente = 0;
+					for(Pair<Integer, String> s : studenti) {
+						if(comboStudenti.getText().equals(s.second)) {
+							matricola = Integer.valueOf(s.first);
 							break;
 						}
 					}
 					for(Pair<Integer, String> d : docenti) {
 						if(comboDocenti.getText().equals(d.second)) {
-							matricola_relatore = d.first;
+							matricola_docente = d.first;
 							break;
 						}
 					}
