@@ -380,6 +380,7 @@ public class ViewAppello {
 		child.setText("Domanda Tesi");
 		Utils.setShellToCenterParent(child, appelloShell);
 		ArrayList<Pair<Integer,String>> studenti = controllerAppello.getStudentiFromDB();
+		ArrayList<Pair<Integer,String>> relatori = controllerAppello.getRelatoriFromDB();
 		ArrayList<Pair<Integer,String>> docenti = controllerAppello.getDocentiFromDB();
 		
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
@@ -392,12 +393,23 @@ public class ViewAppello {
 			comboStudenti.add(studenti.get(i).second);
 		}
 		
-		Label lblRelatoreLabel = new Label(child, SWT.NONE);
-		lblRelatoreLabel.setBounds(30, 68, 55, 15);
-		lblRelatoreLabel.setText("Docenti:");
+		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
+		lblRelatoreLabel_1.setText("Relatori:");
+		lblRelatoreLabel_1.setBounds(30, 67, 55, 15);
+		
+		Combo comboRelatori = new Combo(child, SWT.READ_ONLY);
+		comboRelatori.setBounds(92, 64, 160, 23);
+		
+		for(int i = 0 ; i < relatori.size() ; i++) {
+			comboRelatori.add(relatori.get(i).second);
+		}
+		
+		Label lblDocenti = new Label(child, SWT.NONE);
+		lblDocenti.setBounds(30, 108, 55, 15);
+		lblDocenti.setText("Docenti:");
 		
 		Combo comboDocenti = new Combo(child, SWT.READ_ONLY);
-		comboDocenti.setBounds(92, 65, 160, 23);
+		comboDocenti.setBounds(92, 105, 160, 23);
 		for(int i = 0 ; i < docenti.size() ; i++) {
 			comboDocenti.add(docenti.get(i).second);
 		}
@@ -448,7 +460,7 @@ public class ViewAppello {
 				
 			}
 		});
-		btnNewButton.setBounds(59, 117, 146, 25);
+		btnNewButton.setBounds(56, 145, 146, 25);
 		btnNewButton.setText("Aggiungi");
 		
 		Button btnYes = new Button(child, SWT.NONE);
@@ -458,6 +470,7 @@ public class ViewAppello {
 				if (comboStudenti.getSelectionIndex() != -1 && comboDocenti.getSelectionIndex() != -1) {
 					int matricola = 0;
 					int matricola_docente = 0;
+					int matricola_relatore = 0;
 					for(Pair<Integer, String> s : studenti) {
 						if(comboStudenti.getText().equals(s.second)) {
 							matricola = Integer.valueOf(s.first);
@@ -467,6 +480,13 @@ public class ViewAppello {
 					for(Pair<Integer, String> d : docenti) {
 						if(comboDocenti.getText().equals(d.second)) {
 							matricola_docente = d.first;
+							break;
+						}
+					}
+					
+					for(Pair<Integer, String> r : relatori) {
+						if(comboRelatori.getText().equals(r.second)) {
+							matricola_relatore = r.first;
 							break;
 						}
 					}
@@ -490,6 +510,8 @@ public class ViewAppello {
 		});
 		btnNo.setBounds(177, 195, 75, 25);
 		btnNo.setText("Indietro");
+		
+
 		child.open();
 	}
 }

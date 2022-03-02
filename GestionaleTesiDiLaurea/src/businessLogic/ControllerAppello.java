@@ -79,6 +79,16 @@ public class ControllerAppello {
 		return studenti;
 	}
 	
+	public ArrayList<Pair<Integer,String>> getRelatoriFromDB(){
+		ArrayList<Pair<Integer,String>> relatori = new ArrayList<Pair<Integer,String>>();
+		if (Database.getInstance().isConnected()) {
+			relatori = Database.getInstance().getRelatori();
+		} else {
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return relatori;
+	}
+	
 	public ArrayList<Pair<Integer,String>> getDocentiFromDB(){
 		ArrayList<Pair<Integer,String>> docenti = new ArrayList<Pair<Integer,String>>();
 		if (Database.getInstance().isConnected()) {

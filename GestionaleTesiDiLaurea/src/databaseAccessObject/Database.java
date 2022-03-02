@@ -450,6 +450,34 @@ public class Database {
 		return dataAppello;
 	}
 	
+	public ArrayList<Pair<Integer,String>> getRelatori(){
+		Connection connection = null;
+		ArrayList<Pair<Integer, String>> relatori = new ArrayList<Pair<Integer, String>>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut WHERE dt.approvato = 1 AND dt.relatore = ut.matricola";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			
+
+			while (rs.next()) {
+				relatori.add(
+						Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " +rs.getString("nome"))
+						);
+			}
+			
+			connection.close();
+			return relatori;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		} 
+	}
+	
 	public ArrayList<Pair<Integer,String>> getStudenti(){
 		Connection connection = null;
 		ArrayList<Pair<Integer, String>> studenti = new ArrayList<Pair<Integer, String>>();
