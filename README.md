@@ -1,4 +1,4 @@
-# GestioneDiTesiDiLaurea
+# GestionaleDiTesiDiLaurea
 Progetto Uni SWE
 
 Installazione Libs
