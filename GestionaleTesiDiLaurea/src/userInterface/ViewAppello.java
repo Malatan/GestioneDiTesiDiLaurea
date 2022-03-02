@@ -146,9 +146,9 @@ public class ViewAppello {
 			
 			
 		}
-		
-		membri.setText(membri.getText().substring(0, membri.getText().lastIndexOf(",")));
-
+		if(!membri.getText().isEmpty()) {
+			membri.setText(membri.getText().substring(0, membri.getText().lastIndexOf(",")));
+		}
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		

@@ -550,14 +550,16 @@ public class Database {
 		} 
 	}
 	
-	public ArrayList<Pair<Integer,String>> getStudenti(){
+	public ArrayList<Pair<Integer,String>> getMyStudenti(String matricola){
 		Connection connection = null;
 		ArrayList<Pair<Integer, String>> studenti = new ArrayList<Pair<Integer, String>>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut WHERE dt.approvato = 1 AND dt.matricola = ut.matricola "
-					+ "AND ut.matricola NOT IN( SELECT matricola FROM appello_studentedocente)";
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut"
+							+ " WHERE dt.approvato = 1 AND dt.matricola = ut.matricola"
+							+ " AND ut.matricola NOT IN (SELECT matricola FROM appello_studentedocente)"
+							+ " AND dt.id_corso = (SELECT id_corso FROM corso WHERE presidente = "+ matricola +")";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			

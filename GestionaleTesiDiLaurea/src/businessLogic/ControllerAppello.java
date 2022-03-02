@@ -94,7 +94,7 @@ public class ControllerAppello {
 	public ArrayList<Pair<Integer,String>> getStudentiFromDB(){
 		ArrayList<Pair<Integer,String>> studenti = new ArrayList<Pair<Integer,String>>();
 		if (Database.getInstance().isConnected()) {
-			studenti = Database.getInstance().getStudenti();
+			studenti = Database.getInstance().getMyStudenti(matricola);
 		} else {
 			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
 		}
