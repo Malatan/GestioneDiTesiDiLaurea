@@ -506,7 +506,7 @@ public class Database {
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
 				docenti.add(Pair.of(rs.getInt("matricola"), 
-									rs.getString("nome") + " " + rs.getString("cognome"))
+									rs.getString("cognome") + " " + rs.getString("nome"))
 				);
 			}
 		} catch (SQLException e) {
@@ -592,7 +592,7 @@ public class Database {
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut"
 							+ " WHERE dt.approvato = 1 AND dt.matricola = ut.matricola"
-							+ " AND ut.matricola NOT IN (SELECT matricola FROM appello_studentedocente)"
+			
 							+ " AND dt.id_corso = (SELECT id_corso FROM corso WHERE presidente = "+ matricola +")";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);

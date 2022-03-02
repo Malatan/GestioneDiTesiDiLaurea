@@ -484,7 +484,6 @@ public class ViewAppello {
 		
 		for(Pair<Integer,String> stList : studentiMembri) {
 			list.add(stList.second + "(Studente)");
-			countDocentiRelatori++;
 		}
 		
 		for(Pair<Integer,String> docList : docentiMembri) {
@@ -522,7 +521,7 @@ public class ViewAppello {
 			private void setDocenteRelatore(Combo combo, String name) {
 				if(!combo.getText().equals("")) {
 			        for(String element : list.getItems()) {
-			        	if(element.equals(combo.getText() + name)) {
+			        	if(element.equals(combo.getText() + name) || element.equals(combo.getText() +"(Relatore)") || element.equals(combo.getText() +"(Docente)")) {
 			        		combo.deselectAll();
 			        		return;
 			        	}
