@@ -484,33 +484,40 @@ public class ViewAppello {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (countDocentiRelatori >= 5) {
-					int matricola = 0;
-					int matricola_docente = 0;
-					int matricola_relatore = 0;
-					for(Pair<Integer, String> s : studenti) {
-						if(comboStudenti.getText().equals(s.second)) {
-							matricola = Integer.valueOf(s.first);
-							break;
+					ArrayList<Integer> matricoleStudenti = new ArrayList<Integer>();
+					ArrayList<Integer> matricoleDocentiRelatori = new ArrayList<Integer>();
+					
+					for(String text : list.getItems()) {
+						for(Pair<Integer, String> s : studenti) {
+							if(text.equals(s.second+"(Studente)")) {
+								Console.print("Aggiunto come studente nel membro di commissione " + s.second+"(Studente)", "APP");
+								matricoleStudenti.add(Integer.valueOf(s.first));
+								break;
+							}
 						}
-					}
-					for(Pair<Integer, String> d : docenti) {
-						if(comboDocenti.getText().equals(d.second)) {
-							matricola_docente = d.first;
-							break;
+						for(Pair<Integer, String> d : docenti) {
+							if(text.equals(d.second + "(Docente)")) {
+								Console.print("Aggiunto come docente nel membro di commissione " + d.second+"(Docente)", "APP");
+								matricoleDocentiRelatori.add(Integer.valueOf(d.first));
+								break;
+							}
+						}
+						
+						for(Pair<Integer, String> r : relatori) {
+							if(text.equals(r.second+"(Relatore)")) {
+								Console.print("Aggiunto come relatore nel membro di commissione " + r.second+"(Relatore)", "APP");
+								matricoleDocentiRelatori.add(Integer.valueOf(r.first));
+								break;
+							}
 						}
 					}
 					
-					for(Pair<Integer, String> r : relatori) {
-						if(comboRelatori.getText().equals(r.second)) {
-							matricola_relatore = r.first;
-							break;
-						}
-					}
-					//if (controllerStudente.iscrizione(id_corso, matricola_relatore))
-					//	aggiornaPagina();
+
+					if (controllerAppello.aggiungiStudentiDocentiToCommissione(controllerAppello.getAppello().getId(), matricoleStudenti, matricoleDocentiRelatori))
+						aggiornaPagina();
 					child.close();
 				} else {
-					Utils.createWarningDialog(child, "Messaggio", "Completa i campi vuoti!");
+					Utils.createWarningDialog(child, "Messaggio", "Devi inserire almeno 5 membri delle commissione");
 				}
 			}
 		});
@@ -531,7 +538,10 @@ public class ViewAppello {
 		btnRimuovi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
+				countDocentiRelatori -= list.getSelectionCount();
 				list.remove(list.getSelectionIndices());
+				
+				Console.print("Count docenti e relatori: " + countDocentiRelatori, "GUI");
 			}
 		});
 		btnRimuovi.setBounds(496, 234, 75, 25);

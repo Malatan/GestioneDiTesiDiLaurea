@@ -39,6 +39,17 @@ public class ControllerAppello {
 		viewAppello.createAndRun();
 	}
 	
+	public boolean aggiungiStudentiDocentiToCommissione(int id_appello, ArrayList<Integer> studenti, ArrayList<Integer> docentiRelatori) {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().aggiungiStudentiDocenti(id_appello, studenti, docentiRelatori);
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "I membri della commissione di tesi sono stati identificati correttamente!");
+			return true;
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
 	public void updateAppelloFromDB() {
 		if (Database.getInstance().isConnected()) {
 			appello = Database.getInstance().getAppello(appello.getId());

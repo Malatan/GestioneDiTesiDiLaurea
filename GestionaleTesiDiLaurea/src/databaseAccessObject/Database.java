@@ -214,6 +214,37 @@ public class Database {
 		} 
 	}
 	
+	public void aggiungiStudentiDocenti(int id_appello,ArrayList<Integer> studenti, ArrayList<Integer> docentiRelatori) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO appello_studentedocente (id_appello, matricola, ruolo) VALUES(?,?,?)";
+			
+			for(Integer matricolaStudente : studenti) {
+				PreparedStatement prepared = connection.prepareStatement(query);
+				prepared.setInt(1, id_appello);
+				prepared.setInt(2, matricolaStudente);
+				prepared.setInt(3, 0);
+
+				Console.print(prepared.toString(), "sql");
+				prepared.executeUpdate();
+			}
+			
+			for(Integer matricolaDocentiRelatori : docentiRelatori) {
+				PreparedStatement prepared = connection.prepareStatement(query);
+				prepared.setInt(1, id_appello);
+				prepared.setInt(2, matricolaDocentiRelatori);
+				prepared.setInt(3, 1);
+
+				Console.print(prepared.toString(), "sql");
+				prepared.executeUpdate();
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public void addLinkTele(String link, int id_appello) {
 		Connection connection = null;
 		try {
