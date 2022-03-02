@@ -18,8 +18,10 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 
+import businessLogic.ControllerAppello;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerStudente;
+import domainModel.AppelloTesi;
 import domainModel.Studente;
 import utils.Console;
 import utils.Pair;
@@ -137,6 +139,16 @@ public class ViewStudente {
 		btnAddRepo.setText("Repository tesi");
 		
 		btnAppello = new Button(compositeUserInfo_1, SWT.NONE);
+		btnAppello.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				AppelloTesi appello = controllerStudente.getAppello();
+				ControllerAppello ca = new ControllerAppello(appello, studenteShell, 
+						controllerStudente.getStudente().getMatricola(),
+						Utils.getRuolo(controllerStudente.getStudente()));
+				ca.run();
+			}
+		});
 		btnAppello.setLocation(63, 135);
 		btnAppello.setSize(200, 25);
 		btnAppello.setText("Visualizza Appello");

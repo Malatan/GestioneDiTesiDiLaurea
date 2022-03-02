@@ -399,6 +399,34 @@ public class Database {
 		return domande;
 	}
 	
+	public AppelloTesi getAppelloByMatricola(int matricola) {
+		Connection connection = null;
+		AppelloTesi appello = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT ap.id_appello, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
+					+ " FROM appello as ap INNER JOIN appello_studentedocente as aps ON aps.id_appello = aps.id_appello"
+					+ " LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
+					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula"
+					+ " WHERE aps.ruolo = 0"
+					+ " AND aps.matricola = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+								
+				appello = new AppelloTesi(
+						rs.getInt("id_appello"), rs.getString("data"), rs.getString("orario"), 
+						Pair.of(rs.getInt("id_aula"),rs.getString("aula")), 
+						rs.getString("teleconferenza"), rs.getString("nota"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appello;
+	}
+	
 	public AppelloTesi getAppello(int id_appello) {
 		Connection connection = null;
 		AppelloTesi appello = null;

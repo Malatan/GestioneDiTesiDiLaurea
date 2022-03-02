@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import databaseAccessObject.Database;
+import domainModel.AppelloTesi;
 import domainModel.Studente;
 import userInterface.ViewStudente;
 import utils.Pair;
@@ -40,6 +41,15 @@ public class ControllerStudente {
 	public ArrayList<Pair<Integer, String>> getDocentiFromDB() {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getDocenti();
+		}else {
+			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
+	}
+	
+	public AppelloTesi getAppello() {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getAppelloByMatricola(getStudente().getMatricolaInt());
 		}else {
 			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
 		}
