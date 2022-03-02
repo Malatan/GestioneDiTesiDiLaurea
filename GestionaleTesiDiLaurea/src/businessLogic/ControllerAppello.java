@@ -101,24 +101,34 @@ public class ControllerAppello {
 		return studenti;
 	}
 	
-	public String getPresidenteCommissioneFromDB(int id_appello){
-		String presidente = new String();
+	public Pair<Integer,String> getPresidenteCommissioneFromDB(){
+		Pair<Integer,String> presidente = null;
 		if (Database.getInstance().isConnected()) {
-			presidente = Database.getInstance().getPresidenteCommissione(id_appello);
+			presidente = Database.getInstance().getPresidenteCommissione(getAppello().getId());
 		} else {
 			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return presidente;
 	}
 	
-	public ArrayList<Pair<Integer,String>> getMembriFromCommissioneDB(int id_appello){
+	public ArrayList<Pair<Integer,String>> getMembriFromCommissioneDB(){
 		ArrayList<Pair<Integer,String>> membri = new ArrayList<Pair<Integer,String>>();
 		if (Database.getInstance().isConnected()) {
-			membri = Database.getInstance().getMembriCommissioneById(id_appello);
+			membri = Database.getInstance().getMembriCommissioneById(getAppello().getId());
 		} else {
 			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return membri;
+	}
+	
+	public ArrayList<Pair<Integer,String>> getStudentiFromAppelloDB(){
+		ArrayList<Pair<Integer,String>> studentiMembri = new ArrayList<Pair<Integer,String>>();
+		if (Database.getInstance().isConnected()) {
+			studentiMembri = Database.getInstance().getStudentiFromAppello(getAppello().getId());
+		} else {
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return studentiMembri;
 	}
 	
 	public ArrayList<Pair<Integer,String>> getRelatoriFromDB(){

@@ -80,14 +80,14 @@ public class ViewAppello {
 		
 		lblPresidenteDellaCommissione.setText("");
 		
-		String presidenteCognomeNome = controllerAppello.getPresidenteCommissioneFromDB(controllerAppello.getAppello().getId());
-		if(!presidenteCognomeNome.isEmpty()) {
-			lblPresidenteDellaCommissione.setText("Presidente della commissione: " + presidenteCognomeNome);
+		Pair<Integer,String> presidenteCognomeNome = controllerAppello.getPresidenteCommissioneFromDB();
+		if(presidenteCognomeNome != null && presidenteCognomeNome.second != null) {
+			lblPresidenteDellaCommissione.setText("Presidente della commissione: " + presidenteCognomeNome.second);
 		}else {
 			lblPresidenteDellaCommissione.setText("Presidente della commissione: "+ "INDEFINITO");
 		}
 		
-		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB(controllerAppello.getAppello().getId());
+		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB();
 		
 		if(!membriDellaCommissione.isEmpty()) {
 			membri.setText("");
@@ -442,6 +442,12 @@ public class ViewAppello {
 		ArrayList<Pair<Integer,String>> relatori = controllerAppello.getRelatoriFromDB();
 		ArrayList<Pair<Integer,String>> docenti = controllerAppello.getDocentiFromDB();
 		
+		ArrayList<Pair<Integer,String>> studentiMembri = controllerAppello.getStudentiFromAppelloDB();
+		ArrayList<Pair<Integer,String>> docentiMembri = controllerAppello.getMembriFromCommissioneDB();
+		Pair<Integer,String> presidenteMembro = controllerAppello.getPresidenteCommissioneFromDB();
+		
+		
+		
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
 		lblCorsoLabel.setBounds(30, 28, 45, 15);
 		lblCorsoLabel.setText("Studenti:");
@@ -475,6 +481,22 @@ public class ViewAppello {
 		
 		List list = new List(child, SWT.BORDER);
 		list.setBounds(289, 24, 282, 196);
+		
+		for(Pair<Integer,String> stList : studentiMembri) {
+			list.add(stList.second + "(Studente)");
+			countDocentiRelatori++;
+		}
+		
+		for(Pair<Integer,String> docList : docentiMembri) {
+			list.add(docList.second + "(Docente)");
+			countDocentiRelatori++;
+		}
+		
+		if(presidenteMembro != null && presidenteMembro.second != null) {
+			list.add(presidenteMembro.second + "(Docente)");
+			countDocentiRelatori++;
+		}
+		
 		
 		Button btnNewButton = new Button(child, SWT.NONE);
 		btnNewButton.addMouseListener(new MouseAdapter() {
@@ -611,7 +633,7 @@ public class ViewAppello {
 		child.setText("Identificazione Presidente di Commissione di tesi");
 		Utils.setShellToCenterParent(child, appelloShell);
 
-		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB(controllerAppello.getAppello().getId());
+		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB();
 		
 		
 		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
