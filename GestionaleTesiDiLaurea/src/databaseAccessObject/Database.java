@@ -125,7 +125,7 @@ public class Database {
 				if(!rs.getBoolean("approvato")) {
 					s += "Attendi l'approvazione da parte del relatore.";
 				} else {
-					s += "Domanda approvata. Attendi l'assegnazione all'appello.";
+					s += "Domanda approvata.";
 				}
 				status = 1;
 			} else {

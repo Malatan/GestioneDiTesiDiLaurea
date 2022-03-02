@@ -55,7 +55,6 @@ public class ViewStudente {
 				btnIscrizione.setEnabled(true);
 				btnRitira.setEnabled(false);
 				btnAddRepo.setEnabled(false);
-				btnAppello.setEnabled(false);
 				break;
 			case 1:
 				btnIscrizione.setEnabled(false);
@@ -143,10 +142,14 @@ public class ViewStudente {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				AppelloTesi appello = controllerStudente.getAppello();
-				ControllerAppello ca = new ControllerAppello(appello, studenteShell, 
+				if(appello != null) {
+					ControllerAppello ca = new ControllerAppello(appello, studenteShell, 
 						controllerStudente.getStudente().getMatricola(),
 						Utils.getRuolo(controllerStudente.getStudente()));
-				ca.run();
+					ca.run();
+				}else {
+					Utils.createWarningDialog(studenteShell, "Messaggio", "Non sei ancora stato assegnato a nessun appello.");
+				}
 			}
 		});
 		btnAppello.setLocation(63, 135);
