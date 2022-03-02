@@ -307,6 +307,26 @@ public class Database {
 		return s;
 	}
 	
+	public String getPresidenteCommissione(int id_appello) {
+		Connection connection = null;
+		String s = "";
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT ut.nome,ut.cognome,ut.matricola FROM appello_studentedocente aps, utente as ut WHERE aps.ruolo = 2 AND"
+					+ " aps.matricola = ut.matricola AND"
+					+ " aps.id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				s = new String(rs.getString("cognome")+ " " + rs.getString("nome"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+	
 	
 	public boolean aggiungeAppello(int matricola, String data) {
 		Connection connection = null;

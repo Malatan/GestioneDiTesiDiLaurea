@@ -2,33 +2,30 @@ package userInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import businessLogic.ControllerAppello;
 import domainModel.AppelloTesi;
-import domainModel.Docente;
-import domainModel.Studente;
 import utils.Console;
 import utils.Pair;
 import utils.Utils;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.DateTime;
 
 public class ViewAppello {
 	private ControllerAppello controllerAppello;
@@ -41,6 +38,7 @@ public class ViewAppello {
 	private Label lblOre;
 	private Label lblAula;
 	private Label lblLinkTele;
+	private Text membri;
 	public ViewAppello(Shell parent, ControllerAppello cr) {
 		this.controllerAppello = cr;
 		this.parentShell = parent;
@@ -77,6 +75,9 @@ public class ViewAppello {
 		}
 	}
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		appelloShell = new Shell(parentShell, SWT.CLOSE | SWT.TITLE | SWT.APPLICATION_MODAL);
@@ -92,7 +93,7 @@ public class ViewAppello {
 		Composite composite = new Composite(scrolledComposite, SWT.NONE);
 
 		Label lblDataLabel = new Label(composite, SWT.NONE);
-		lblDataLabel.setBounds(10, 10, 35, 15);
+		lblDataLabel.setBounds(10, 10, 441, 15);
 		lblDataLabel.setText("Data:");
 
 		lblData = new Label(composite, SWT.NONE);
@@ -100,7 +101,7 @@ public class ViewAppello {
 		lblData.setBounds(51, 10, 80, 15);
 
 		Label lblOreLabel = new Label(composite, SWT.NONE);
-		lblOreLabel.setBounds(10, 31, 35, 15);
+		lblOreLabel.setBounds(10, 31, 441, 15);
 		lblOreLabel.setText("Ore:");
 
 		lblOre = new Label(composite, SWT.NONE);
@@ -108,7 +109,7 @@ public class ViewAppello {
 		lblOre.setBounds(51, 31, 80, 15);
 
 		Label lblAulaLabel = new Label(composite, SWT.NONE);
-		lblAulaLabel.setBounds(10, 52, 35, 15);
+		lblAulaLabel.setBounds(10, 52, 441, 15);
 		lblAulaLabel.setText("Aula:");
 
 		lblAula = new Label(composite, SWT.NONE);
@@ -116,11 +117,37 @@ public class ViewAppello {
 		lblAula.setBounds(51, 52, 80, 15);
 		
 		Label lblLinkTeleLabel = new Label(composite, SWT.NONE);
-		lblLinkTeleLabel.setBounds(10, 73, 110, 15);
+		lblLinkTeleLabel.setBounds(10, 73, 441, 15);
 		lblLinkTeleLabel.setText("Link Teleconferenza:");
 		
 		lblLinkTele = new Label(composite, SWT.NONE);
 		lblLinkTele.setBounds(126, 73, 325, 15);
+		
+		
+		
+		Label lblMembriDellaCommissione = new Label(composite, SWT.NONE);
+		lblMembriDellaCommissione.setText("Membri della commissione:");
+		lblMembriDellaCommissione.setBounds(10, 115, 441, 15);
+		
+		Label lblPresidenteDellaCommissione = new Label(composite, SWT.NONE);
+		lblPresidenteDellaCommissione.setText("Presidente della commissione: " + controllerAppello.getPresidenteCommissioneFromDB(controllerAppello.getAppello().getId()));
+		lblPresidenteDellaCommissione.setBounds(10, 94, 441, 15);
+		
+		
+		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB(controllerAppello.getAppello().getId());
+		
+		membri = new Text(composite, SWT.BORDER);
+		membri.setEditable(false);
+		membri.setBounds(10, 136, 441, 65);
+		
+		for(Pair<Integer,String> membro : membriDellaCommissione) {
+			membri.setText(membri.getText()+membro.second);
+			membri.setText(membri.getText()+", ");
+			
+			
+		}
+		
+		membri.setText(membri.getText().substring(0, membri.getText().lastIndexOf(",")));
 
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -555,7 +582,7 @@ public class ViewAppello {
 		child.setText("Identificazione Presidente di Commissione di tesi");
 		Utils.setShellToCenterParent(child, appelloShell);
 
-		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getRelatoriFromCommissioneDB(controllerAppello.getAppello().getId());
+		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB(controllerAppello.getAppello().getId());
 		
 		
 		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);

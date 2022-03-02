@@ -101,7 +101,17 @@ public class ControllerAppello {
 		return studenti;
 	}
 	
-	public ArrayList<Pair<Integer,String>> getRelatoriFromCommissioneDB(int id_appello){
+	public String getPresidenteCommissioneFromDB(int id_appello){
+		String presidente = new String();
+		if (Database.getInstance().isConnected()) {
+			presidente = Database.getInstance().getPresidenteCommissione(id_appello);
+		} else {
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return presidente;
+	}
+	
+	public ArrayList<Pair<Integer,String>> getMembriFromCommissioneDB(int id_appello){
 		ArrayList<Pair<Integer,String>> membri = new ArrayList<Pair<Integer,String>>();
 		if (Database.getInstance().isConnected()) {
 			membri = Database.getInstance().getMembriCommissioneById(id_appello);
