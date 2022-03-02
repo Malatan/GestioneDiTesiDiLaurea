@@ -180,7 +180,7 @@ public class ViewAppello {
 		btnNominaPresidente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				scegliStudentiDocentiDialog();
+				scegliPresidenteCommissioneDialog();
 			}
 		});
 		btnNominaPresidente.setBounds(262, 10, 120, 25);
@@ -377,9 +377,6 @@ public class ViewAppello {
 	}
 	
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
 	public void scegliStudentiDocentiDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(597, 311);
@@ -546,6 +543,70 @@ public class ViewAppello {
 		});
 		btnRimuovi.setBounds(496, 234, 75, 25);
 		btnRimuovi.setText("Rimuovi");
+		
+
+		child.open();
+	}
+	
+
+	public void scegliPresidenteCommissioneDialog() {
+		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setSize(311, 150);
+		child.setText("Identificazione Presidente di Commissione di tesi");
+		Utils.setShellToCenterParent(child, appelloShell);
+
+		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getRelatoriFromCommissioneDB(controllerAppello.getAppello().getId());
+		
+		
+		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
+		lblRelatoreLabel_1.setText("Membri:");
+		lblRelatoreLabel_1.setBounds(30, 26, 55, 15);
+		
+		Combo comboMembri = new Combo(child, SWT.READ_ONLY);
+		comboMembri.setBounds(92, 23, 160, 23);
+		
+		for(int i = 0 ; i < membriDellaCommissione.size() ; i++) {
+			comboMembri.add(membriDellaCommissione.get(i).second);
+		}
+		
+
+		
+		Button btnYes = new Button(child, SWT.NONE);
+		btnYes.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				if (comboMembri.getSelectionIndex() != -1) {
+
+					int matricola = 0;
+					for(Pair<Integer, String> membro : membriDellaCommissione) {
+						if(comboMembri.getText().equals(membro.second)) {
+							matricola = membro.first;
+							break;
+						}
+					}
+
+					if (controllerAppello.aggiungiPresidenteCorsoToCommissione(controllerAppello.getAppello().getId(), matricola))
+						aggiornaPagina();
+					child.close();
+				} 
+				else {
+					Utils.createWarningDialog(child, "Messaggio", "Completa i campi vuoti!");
+				}
+			}
+		});
+		btnYes.setBounds(30, 69, 75, 25);
+		btnYes.setText("Conferma");
+	
+ 		Button btnNo = new Button(child, SWT.NONE);
+		btnNo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				child.close();
+			}
+		});
+		btnNo.setBounds(168, 69, 75, 25);
+		btnNo.setText("Indietro");
 		
 
 		child.open();

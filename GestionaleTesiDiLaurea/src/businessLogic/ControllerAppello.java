@@ -50,6 +50,17 @@ public class ControllerAppello {
 		return false;
 	}
 	
+	public boolean aggiungiPresidenteCorsoToCommissione(int id_appello, int matricola) {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().aggiungiPresidenteCorso(id_appello, matricola);
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Presidente di commissione di tesi aggiunto correttamente!");
+			return true;
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
 	public void updateAppelloFromDB() {
 		if (Database.getInstance().isConnected()) {
 			appello = Database.getInstance().getAppello(appello.getId());
@@ -88,6 +99,16 @@ public class ControllerAppello {
 			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return studenti;
+	}
+	
+	public ArrayList<Pair<Integer,String>> getRelatoriFromCommissioneDB(int id_appello){
+		ArrayList<Pair<Integer,String>> membri = new ArrayList<Pair<Integer,String>>();
+		if (Database.getInstance().isConnected()) {
+			membri = Database.getInstance().getMembriCommissioneById(id_appello);
+		} else {
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return membri;
 	}
 	
 	public ArrayList<Pair<Integer,String>> getRelatoriFromDB(){

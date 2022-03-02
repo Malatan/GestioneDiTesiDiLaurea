@@ -509,13 +509,35 @@ public class Database {
 		} 
 	}
 	
+	public void aggiungiPresidenteCorso(int id_appello, int matricola) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE appello_studentedocente SET ruolo = ? WHERE matricola = ? AND id_appello = ?";
+			
+
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(3, id_appello);
+			prepared.setInt(2, matricola);
+			prepared.setInt(1, 2);
+
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public ArrayList<Pair<Integer,String>> getStudenti(){
 		Connection connection = null;
 		ArrayList<Pair<Integer, String>> studenti = new ArrayList<Pair<Integer, String>>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut WHERE dt.approvato = 1 AND dt.matricola = ut.matricola";
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut WHERE dt.approvato = 1 AND dt.matricola = ut.matricola "
+					+ "AND ut.matricola NOT IN( SELECT matricola FROM appello_studentedocente)";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			
@@ -528,6 +550,36 @@ public class Database {
 			
 			connection.close();
 			return studenti;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		} 
+	}
+	
+	public ArrayList<Pair<Integer,String>> getMembriCommissioneById(int id_appello){
+		Connection connection = null;
+		ArrayList<Pair<Integer, String>> membri = new ArrayList<Pair<Integer, String>>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from appello_studentedocente aps, utente as ut WHERE aps.matricola = ut.matricola "
+					+ "AND aps.ruolo = 1 "
+					+ "AND aps.id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			
+
+			while (rs.next()) {
+				membri.add(
+						Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " +rs.getString("nome"))
+						);
+			}
+			
+			connection.close();
+			return membri;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
