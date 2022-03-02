@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import utils.Console;
 import utils.Pair;
 
 public class AppelloTesi {
@@ -34,7 +35,8 @@ public class AppelloTesi {
 	}
 
 	public String getDateString() {
-
+		
+		Console.print("(getDateString) " + date, date);
 		if (date == null)
 			return "INDEFINITO";
 		else {

@@ -39,6 +39,8 @@ public class ViewAppello {
 	private Label lblAula;
 	private Label lblLinkTele;
 	private Text membri;
+	private Label lblPresidenteDellaCommissione;
+	
 	public ViewAppello(Shell parent, ControllerAppello cr) {
 		this.controllerAppello = cr;
 		this.parentShell = parent;
@@ -73,6 +75,31 @@ public class ViewAppello {
 		} else {
 			lblLinkTele.setText(no_value);
 		}
+		
+		lblPresidenteDellaCommissione.setText("");
+		
+		String presidenteCognomeNome = controllerAppello.getPresidenteCommissioneFromDB(controllerAppello.getAppello().getId());
+		if(!presidenteCognomeNome.isEmpty()) {
+			lblPresidenteDellaCommissione.setText("Presidente della commissione: " + presidenteCognomeNome);
+		}else {
+			lblPresidenteDellaCommissione.setText("Presidente della commissione: "+ "INDEFINITO");
+		}
+		
+		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB(controllerAppello.getAppello().getId());
+		
+		if(!membriDellaCommissione.isEmpty()) {
+			membri.setText("");
+			for(Pair<Integer,String> membro : membriDellaCommissione) {
+				membri.setText(membri.getText()+membro.second);
+				membri.setText(membri.getText()+", ");			
+			}
+			
+			if(!membri.getText().isEmpty()) {
+				membri.setText(membri.getText().substring(0, membri.getText().lastIndexOf(",")));
+			}
+		}
+		
+
 	}
 
 	/**
@@ -93,7 +120,7 @@ public class ViewAppello {
 		Composite composite = new Composite(scrolledComposite, SWT.NONE);
 
 		Label lblDataLabel = new Label(composite, SWT.NONE);
-		lblDataLabel.setBounds(10, 10, 441, 15);
+		lblDataLabel.setBounds(10, 10, 35, 15);
 		lblDataLabel.setText("Data:");
 
 		lblData = new Label(composite, SWT.NONE);
@@ -101,7 +128,7 @@ public class ViewAppello {
 		lblData.setBounds(51, 10, 80, 15);
 
 		Label lblOreLabel = new Label(composite, SWT.NONE);
-		lblOreLabel.setBounds(10, 31, 441, 15);
+		lblOreLabel.setBounds(10, 31, 35, 15);
 		lblOreLabel.setText("Ore:");
 
 		lblOre = new Label(composite, SWT.NONE);
@@ -109,7 +136,7 @@ public class ViewAppello {
 		lblOre.setBounds(51, 31, 80, 15);
 
 		Label lblAulaLabel = new Label(composite, SWT.NONE);
-		lblAulaLabel.setBounds(10, 52, 441, 15);
+		lblAulaLabel.setBounds(10, 52, 27, 15);
 		lblAulaLabel.setText("Aula:");
 
 		lblAula = new Label(composite, SWT.NONE);
@@ -117,7 +144,7 @@ public class ViewAppello {
 		lblAula.setBounds(51, 52, 80, 15);
 		
 		Label lblLinkTeleLabel = new Label(composite, SWT.NONE);
-		lblLinkTeleLabel.setBounds(10, 73, 441, 15);
+		lblLinkTeleLabel.setBounds(10, 73, 110, 15);
 		lblLinkTeleLabel.setText("Link Teleconferenza:");
 		
 		lblLinkTele = new Label(composite, SWT.NONE);
@@ -129,26 +156,17 @@ public class ViewAppello {
 		lblMembriDellaCommissione.setText("Membri della commissione:");
 		lblMembriDellaCommissione.setBounds(10, 115, 441, 15);
 		
-		Label lblPresidenteDellaCommissione = new Label(composite, SWT.NONE);
-		lblPresidenteDellaCommissione.setText("Presidente della commissione: " + controllerAppello.getPresidenteCommissioneFromDB(controllerAppello.getAppello().getId()));
+		lblPresidenteDellaCommissione = new Label(composite, SWT.NONE);
+		lblPresidenteDellaCommissione.setText("Presidente della commissione: ");
 		lblPresidenteDellaCommissione.setBounds(10, 94, 441, 15);
 		
 		
-		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB(controllerAppello.getAppello().getId());
 		
-		membri = new Text(composite, SWT.BORDER);
+		membri = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.CANCEL);
 		membri.setEditable(false);
 		membri.setBounds(10, 136, 441, 65);
 		
-		for(Pair<Integer,String> membro : membriDellaCommissione) {
-			membri.setText(membri.getText()+membro.second);
-			membri.setText(membri.getText()+", ");
-			
-			
-		}
-		if(!membri.getText().isEmpty()) {
-			membri.setText(membri.getText().substring(0, membri.getText().lastIndexOf(",")));
-		}
+		
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
@@ -217,7 +235,7 @@ public class ViewAppello {
 	public void aggiungereDataDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
-		child.setText("Data dell'appello");
+		child.setText("Inserisci data dell'appello");
 		Utils.setShellToCenterParent(child, appelloShell);
 		String original = controllerAppello.getAppello().getDateString();
 		
