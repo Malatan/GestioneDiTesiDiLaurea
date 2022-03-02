@@ -1,5 +1,7 @@
 package userInterface;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -60,12 +62,12 @@ public class ViewAppello {
 		} else {
 			lblData.setText(no_value);
 		}
-		if (appello.getStartTime() != -1) {
+		if (!appello.getStartTime().isEmpty()) {
 			lblOre.setText(appello.getStartTimeString());
 		} else {
 			lblOre.setText(no_value);
 		}
-		if (appello.getAula() != null) {
+		if (appello.getAula() != null && appello.getAula().second != null) {
 			lblAula.setText(appello.getAula().second);
 		} else {
 			lblAula.setText(no_value);
@@ -102,9 +104,6 @@ public class ViewAppello {
 
 	}
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		appelloShell = new Shell(parentShell, SWT.CLOSE | SWT.TITLE | SWT.APPLICATION_MODAL);
@@ -239,15 +238,35 @@ public class ViewAppello {
 		Utils.setShellToCenterParent(child, appelloShell);
 		String original = controllerAppello.getAppello().getDateString();
 		
-		Text textRepository = new Text(child, SWT.BORDER);
-		textRepository.setBounds(30, 20, 171, 23);
-		textRepository.setText(original);
+		DateTime dateTimeAula = new DateTime(child, SWT.BORDER);
+		dateTimeAula.setBounds(25, 20, 175, 23);
+
+		dateTimeAula.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event arg0) {
+				Calendar cal = Calendar.getInstance();
+				int day = dateTimeAula.getDay();
+				int month = dateTimeAula.getMonth();
+				int year = dateTimeAula.getYear();
+				int cday = cal.get(Calendar.DAY_OF_MONTH);
+				int cmonth = cal.get(Calendar.MONTH);
+				int cyear = cal.get(Calendar.YEAR);
+				
+				if (day < cday && month == cmonth && year == cyear) {
+					dateTimeAula.setDay(cday);
+				} else if (month < cmonth && year == cyear) {
+					dateTimeAula.setMonth(cmonth);
+				} else if (year < cyear) {
+					dateTimeAula.setYear(cyear);
+				}
+			}
+		});
 		
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String s = textRepository.getText();
+				String s = dateTimeAula.getDay() + "/" + (dateTimeAula.getMonth() + 1) + "/" + dateTimeAula.getYear();
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
 				} else if (!s.equals(original)){
@@ -290,8 +309,8 @@ public class ViewAppello {
 				}
 			}
 		});
-		btnPrenotaAula.setBounds(10, 10, 120, 25);
-		btnPrenotaAula.setText("Prenota Aula");
+		btnPrenotaAula.setBounds(10, 10, 180, 25);
+		btnPrenotaAula.setText("Prenota Aula e Inserisci Orario");
 		
 		Button btnLinkTele = new Button(compositeResponsabile, SWT.NONE);
 		btnLinkTele.addMouseListener(new MouseAdapter() {
@@ -300,8 +319,9 @@ public class ViewAppello {
 				aggiungeLinkTeleDialog();
 			}
 		});
-		btnLinkTele.setBounds(136, 10, 120, 25);
+		btnLinkTele.setBounds(196, 10, 120, 25);
 		btnLinkTele.setText("Link teleconferenza");
+		
 	}
 	
 	public void aggiungeLinkTeleDialog() {
@@ -347,6 +367,9 @@ public class ViewAppello {
 		child.open();
 	}
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void dataAulaDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
@@ -360,29 +383,13 @@ public class ViewAppello {
 			comboAule.add(aule.get(i).second);
 		}
 		
-		DateTime dateTimeAula = new DateTime(child, SWT.BORDER);
-		dateTimeAula.setBounds(125, 20, 80, 23);
+		DateTime dateTime = new DateTime(child, SWT.BORDER | SWT.TIME);
+		dateTime.setBounds(120, 20, 104, 24);
 
-		dateTimeAula.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event arg0) {
-				Calendar cal = Calendar.getInstance();
-				int day = dateTimeAula.getDay();
-				int month = dateTimeAula.getMonth();
-				int year = dateTimeAula.getYear();
-				int cday = cal.get(Calendar.DAY_OF_MONTH);
-				int cmonth = cal.get(Calendar.MONTH);
-				int cyear = cal.get(Calendar.YEAR);
-				
-				if (day < cday && month == cmonth && year == cyear) {
-					dateTimeAula.setDay(cday);
-				} else if (month < cmonth && year == cyear) {
-					dateTimeAula.setMonth(cmonth);
-				} else if (year < cyear) {
-					dateTimeAula.setYear(cyear);
-				}
-			}
-		});
+		LocalDateTime now = LocalDateTime.now();  
+		dateTime.setHours(now.getHour());
+		dateTime.setMinutes(now.getMinute());
+		dateTime.setSeconds(0);
 
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
@@ -397,8 +404,11 @@ public class ViewAppello {
 							break;
 						}
 					}
-					String data = dateTimeAula.getDay() + "/" + (dateTimeAula.getMonth() + 1) + "/" + dateTimeAula.getYear();
-					if (controllerAppello.prenotaAula(id_aula, data)) {
+					
+					String orario = dateTime.getHours() + ":" + dateTime.getMinutes();
+					if (controllerAppello.prenotaAula(id_aula) && controllerAppello.setOrario(orario)) {
+						controllerAppello.updateAppelloFromDB();
+						aggiornaPagina();
 						child.close();
 					}
 				} else {
@@ -418,6 +428,7 @@ public class ViewAppello {
 		});
 		btnNo.setBounds(125, 66, 75, 25);
 		btnNo.setText("Indietro");
+		
 		child.open();
 	}
 	

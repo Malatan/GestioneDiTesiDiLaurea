@@ -26,6 +26,7 @@ CREATE TABLE appello(
 	pub_data date NOT NULL,
 	teleconferenza varchar(50) DEFAULT NULL,
 	nota text DEFAULT NULL,
+	orario time DEFAULT NULL,
 	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola)
 )AUTO_INCREMENT=30000;
 
@@ -46,7 +47,7 @@ CREATE TABLE prenotazione_aula_giorno(
 	FOREIGN KEY (id_aula) REFERENCES aula(id_aula),
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (personale ) REFERENCES utente(matricola),
-	PRIMARY KEY (id_aula, id_appello)
+	PRIMARY KEY (id_appello)
 );
 
 CREATE TABLE docente_dipartimento(
@@ -80,9 +81,9 @@ CREATE TABLE domandatesi(
 
 -- popolamento utente
 INSERT INTO utente (nome, cognome, password, ruolo)
-VALUES("Tizio", "Caio", 123, 0), 
-("Riccardo", "Cremonesi", 123, 0), 
-("Gianni", "Manfrin", 123, 1),
+VALUES("Tizio", "Caio", 123, 0), -- 10000 Studente
+("Riccardo", "Cremonesi", 123, 0), -- 10001 Studente
+("Gianni", "Manfrin", 123, 1), -- 10002 Responsabile 
 ("Raniero", "Calabrese", 123, 2), -- 10003 Presidente della scuola
 ("Libero", "Siciliano", 123, 3), -- 10004 Presidente del corso di Biomedica 
 ("Gofreddo", "Lombardi", 123, 3), -- 10005 Presidente del corso di Elettronica 

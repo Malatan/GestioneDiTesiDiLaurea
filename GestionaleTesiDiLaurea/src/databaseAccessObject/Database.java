@@ -170,22 +170,43 @@ public class Database {
 		} 
 	}
 	
-	public boolean prenotaAula(String data, int id_aula, int id_appello, String matricola) {
+	public boolean prenotaAula(int id_aula, int id_appello, String matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "INSERT INTO prenotazione_aula_giorno (id_aula, id_appello, data, personale) VALUES(?,?,?,?)";
+			Statement stm = connection.createStatement();
+			String elimination = "DELETE FROM prenotazione_aula_giorno WHERE id_appello="+id_appello;
+			stm.executeUpdate(elimination);
+			
+			String query = "INSERT INTO prenotazione_aula_giorno (id_aula, id_appello, personale) VALUES(?,?,?)";
 			PreparedStatement prepared = connection.prepareStatement(query);
 			prepared.setInt(1, id_aula);
 			prepared.setInt(2, id_appello);
-			prepared.setString(3, data);
-			prepared.setInt(4, Integer.parseInt(matricola));
+			prepared.setInt(3, Integer.valueOf(matricola));
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
 		} catch (SQLException e) {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean setOrario(int id_appello, String time) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE appello SET orario = ? WHERE id_appello = ?";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(2, id_appello);
+			prepared.setString(1, time);
+
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
+	
 	}
 	
 	public void approvaDomandaTesi(DomandaTesi domanda) {
@@ -378,11 +399,17 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT * FROM appello where id_appello = " + id_appello;
+			String query = "SELECT ap.id_appello, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
+					+ " FROM appello as ap LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
+					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula"
+					+ " WHERE ap.id_appello = " + id_appello;
+			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
+								
 				appello = new AppelloTesi(
-						rs.getInt("id_appello"), rs.getString("data"), -1, null, 
+						rs.getInt("id_appello"), rs.getString("data"), rs.getString("orario"), 
+						Pair.of(rs.getInt("id_aula"),rs.getString("aula")), 
 						rs.getString("teleconferenza"), rs.getString("nota"));
 			}
 			connection.close();
@@ -398,7 +425,7 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT id_appello, data from appello";
+			String query = "SELECT id_appello, data, orario, teleconferenza, nota from appello";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			
@@ -406,7 +433,8 @@ public class Database {
 
 
 			while (rs.next()) {
-				appelli.add(new AppelloTesi(rs.getInt("id_appello"), rs.getString("data"), -1, null, null, null));
+				appelli.add(new AppelloTesi(rs.getInt("id_appello"), rs.getString("data"), rs.getString("orario"),
+						null, rs.getString("teleconferenza"), rs.getString("nota")));
 			}
 			
 			connection.close();

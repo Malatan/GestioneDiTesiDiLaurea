@@ -178,13 +178,27 @@ public class ControllerAppello {
 		return false;
 	}
 	
-	public boolean prenotaAula(int id_aula, String data) {
+	public boolean prenotaAula(int id_aula) {
 		if(Database.getInstance().isConnected()) {
-			if (Database.getInstance().prenotaAula(data, id_aula, appello.getId(), matricola)){
-				Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "L'aula prenotata con successo");
+			if (Database.getInstance().prenotaAula(id_aula, appello.getId(), matricola)){
+				Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "L'aula prenotata con successo e orario settato correttamente.");
 				return true;
 			} else {
 				Utils.createWarningDialog(viewAppello.getShell(), "Messaggio", "L'aula occupata");
+			}
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean setOrario(String time) {
+		if(Database.getInstance().isConnected()) {
+			if (Database.getInstance().setOrario(appello.getId(),time)){
+
+				return true;
+			} else {
+				Utils.createWarningDialog(viewAppello.getShell(), "Messaggio", "Orario gia' inserito");
 			}
 		}else {
 			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");

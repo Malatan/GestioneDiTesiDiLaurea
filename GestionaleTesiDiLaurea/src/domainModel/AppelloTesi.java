@@ -13,11 +13,11 @@ public class AppelloTesi {
 	private int id;
 	private String date;
 	private Pair<Integer, String> aula;
-	private int startTime;
+	private String startTime;
 	private String linkTeleconferenza;
 	private String nota;
 	
-	public AppelloTesi(int idAppello, String data, int startTime, Pair<Integer, String> aula, String linkTeleconferenza, String nota) {
+	public AppelloTesi(int idAppello, String data, String startTime, Pair<Integer, String> aula, String linkTeleconferenza, String nota) {
 		this.id = idAppello;
 		this.date = data;
 		this.startTime = startTime;
@@ -36,11 +36,11 @@ public class AppelloTesi {
 
 	public String getDateString() {
 		
-		Console.print("(getDateString) " + date, date);
+		
 		if (date == null)
 			return "INDEFINITO";
 		else {
-		    
+			Console.print("(getDateString) " + date, date);
 		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			return new String(LocalDate.parse(date, formatter).format(formatter2));
@@ -71,16 +71,20 @@ public class AppelloTesi {
 		this.aula = aula;
 	}
 
-	public int getStartTime() {
-		return startTime;
+	public String getStartTime() {
+		return getStartTimeString();
 	}
 
-	public void setStartTime(int startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 	
 	public String getStartTimeString() {
-		return new String(startTime+":00");
+		if(startTime != null) {
+			return new String(startTime);
+		}else {
+			return new String("");
+		}
 	}
 
 	public String getLinkTeleconferenza() {
