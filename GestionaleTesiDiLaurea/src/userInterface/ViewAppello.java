@@ -14,6 +14,7 @@ import businessLogic.ControllerAppello;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.Studente;
+import utils.Console;
 import utils.Pair;
 import utils.Utils;
 import org.eclipse.swt.widgets.Label;
@@ -33,6 +34,8 @@ public class ViewAppello {
 	private ControllerAppello controllerAppello;
 	private Shell parentShell;
 	private Shell appelloShell;
+	private int countDocentiRelatori;
+	
 	
 	private Label lblData;
 	private Label lblOre;
@@ -41,6 +44,7 @@ public class ViewAppello {
 	public ViewAppello(Shell parent, ControllerAppello cr) {
 		this.controllerAppello = cr;
 		this.parentShell = parent;
+		this.countDocentiRelatori = 0;
 	}
 
 	public Shell getShell() {
@@ -48,6 +52,7 @@ public class ViewAppello {
 	}
 	
 	public void aggiornaPagina() {
+		this.countDocentiRelatori = 0;
 		AppelloTesi appello = controllerAppello.getAppello();
 		String no_value = "INDEFINITO";
 		if (appello.getData() != null) {
@@ -371,13 +376,14 @@ public class ViewAppello {
 		child.open();
 	}
 	
+
 	/**
 	 * @wbp.parser.entryPoint
 	 */
 	public void scegliStudentiDocentiDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
-		child.setSize(597, 269);
-		child.setText("Domanda Tesi");
+		child.setSize(597, 311);
+		child.setText("Identificazione membri di commissione");
 		Utils.setShellToCenterParent(child, appelloShell);
 		ArrayList<Pair<Integer,String>> studenti = controllerAppello.getStudentiFromDB();
 		ArrayList<Pair<Integer,String>> relatori = controllerAppello.getRelatoriFromDB();
@@ -420,7 +426,8 @@ public class ViewAppello {
 		Button btnNewButton = new Button(child, SWT.NONE);
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			
-			private void setStudenti() {
+			
+			private void setStudente() {
 				if(!comboStudenti.getText().equals("")) {
 			        for(String element : list.getItems()) {
 			        	if(element.equals(comboStudenti.getText() + "(Studente)")) {
@@ -430,44 +437,53 @@ public class ViewAppello {
 			        }
 			    
 					list.add(comboStudenti.getText() + "(Studente)");
+					
 					comboStudenti.deselectAll();
 				}
 			}
 			
-			private void setDocenti() {
-				if(!comboDocenti.getText().equals("")) {
+
+			
+			private void setDocenteRelatore(Combo combo, String name) {
+				if(!combo.getText().equals("")) {
 			        for(String element : list.getItems()) {
-			        	if(element.equals(comboDocenti.getText() + "(Docente)")) {
-			        		comboDocenti.deselectAll();
+			        	if(element.equals(combo.getText() + name)) {
+			        		combo.deselectAll();
 			        		return;
 			        	}
 			        }
 			    
 		        
-					list.add(comboDocenti.getText() + "(Docente)");
-					comboDocenti.deselectAll();
+					list.add(combo.getText() + name);
+					countDocentiRelatori++;
+					Console.print("Count docenti e relatori: " + countDocentiRelatori, "GUI");
+					combo.deselectAll();
 		        }
 			}
+			
+
 			
 			@Override
 			public void mouseDown(MouseEvent e) {
 				
-				setStudenti();
-				setDocenti();
-
+				setStudente();
+				setDocenteRelatore(comboDocenti,"(Docente)");
+				setDocenteRelatore(comboRelatori,"(Relatore)");
 				
 
 				
 			}
+
+
 		});
-		btnNewButton.setBounds(56, 145, 146, 25);
+		btnNewButton.setBounds(59, 164, 146, 25);
 		btnNewButton.setText("Aggiungi");
 		
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (comboStudenti.getSelectionIndex() != -1 && comboDocenti.getSelectionIndex() != -1) {
+				if (countDocentiRelatori >= 5) {
 					int matricola = 0;
 					int matricola_docente = 0;
 					int matricola_relatore = 0;
@@ -498,7 +514,7 @@ public class ViewAppello {
 				}
 			}
 		});
-		btnYes.setBounds(30, 195, 75, 25);
+		btnYes.setBounds(30, 234, 75, 25);
 		btnYes.setText("Conferma");
 	
  		Button btnNo = new Button(child, SWT.NONE);
@@ -508,8 +524,18 @@ public class ViewAppello {
 				child.close();
 			}
 		});
-		btnNo.setBounds(177, 195, 75, 25);
+		btnNo.setBounds(177, 234, 75, 25);
 		btnNo.setText("Indietro");
+		
+		Button btnRimuovi = new Button(child, SWT.NONE);
+		btnRimuovi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				list.remove(list.getSelectionIndices());
+			}
+		});
+		btnRimuovi.setBounds(496, 234, 75, 25);
+		btnRimuovi.setText("Rimuovi");
 		
 
 		child.open();
