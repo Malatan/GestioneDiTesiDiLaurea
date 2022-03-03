@@ -1,6 +1,8 @@
 package userInterface;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -25,11 +27,11 @@ public class ViewPresidenteScuola {
       
 			Display display = Display.getDefault();
 			presidenteScuolaShell = new Shell();
-			presidenteScuolaShell.setSize(760, 523);
-			presidenteScuolaShell.setText("Gestionale di tesi di laurea");
+			presidenteScuolaShell.setSize(400, 427);
+			presidenteScuolaShell.setText("Gestionale di tesi di laurea - Presidente della Scuola\r\n");
 			
-			Composite composite = new Composite(presidenteScuolaShell, SWT.NONE);
-			composite.setBounds(20, 22, 281, 80);
+			Composite composite = new Composite(presidenteScuolaShell, SWT.BORDER);
+			composite.setBounds(10, 22, 364, 80);
 			
 			Label lblMatricola = new Label(composite, SWT.NONE);
 			lblMatricola.setBounds(10, 10, 55, 15);
@@ -43,10 +45,28 @@ public class ViewPresidenteScuola {
 			lblCognome.setBounds(10, 52, 55, 15);
 			lblCognome.setText("Cognome:");
 			
+			Composite composite_1 = new Composite(presidenteScuolaShell, SWT.BORDER);
+			composite_1.setBounds(10, 155, 364, 206);
 			
-			Button btnCreaAppello = new Button(presidenteScuolaShell, SWT.NONE);
-			btnCreaAppello.setBounds(276, 182, 158, 69);
-			btnCreaAppello.setText("PROPOSTE");
+			
+			Button btnCreaAppello = new Button(composite_1, SWT.NONE);
+			btnCreaAppello.setLocation(10, 10);
+			btnCreaAppello.setSize(340, 38);
+			btnCreaAppello.setText("Visualizza gli appelli");
+			
+			Button btnLogOut = new Button(composite_1, SWT.NONE);
+			btnLogOut.setText("Log out");
+			btnLogOut.setBounds(10, 167, 340, 25);
+			
+			btnLogOut.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					presidenteScuolaShell.close();
+					controllerPresidenteScuola = null;
+					ControllerLogin cl = new ControllerLogin();
+					cl.run();
+				}
+			});
 			
 			presidenteScuolaShell.open();
 			presidenteScuolaShell.layout();
