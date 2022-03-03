@@ -289,7 +289,7 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "UPDATE appello SET data = '" + Date + "' WHERE id_appello = " + id_appello;
+			String query = "UPDATE appello SET orario = NULL, data = '" + Date + "' WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
 			connection.close();

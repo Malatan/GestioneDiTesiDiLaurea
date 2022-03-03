@@ -278,10 +278,10 @@ public class ViewAppello {
 		child.setText("Inserisci data dell'appello");
 		Utils.setShellToCenterParent(child, appelloShell);
 		String original = controllerAppello.getAppello().getDateString();
-
+		AppelloTesi a = controllerAppello.getAppello();
+		
 		DateTime dateTimeAula = new DateTime(child, SWT.BORDER);
 		dateTimeAula.setBounds(25, 20, 175, 23);
-
 		dateTimeAula.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event arg0) {
@@ -302,7 +302,13 @@ public class ViewAppello {
 				}
 			}
 		});
-
+		if(a.getData() != null && !a.getData().equals("")) {
+			String[] parts = a.getData().split("-");
+			dateTimeAula.setYear(Integer.parseInt(parts[0]));
+			dateTimeAula.setMonth(Integer.parseInt(parts[1]) - 1);
+			dateTimeAula.setDay(Integer.parseInt(parts[2]));
+		}
+		
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
