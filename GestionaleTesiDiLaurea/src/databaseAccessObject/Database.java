@@ -417,18 +417,19 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT ap.id_appello, ap.id_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
+			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
 					+ " FROM appello as ap INNER JOIN appello_studentedocente as aps ON aps.id_appello = aps.id_appello"
 					+ " LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
-					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula" + " WHERE aps.ruolo = 0"
-					+ " AND aps.matricola = " + matricola;
+					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula" 
+					+ " LEFT JOIN corso c ON c.id_corso = ap.id_corso"
+					+ " WHERE aps.ruolo = 0 AND aps.matricola = " + matricola;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
 
-				appello = new AppelloTesi(rs.getInt("id_appello"), rs.getInt("id_corso"), rs.getString("data"), rs.getString("orario"),
-						Pair.of(rs.getInt("id_aula"), rs.getString("aula")), rs.getString("teleconferenza"),
-						rs.getString("nota"));
+				appello = new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("aula")), 
+						rs.getString("teleconferenza"), rs.getString("nota"));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -443,16 +444,17 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT ap.id_appello, ap.id_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
+			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
 					+ " FROM appello as ap LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
-					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula" + " WHERE ap.id_appello = " + id_appello;
+					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula LEFT JOIN corso c on c.id_corso = ap.id_corso"
+					+ " WHERE ap.id_appello = " + id_appello;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
 
-				appello = new AppelloTesi(rs.getInt("id_appello"), rs.getInt("id_corso"), rs.getString("data"), rs.getString("orario"),
-						Pair.of(rs.getInt("id_aula"), rs.getString("aula")), rs.getString("teleconferenza"),
-						rs.getString("nota"));
+				appello = new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("aula")), 
+						rs.getString("teleconferenza"), rs.getString("nota"));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -467,12 +469,14 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT id_appello, id_corso, data, orario, teleconferenza, nota from appello";
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.teleconferenza, a.nota "
+					+ "from appello a, corso c where a.id_corso = c.id_corso";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 
 			while (rs.next()) {
-				appelli.add(new AppelloTesi(rs.getInt("id_appello"), rs.getInt("id_corso"), rs.getString("data"), rs.getString("orario"), null,
+				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), null,
 						rs.getString("teleconferenza"), rs.getString("nota")));
 			}
 

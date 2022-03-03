@@ -209,7 +209,6 @@ public class ViewResponsabile {
 	
 	public void visualizzaListaAppelli(Composite c) {
 		ArrayList<AppelloTesi> appelli = controllerResponsabile.getAppelliFromDB();
-		ArrayList<Pair<Integer, String>> corsi = controllerResponsabile.getCorsiFromDB();
 		int offset_y = 10;
 		for(AppelloTesi a : appelli) {
 			Label lblId = new Label(c, SWT.NONE);
@@ -227,13 +226,9 @@ public class ViewResponsabile {
 			Label lblCorso = new Label(c, SWT.NONE);
 			lblCorso.setAlignment(SWT.CENTER);
 			lblCorso.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-			lblCorso.setBounds(215, offset_y+3, 80, 25);
-			for (Pair<Integer, String> corso : corsi) {
-				if (a.getIdCorso() == corso.first) {
-					lblCorso.setText(corso.second);
-					break;
-				}
-			}
+			lblCorso.setBounds(213, offset_y+3, 80, 25);
+			lblCorso.setText(a.getCorso().second);
+			
 			Button btnDettaglio = new Button(c, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
