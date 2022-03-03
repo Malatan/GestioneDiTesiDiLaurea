@@ -2,7 +2,10 @@ package businessLogic;
 
 import userInterface.ViewLogin;
 import utils.Console;
+import utils.Pair;
 import utils.Utils;
+
+import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Text;
 import databaseAccessObject.Database;
@@ -37,7 +40,8 @@ public class ControllerLogin {
 							controllerPresidenteScuola.run();
 							break;
 						case 3:
-							ControllerPresidenteCorso controllerPresidenteCorso = new ControllerPresidenteCorso(info[0],info[1],info[3]);
+							ControllerPresidenteCorso controllerPresidenteCorso = new ControllerPresidenteCorso(info[0],info[1],info[3],
+									getCorsoByPresidente(info[0]));
 							controllerPresidenteCorso.run();
 							break;
 						case 4:		
@@ -53,6 +57,16 @@ public class ControllerLogin {
 				Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Connessione al database fallita");
 			}
 		}
+	}
+	
+	public Pair<Integer, String> getCorsoByPresidente(String matricola) {
+		Pair<Integer, String> corso = null;
+		if (Database.getInstance().isConnected()) {
+			corso = Database.getInstance().getCorsoByPresidente(Integer.parseInt(matricola));
+		} else {
+			Utils.createConfirmDialog(viewLogin.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return corso;
 	}
 	
 	public void run() {

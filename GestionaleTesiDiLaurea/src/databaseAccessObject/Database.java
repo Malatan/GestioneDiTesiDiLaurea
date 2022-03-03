@@ -56,14 +56,17 @@ public class Database {
 					+ "'";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
+			String[] info = null;
 			if (rs.next()) {
-				String[] info = new String[4];
+				info = new String[4];
 				info[0] = rs.getString("matricola");
 				info[1] = rs.getString("nome");
 				info[3] = rs.getString("cognome");
 				info[2] = rs.getString("ruolo");
 				return info;
 			}
+			connection.close();
+			return info;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -107,6 +110,7 @@ public class Database {
 				s = "Non hai ancora prensetato nessuna domanda";
 				status = 0;
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -125,6 +129,7 @@ public class Database {
 			prepared.setInt(4, id_corso);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+			connection.close();
 		} catch (SQLIntegrityConstraintViolationException e) {
 			Console.print("Duplicate entry key: " + studente.getMatricola(), "db");
 		} catch (SQLException e) {
@@ -140,6 +145,7 @@ public class Database {
 			String query = "DELETE FROM DOMANDATESI WHERE MATRICOLA = " + matricola;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -160,6 +166,7 @@ public class Database {
 			prepared.setInt(3, Integer.valueOf(matricola));
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+			connection.close();
 		} catch (SQLException e) {
 			return false;
 		}
@@ -177,6 +184,7 @@ public class Database {
 
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+			connection.close();
 		} catch (SQLException e) {
 			return false;
 		}
@@ -192,6 +200,7 @@ public class Database {
 			String query = "UPDATE domandatesi SET approvato = 1 where matricola = " + domanda.getMatricolaStudente();
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -205,6 +214,7 @@ public class Database {
 			String query = "UPDATE DOMANDATESI SET repository = '" + file + "' WHERE MATRICOLA = " + matricola;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -240,7 +250,7 @@ public class Database {
 				Console.print(prepared.toString(), "sql");
 				prepared.executeUpdate();
 			}
-
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -254,6 +264,7 @@ public class Database {
 			String query = "UPDATE appello SET teleconferenza = '" + link + "' WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -267,6 +278,7 @@ public class Database {
 			String query = "UPDATE appello SET approvazione = '" + val + "' WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -280,6 +292,7 @@ public class Database {
 			String query = "UPDATE appello SET data = '" + Date + "' WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -297,6 +310,7 @@ public class Database {
 			if (rs.next()) {
 				s = rs.getString("repository");
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -315,6 +329,7 @@ public class Database {
 			if (rs.next()) {
 				s = rs.getString("teleconferenza");
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -340,6 +355,7 @@ public class Database {
 					s = "In Revisione";
 				}
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -359,6 +375,7 @@ public class Database {
 			if (rs.next()) {
 				s = Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome"));
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -376,6 +393,7 @@ public class Database {
 			prepared.setInt(3, id_corso);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -405,6 +423,7 @@ public class Database {
 						rs.getString("nome_corso"), rs.getString("data"), rs.getString("repository"),
 						rs.getBoolean("approvato")));
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -473,7 +492,6 @@ public class Database {
 					+ "from appello a, corso c where a.id_corso = c.id_corso";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
-
 			while (rs.next()) {
 				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
 						rs.getString("data"), rs.getString("orario"), null,
@@ -482,16 +500,36 @@ public class Database {
 
 			connection.close();
 			return appelli;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return null;
+			e.printStackTrace();
 		}
-
+		return null;
 	}
+	
+	public ArrayList<AppelloTesi> getAppelliByCorso(int id_corso) {
+		Connection connection = null;
+		ArrayList<AppelloTesi> appelli = new ArrayList<AppelloTesi>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.teleconferenza, a.nota "
+					+ "from appello a, corso c where a.id_corso = c.id_corso and a.id_corso = " + id_corso;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), null,
+						rs.getString("teleconferenza"), rs.getString("nota")));
+			}
 
+			connection.close();
+			return appelli;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public ArrayList<Pair<Integer, String>> getAule() {
 		Connection connection = null;
 		ArrayList<Pair<Integer, String>> aule = new ArrayList<Pair<Integer, String>>();
@@ -524,6 +562,7 @@ public class Database {
 			while (rs.next()) {
 				corsi.add(Pair.of(rs.getInt("id_corso"), rs.getString("nome")));
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -542,6 +581,7 @@ public class Database {
 			while (rs.next()) {
 				docenti.add(Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome")));
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -562,6 +602,7 @@ public class Database {
 					dataAppello = new String(rs.getString("data"));
 				}
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -606,7 +647,7 @@ public class Database {
 
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
-
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -693,60 +734,23 @@ public class Database {
 		}
 	}
 
-	public Boolean programmaInformazioniPerAppello(int idAppello, String informazioni) {
+	public Pair<Integer, String> getCorsoByPresidente(int matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-
-			PreparedStatement prepared = connection
-					.prepareStatement("UPDATE appelli SET informazioni = ? WHERE idAppello = ?");
-			prepared.setString(1, informazioni);
-			prepared.setInt(2, idAppello);
-			prepared.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return false;
-		} finally {
-			try {
-				if (connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				// gestione errore in chiusura
-			}
-		}
-		return true;
-	}
-
-	public String getInformazioniAppello(int idAppello) {
-		Connection connection = null;
-		try {
-			connection = DriverManager.getConnection(connectionString);
-
-			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-			ResultSet rs = stm.executeQuery("SELECT informazioni from appelli WHERE idAppello = " + idAppello);
-			// System.out.println(rs.getString("cognome") + " " + rs.getString("nome") + "
-			// di ruolo " + rs.getInt("ruolo"));
-
+			Statement stm = connection.createStatement();
+			String query = "SELECT id_corso, nome from corso where presidente = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			Pair<Integer, String> corso = null;
 			if (rs.next()) {
-
-				String informazioni = new String(rs.getString("informazioni"));
-				connection.close();
-				return informazioni;
+				corso = Pair.of(rs.getInt("id_corso"), rs.getString("nome"));
 			}
-
+			connection.close();
+			return corso;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return null;
 		}
 		return null;
 	}
-
 }

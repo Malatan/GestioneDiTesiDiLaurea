@@ -34,15 +34,15 @@ public class ViewAppello {
 	private Shell parentShell;
 	private Shell appelloShell;
 	private int countDocentiRelatori;
-	
-	
+
 	private Label lblData;
+	private Label lblCorso;
 	private Label lblOre;
 	private Label lblAula;
 	private Label lblLinkTele;
 	private Text membri;
 	private Label lblPresidenteDellaCommissione;
-	
+
 	public ViewAppello(Shell parent, ControllerAppello cr) {
 		this.controllerAppello = cr;
 		this.parentShell = parent;
@@ -52,7 +52,7 @@ public class ViewAppello {
 	public Shell getShell() {
 		return appelloShell;
 	}
-	
+
 	public void aggiornaPagina() {
 		this.countDocentiRelatori = 0;
 		AppelloTesi appello = controllerAppello.getAppello();
@@ -77,30 +77,29 @@ public class ViewAppello {
 		} else {
 			lblLinkTele.setText(no_value);
 		}
-		
+		lblCorso.setText(appello.getCorso().second);
 		lblPresidenteDellaCommissione.setText("");
-		
-		Pair<Integer,String> presidenteCognomeNome = controllerAppello.getPresidenteCommissioneFromDB();
-		if(presidenteCognomeNome != null && presidenteCognomeNome.second != null) {
+
+		Pair<Integer, String> presidenteCognomeNome = controllerAppello.getPresidenteCommissioneFromDB();
+		if (presidenteCognomeNome != null && presidenteCognomeNome.second != null) {
 			lblPresidenteDellaCommissione.setText("Presidente della commissione: " + presidenteCognomeNome.second);
-		}else {
-			lblPresidenteDellaCommissione.setText("Presidente della commissione: "+ "INDEFINITO");
+		} else {
+			lblPresidenteDellaCommissione.setText("Presidente della commissione: " + "INDEFINITO");
 		}
-		
-		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB();
-		
-		if(!membriDellaCommissione.isEmpty()) {
+
+		ArrayList<Pair<Integer, String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB();
+
+		if (!membriDellaCommissione.isEmpty()) {
 			membri.setText("");
-			for(Pair<Integer,String> membro : membriDellaCommissione) {
-				membri.setText(membri.getText()+membro.second);
-				membri.setText(membri.getText()+", ");			
+			for (Pair<Integer, String> membro : membriDellaCommissione) {
+				membri.setText(membri.getText() + membro.second);
+				membri.setText(membri.getText() + ", ");
 			}
-			
-			if(!membri.getText().isEmpty()) {
+
+			if (!membri.getText().isEmpty()) {
 				membri.setText(membri.getText().substring(0, membri.getText().lastIndexOf(",")));
 			}
 		}
-		
 
 	}
 
@@ -130,67 +129,68 @@ public class ViewAppello {
 		lblData.setBounds(51, 10, 80, 15);
 
 		Label lblOreLabel = new Label(composite, SWT.NONE);
-		lblOreLabel.setBounds(10, 31, 35, 15);
+		lblOreLabel.setBounds(10, 52, 35, 15);
 		lblOreLabel.setText("Ore:");
 
 		lblOre = new Label(composite, SWT.NONE);
 		lblOre.setAlignment(SWT.CENTER);
-		lblOre.setBounds(51, 31, 80, 15);
+		lblOre.setBounds(51, 52, 80, 15);
 
 		Label lblAulaLabel = new Label(composite, SWT.NONE);
-		lblAulaLabel.setBounds(10, 52, 27, 15);
+		lblAulaLabel.setBounds(10, 73, 27, 15);
 		lblAulaLabel.setText("Aula:");
 
 		lblAula = new Label(composite, SWT.NONE);
 		lblAula.setAlignment(SWT.CENTER);
-		lblAula.setBounds(51, 52, 80, 15);
-		
+		lblAula.setBounds(51, 73, 80, 15);
+
 		Label lblLinkTeleLabel = new Label(composite, SWT.NONE);
-		lblLinkTeleLabel.setBounds(10, 73, 110, 15);
+		lblLinkTeleLabel.setBounds(10, 94, 110, 15);
 		lblLinkTeleLabel.setText("Link Teleconferenza:");
-		
+
 		lblLinkTele = new Label(composite, SWT.NONE);
-		lblLinkTele.setBounds(126, 73, 325, 15);
-		
-		
-		
+		lblLinkTele.setBounds(126, 94, 325, 15);
+
 		Label lblMembriDellaCommissione = new Label(composite, SWT.NONE);
 		lblMembriDellaCommissione.setText("Membri della commissione:");
-		lblMembriDellaCommissione.setBounds(10, 115, 441, 15);
-		
+		lblMembriDellaCommissione.setBounds(10, 136, 441, 15);
+
 		lblPresidenteDellaCommissione = new Label(composite, SWT.NONE);
 		lblPresidenteDellaCommissione.setText("Presidente della commissione: ");
-		lblPresidenteDellaCommissione.setBounds(10, 94, 441, 15);
-		
-		
-		
+		lblPresidenteDellaCommissione.setBounds(10, 115, 441, 15);
+
 		membri = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.CANCEL);
 		membri.setEditable(false);
-		membri.setBounds(10, 136, 441, 65);
-		
-		
+		membri.setBounds(10, 157, 441, 65);
+
+		Label lblCorsoLabel = new Label(composite, SWT.NONE);
+		lblCorsoLabel.setBounds(10, 31, 35, 15);
+		lblCorsoLabel.setText("Corso:");
+
+		lblCorso = new Label(composite, SWT.NONE);
+		lblCorso.setBounds(51, 31, 150, 15);
+
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		
-		
-		switch(controllerAppello.getRuolo()) {
-			case 0:
-				appelloShell.setText(appelloShell.getText()+" - Studente");
-				break;
-			case 1:
-				appelloShell.setText(appelloShell.getText()+" - Responsabile");
-				createResponsabileComposite();
-				break;
-			case 2:
-				appelloShell.setText(appelloShell.getText()+" - Presidente Scuola");
-				createPresidenteScuolaComposite();
-				break;
-			case 3:
-				appelloShell.setText(appelloShell.getText()+" - Presidente Corso");
-				createPresidenteCorsoComposite();
-				break;
+
+		switch (controllerAppello.getRuolo()) {
+		case 0:
+			appelloShell.setText(appelloShell.getText() + " - Studente");
+			break;
+		case 1:
+			appelloShell.setText(appelloShell.getText() + " - Responsabile");
+			createResponsabileComposite();
+			break;
+		case 2:
+			appelloShell.setText(appelloShell.getText() + " - Presidente Scuola");
+			createPresidenteScuolaComposite();
+			break;
+		case 3:
+			appelloShell.setText(appelloShell.getText() + " - Presidente Corso");
+			createPresidenteCorsoComposite();
+			break;
 		}
-		
+
 		aggiornaPagina();
 		appelloShell.open();
 		appelloShell.layout();
@@ -200,16 +200,16 @@ public class ViewAppello {
 			}
 		}
 	}
-	
+
 	public void createPresidenteScuolaComposite() {
 		Composite compositePresidenteScuola = new Composite(appelloShell, SWT.BORDER);
 		compositePresidenteScuola.setBounds(10, 370, 465, 80);
-		
+
 		Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);
 		approvaAppello.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if(Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di approvare l'appello?")) {
+				if (Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di approvare l'appello?")) {
 					controllerAppello.approvaAppello();
 					aggiornaPagina();
 				}
@@ -217,12 +217,12 @@ public class ViewAppello {
 		});
 		approvaAppello.setBounds(10, 10, 120, 25);
 		approvaAppello.setText("Approva Appello");
-		
+
 		Button richiediCorrezione = new Button(compositePresidenteScuola, SWT.NONE);
 		richiediCorrezione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if(Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di richiedere la correzione?")) {
+				if (Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di richiedere la correzione?")) {
 					controllerAppello.richiediCorrezione();
 					aggiornaPagina();
 				}
@@ -230,13 +230,13 @@ public class ViewAppello {
 		});
 		richiediCorrezione.setBounds(136, 10, 120, 25);
 		richiediCorrezione.setText("Richiedi Correzione");
-		
+
 	}
-	
+
 	public void createPresidenteCorsoComposite() {
 		Composite compositeResponsabile = new Composite(appelloShell, SWT.BORDER);
 		compositeResponsabile.setBounds(10, 370, 465, 80);
-		
+
 		Button btnData = new Button(compositeResponsabile, SWT.NONE);
 		btnData.addMouseListener(new MouseAdapter() {
 			@Override
@@ -246,11 +246,11 @@ public class ViewAppello {
 		});
 		btnData.setBounds(10, 10, 120, 25);
 		btnData.setText("Inserisci Data");
-		
+
 		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
 		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
-		
+
 		Button btnIdentificaMembri = new Button(compositeResponsabile, SWT.NONE);
 		btnIdentificaMembri.addMouseListener(new MouseAdapter() {
 			@Override
@@ -260,7 +260,7 @@ public class ViewAppello {
 		});
 		btnIdentificaMembri.setBounds(136, 10, 120, 25);
 		btnIdentificaMembri.setText("Identifica Membri");
-		
+
 		Button btnNominaPresidente = new Button(compositeResponsabile, SWT.NONE);
 		btnNominaPresidente.addMouseListener(new MouseAdapter() {
 			@Override
@@ -271,14 +271,14 @@ public class ViewAppello {
 		btnNominaPresidente.setBounds(262, 10, 120, 25);
 		btnNominaPresidente.setText("Nomina Presidente");
 	}
-	
+
 	public void aggiungereDataDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
 		child.setText("Inserisci data dell'appello");
 		Utils.setShellToCenterParent(child, appelloShell);
 		String original = controllerAppello.getAppello().getDateString();
-		
+
 		DateTime dateTimeAula = new DateTime(child, SWT.BORDER);
 		dateTimeAula.setBounds(25, 20, 175, 23);
 
@@ -292,7 +292,7 @@ public class ViewAppello {
 				int cday = cal.get(Calendar.DAY_OF_MONTH);
 				int cmonth = cal.get(Calendar.MONTH);
 				int cyear = cal.get(Calendar.YEAR);
-				
+
 				if (day < cday && month == cmonth && year == cyear) {
 					dateTimeAula.setDay(cday);
 				} else if (month < cmonth && year == cyear) {
@@ -302,7 +302,7 @@ public class ViewAppello {
 				}
 			}
 		});
-		
+
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -310,7 +310,7 @@ public class ViewAppello {
 				String s = dateTimeAula.getDay() + "/" + (dateTimeAula.getMonth() + 1) + "/" + dateTimeAula.getYear();
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
-				} else if (!s.equals(original)){
+				} else if (!s.equals(original)) {
 					controllerAppello.addDateToAppello(s);
 					controllerAppello.updateAppelloFromDB();
 					aggiornaPagina();
@@ -322,8 +322,8 @@ public class ViewAppello {
 		});
 		btnYes.setBounds(30, 66, 75, 25);
 		btnYes.setText("Conferma");
-	
- 		Button btnNo = new Button(child, SWT.NONE);
+
+		Button btnNo = new Button(child, SWT.NONE);
 		btnNo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -334,7 +334,7 @@ public class ViewAppello {
 		btnNo.setText("Indietro");
 		child.open();
 	}
-	
+
 	public void createResponsabileComposite() {
 		Composite compositeResponsabile = new Composite(appelloShell, SWT.BORDER);
 		compositeResponsabile.setBounds(10, 370, 465, 80);
@@ -350,14 +350,14 @@ public class ViewAppello {
 				}
 			}
 		});
-		
+
 		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
 		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
-		
+
 		btnPrenotaAula.setBounds(10, 10, 180, 25);
 		btnPrenotaAula.setText("Prenota Aula e Inserisci Orario");
-		
+
 		Button btnLinkTele = new Button(compositeResponsabile, SWT.NONE);
 		btnLinkTele.addMouseListener(new MouseAdapter() {
 			@Override
@@ -367,20 +367,20 @@ public class ViewAppello {
 		});
 		btnLinkTele.setBounds(196, 10, 120, 25);
 		btnLinkTele.setText("Link teleconferenza");
-		
+
 	}
-	
+
 	public void aggiungeLinkTeleDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
 		child.setText("Link Teleconferenza");
 		Utils.setShellToCenterParent(child, appelloShell);
 		String original = controllerAppello.getLinkTeleFromDB();
-		
+
 		Text textRepository = new Text(child, SWT.BORDER);
 		textRepository.setBounds(30, 20, 171, 23);
 		textRepository.setText(original);
-		
+
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -388,7 +388,7 @@ public class ViewAppello {
 				String s = textRepository.getText();
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
-				} else if (!s.equals(original)){
+				} else if (!s.equals(original)) {
 					controllerAppello.addLinkTele(s);
 					controllerAppello.updateAppelloFromDB();
 					aggiornaPagina();
@@ -400,8 +400,8 @@ public class ViewAppello {
 		});
 		btnYes.setBounds(30, 66, 75, 25);
 		btnYes.setText("Conferma");
-	
- 		Button btnNo = new Button(child, SWT.NONE);
+
+		Button btnNo = new Button(child, SWT.NONE);
 		btnNo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -412,7 +412,6 @@ public class ViewAppello {
 		btnNo.setText("Indietro");
 		child.open();
 	}
-	
 
 	public void dataAulaDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
@@ -420,17 +419,17 @@ public class ViewAppello {
 		child.setText("Prenotazione Aula");
 		Utils.setShellToCenterParent(child, appelloShell);
 		ArrayList<Pair<Integer, String>> aule = controllerAppello.getAuleFromDB();
-		
+
 		Combo comboAule = new Combo(child, SWT.READ_ONLY);
 		comboAule.setBounds(30, 20, 80, 23);
-		for(int i = 0 ; i < aule.size() ; i++) {
+		for (int i = 0; i < aule.size(); i++) {
 			comboAule.add(aule.get(i).second);
 		}
-		
+
 		DateTime dateTime = new DateTime(child, SWT.BORDER | SWT.TIME);
 		dateTime.setBounds(120, 20, 104, 24);
 
-		LocalDateTime now = LocalDateTime.now();  
+		LocalDateTime now = LocalDateTime.now();
 		dateTime.setHours(now.getHour());
 		dateTime.setMinutes(now.getMinute());
 		dateTime.setSeconds(0);
@@ -442,13 +441,13 @@ public class ViewAppello {
 				if (comboAule.getSelectionIndex() != -1) {
 					int id_aula = 0;
 					String nome_aula = comboAule.getText();
-					for(Pair<Integer, String> p : aule) {
+					for (Pair<Integer, String> p : aule) {
 						if (p.second.equals(nome_aula)) {
 							id_aula = p.first;
 							break;
 						}
 					}
-					
+
 					String orario = dateTime.getHours() + ":" + dateTime.getMinutes();
 					if (controllerAppello.prenotaAula(id_aula) && controllerAppello.setOrario(orario)) {
 						controllerAppello.updateAppelloFromDB();
@@ -472,131 +471,119 @@ public class ViewAppello {
 		});
 		btnNo.setBounds(125, 66, 75, 25);
 		btnNo.setText("Indietro");
-		
+
 		child.open();
 	}
-	
 
 	public void scegliStudentiDocentiDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(597, 311);
 		child.setText("Identificazione membri di commissione");
 		Utils.setShellToCenterParent(child, appelloShell);
-		ArrayList<Pair<Integer,String>> studenti = controllerAppello.getStudentiFromDB();
-		ArrayList<Pair<Integer,String>> relatori = controllerAppello.getRelatoriFromDB();
-		ArrayList<Pair<Integer,String>> docenti = controllerAppello.getDocentiFromDB();
-		
-		ArrayList<Pair<Integer,String>> studentiMembri = controllerAppello.getStudentiFromAppelloDB();
-		ArrayList<Pair<Integer,String>> docentiMembri = controllerAppello.getMembriFromCommissioneDB();
-		Pair<Integer,String> presidenteMembro = controllerAppello.getPresidenteCommissioneFromDB();
-		
-		
-		
+		ArrayList<Pair<Integer, String>> studenti = controllerAppello.getStudentiFromDB();
+		ArrayList<Pair<Integer, String>> relatori = controllerAppello.getRelatoriFromDB();
+		ArrayList<Pair<Integer, String>> docenti = controllerAppello.getDocentiFromDB();
+
+		ArrayList<Pair<Integer, String>> studentiMembri = controllerAppello.getStudentiFromAppelloDB();
+		ArrayList<Pair<Integer, String>> docentiMembri = controllerAppello.getMembriFromCommissioneDB();
+		Pair<Integer, String> presidenteMembro = controllerAppello.getPresidenteCommissioneFromDB();
+
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
 		lblCorsoLabel.setBounds(30, 28, 45, 15);
 		lblCorsoLabel.setText("Studenti:");
-		
+
 		Combo comboStudenti = new Combo(child, SWT.READ_ONLY);
 		comboStudenti.setBounds(92, 25, 160, 23);
-		for(int i = 0 ; i < studenti.size() ; i++) {
+		for (int i = 0; i < studenti.size(); i++) {
 			comboStudenti.add(studenti.get(i).second);
 		}
-		
+
 		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
 		lblRelatoreLabel_1.setText("Relatori:");
 		lblRelatoreLabel_1.setBounds(30, 67, 55, 15);
-		
+
 		Combo comboRelatori = new Combo(child, SWT.READ_ONLY);
 		comboRelatori.setBounds(92, 64, 160, 23);
-		
-		for(int i = 0 ; i < relatori.size() ; i++) {
+
+		for (int i = 0; i < relatori.size(); i++) {
 			comboRelatori.add(relatori.get(i).second);
 		}
-		
+
 		Label lblDocenti = new Label(child, SWT.NONE);
 		lblDocenti.setBounds(30, 108, 55, 15);
 		lblDocenti.setText("Docenti:");
-		
+
 		Combo comboDocenti = new Combo(child, SWT.READ_ONLY);
 		comboDocenti.setBounds(92, 105, 160, 23);
-		for(int i = 0 ; i < docenti.size() ; i++) {
+		for (int i = 0; i < docenti.size(); i++) {
 			comboDocenti.add(docenti.get(i).second);
 		}
-		
+
 		List list = new List(child, SWT.BORDER);
 		list.setBounds(289, 24, 282, 196);
-		
-		for(Pair<Integer,String> stList : studentiMembri) {
+
+		for (Pair<Integer, String> stList : studentiMembri) {
 			list.add(stList.second + "(Studente)");
 		}
-		
-		for(Pair<Integer,String> docList : docentiMembri) {
+
+		for (Pair<Integer, String> docList : docentiMembri) {
 			list.add(docList.second + "(Docente)");
 			countDocentiRelatori++;
 		}
-		
-		if(presidenteMembro != null && presidenteMembro.second != null) {
+
+		if (presidenteMembro != null && presidenteMembro.second != null) {
 			list.add(presidenteMembro.second + "(Docente)");
 			countDocentiRelatori++;
 		}
-		
-		
+
 		Button btnNewButton = new Button(child, SWT.NONE);
 		btnNewButton.addMouseListener(new MouseAdapter() {
-			
-			
+
 			private void setStudente() {
-				if(!comboStudenti.getText().equals("")) {
-			        for(String element : list.getItems()) {
-			        	if(element.equals(comboStudenti.getText() + "(Studente)")) {
-			        		comboStudenti.deselectAll();
-			        		return;
-			        	}
-			        }
-			    
+				if (!comboStudenti.getText().equals("")) {
+					for (String element : list.getItems()) {
+						if (element.equals(comboStudenti.getText() + "(Studente)")) {
+							comboStudenti.deselectAll();
+							return;
+						}
+					}
+
 					list.add(comboStudenti.getText() + "(Studente)");
-					
+
 					comboStudenti.deselectAll();
 				}
 			}
-			
 
-			
 			private void setDocenteRelatore(Combo combo, String name) {
-				if(!combo.getText().equals("")) {
-			        for(String element : list.getItems()) {
-			        	if(element.equals(combo.getText() + name) || element.equals(combo.getText() +"(Relatore)") || element.equals(combo.getText() +"(Docente)")) {
-			        		combo.deselectAll();
-			        		return;
-			        	}
-			        }
-			    
-		        
+				if (!combo.getText().equals("")) {
+					for (String element : list.getItems()) {
+						if (element.equals(combo.getText() + name) || element.equals(combo.getText() + "(Relatore)")
+								|| element.equals(combo.getText() + "(Docente)")) {
+							combo.deselectAll();
+							return;
+						}
+					}
+
 					list.add(combo.getText() + name);
 					countDocentiRelatori++;
 					Console.print("Count docenti e relatori: " + countDocentiRelatori, "GUI");
 					combo.deselectAll();
-		        }
+				}
 			}
-			
 
-			
 			@Override
 			public void mouseDown(MouseEvent e) {
-				
+
 				setStudente();
-				setDocenteRelatore(comboDocenti,"(Docente)");
-				setDocenteRelatore(comboRelatori,"(Relatore)");
-				
+				setDocenteRelatore(comboDocenti, "(Docente)");
+				setDocenteRelatore(comboRelatori, "(Relatore)");
 
-				
 			}
-
 
 		});
 		btnNewButton.setBounds(59, 164, 146, 25);
 		btnNewButton.setText("Aggiungi");
-		
+
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -604,34 +591,40 @@ public class ViewAppello {
 				if (countDocentiRelatori >= 5) {
 					ArrayList<Integer> matricoleStudenti = new ArrayList<Integer>();
 					ArrayList<Integer> matricoleDocentiRelatori = new ArrayList<Integer>();
-					
-					for(String text : list.getItems()) {
-						for(Pair<Integer, String> s : studenti) {
-							if(text.equals(s.second+"(Studente)")) {
-								Console.print("Aggiunto come studente nel membro di commissione " + s.second+"(Studente)", "APP");
+
+					for (String text : list.getItems()) {
+						for (Pair<Integer, String> s : studenti) {
+							if (text.equals(s.second + "(Studente)")) {
+								Console.print(
+										"Aggiunto come studente nel membro di commissione " + s.second + "(Studente)",
+										"APP");
 								matricoleStudenti.add(Integer.valueOf(s.first));
 								break;
 							}
 						}
-						for(Pair<Integer, String> d : docenti) {
-							if(text.equals(d.second + "(Docente)")) {
-								Console.print("Aggiunto come docente nel membro di commissione " + d.second+"(Docente)", "APP");
+						for (Pair<Integer, String> d : docenti) {
+							if (text.equals(d.second + "(Docente)")) {
+								Console.print(
+										"Aggiunto come docente nel membro di commissione " + d.second + "(Docente)",
+										"APP");
 								matricoleDocentiRelatori.add(Integer.valueOf(d.first));
 								break;
 							}
 						}
-						
-						for(Pair<Integer, String> r : relatori) {
-							if(text.equals(r.second+"(Relatore)")) {
-								Console.print("Aggiunto come relatore nel membro di commissione " + r.second+"(Relatore)", "APP");
+
+						for (Pair<Integer, String> r : relatori) {
+							if (text.equals(r.second + "(Relatore)")) {
+								Console.print(
+										"Aggiunto come relatore nel membro di commissione " + r.second + "(Relatore)",
+										"APP");
 								matricoleDocentiRelatori.add(Integer.valueOf(r.first));
 								break;
 							}
 						}
 					}
-					
 
-					if (controllerAppello.aggiungiStudentiDocentiToCommissione(controllerAppello.getAppello().getId(), matricoleStudenti, matricoleDocentiRelatori))
+					if (controllerAppello.aggiungiStudentiDocentiToCommissione(controllerAppello.getAppello().getId(),
+							matricoleStudenti, matricoleDocentiRelatori))
 						aggiornaPagina();
 					child.close();
 				} else {
@@ -641,8 +634,8 @@ public class ViewAppello {
 		});
 		btnYes.setBounds(30, 234, 75, 25);
 		btnYes.setText("Conferma");
-	
- 		Button btnNo = new Button(child, SWT.NONE);
+
+		Button btnNo = new Button(child, SWT.NONE);
 		btnNo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -651,24 +644,22 @@ public class ViewAppello {
 		});
 		btnNo.setBounds(177, 234, 75, 25);
 		btnNo.setText("Indietro");
-		
+
 		Button btnRimuovi = new Button(child, SWT.NONE);
 		btnRimuovi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				countDocentiRelatori -= list.getSelectionCount();
 				list.remove(list.getSelectionIndices());
-				
+
 				Console.print("Count docenti e relatori: " + countDocentiRelatori, "GUI");
 			}
 		});
 		btnRimuovi.setBounds(496, 234, 75, 25);
 		btnRimuovi.setText("Rimuovi");
-		
 
 		child.open();
 	}
-	
 
 	public void scegliPresidenteCommissioneDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
@@ -676,22 +667,19 @@ public class ViewAppello {
 		child.setText("Identificazione Presidente di Commissione di tesi");
 		Utils.setShellToCenterParent(child, appelloShell);
 
-		ArrayList<Pair<Integer,String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB();
-		
-		
+		ArrayList<Pair<Integer, String>> membriDellaCommissione = controllerAppello.getMembriFromCommissioneDB();
+
 		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
 		lblRelatoreLabel_1.setText("Membri:");
 		lblRelatoreLabel_1.setBounds(30, 26, 55, 15);
-		
+
 		Combo comboMembri = new Combo(child, SWT.READ_ONLY);
 		comboMembri.setBounds(92, 23, 160, 23);
-		
-		for(int i = 0 ; i < membriDellaCommissione.size() ; i++) {
+
+		for (int i = 0; i < membriDellaCommissione.size(); i++) {
 			comboMembri.add(membriDellaCommissione.get(i).second);
 		}
-		
 
-		
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -700,26 +688,26 @@ public class ViewAppello {
 				if (comboMembri.getSelectionIndex() != -1) {
 
 					int matricola = 0;
-					for(Pair<Integer, String> membro : membriDellaCommissione) {
-						if(comboMembri.getText().equals(membro.second)) {
+					for (Pair<Integer, String> membro : membriDellaCommissione) {
+						if (comboMembri.getText().equals(membro.second)) {
 							matricola = membro.first;
 							break;
 						}
 					}
 
-					if (controllerAppello.aggiungiPresidenteCorsoToCommissione(controllerAppello.getAppello().getId(), matricola))
+					if (controllerAppello.aggiungiPresidenteCorsoToCommissione(controllerAppello.getAppello().getId(),
+							matricola))
 						aggiornaPagina();
 					child.close();
-				} 
-				else {
+				} else {
 					Utils.createWarningDialog(child, "Messaggio", "Completa i campi vuoti!");
 				}
 			}
 		});
 		btnYes.setBounds(30, 69, 75, 25);
 		btnYes.setText("Conferma");
-	
- 		Button btnNo = new Button(child, SWT.NONE);
+
+		Button btnNo = new Button(child, SWT.NONE);
 		btnNo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -728,7 +716,6 @@ public class ViewAppello {
 		});
 		btnNo.setBounds(168, 69, 75, 25);
 		btnNo.setText("Indietro");
-		
 
 		child.open();
 	}

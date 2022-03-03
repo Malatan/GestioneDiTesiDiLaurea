@@ -6,6 +6,7 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.PresidenteCorso;
 import userInterface.ViewPresidenteCorso;
+import utils.Pair;
 import utils.Utils;
 
 public class ControllerPresidenteCorso {
@@ -13,8 +14,8 @@ public class ControllerPresidenteCorso {
 	private ViewPresidenteCorso viewPresidenteCorso;
 	private PresidenteCorso presidenteCorso;
 	
-	public ControllerPresidenteCorso(String matricola, String nome, String cognome) {
-		presidenteCorso = new PresidenteCorso(nome,cognome,matricola);
+	public ControllerPresidenteCorso(String matricola, String nome, String cognome, Pair<Integer, String> corso) {
+		presidenteCorso = new PresidenteCorso(nome,cognome,matricola, corso);
 		viewPresidenteCorso = new ViewPresidenteCorso(this);
 	}
 	
@@ -25,7 +26,7 @@ public class ControllerPresidenteCorso {
 	public ArrayList<AppelloTesi> getAppelliFromDB() {
 		ArrayList<AppelloTesi> appelli = null;
 		if (Database.getInstance().isConnected()) {
-			appelli = Database.getInstance().getAppelli();
+			appelli = Database.getInstance().getAppelliByCorso(presidenteCorso.getCorso().first);
 		} else {
 			Utils.createConfirmDialog(viewPresidenteCorso.getShell(), "Messaggio", "Connessione al database persa");
 		}
