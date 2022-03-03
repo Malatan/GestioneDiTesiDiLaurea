@@ -91,6 +91,19 @@ public class ControllerAppello {
 			return "";
 	}
 	
+	public String getStatusAppello() {
+		String s = "";
+		if(Database.getInstance().isConnected()) {
+			s = Database.getInstance().getStatusApprovazioneAppello(appello.getId());
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		if (s != null)
+			return s;
+		else
+			return "";
+	}
+	
 	public ArrayList<Pair<Integer,String>> getStudentiFromDB(){
 		ArrayList<Pair<Integer,String>> studenti = new ArrayList<Pair<Integer,String>>();
 		if (Database.getInstance().isConnected()) {
@@ -181,6 +194,28 @@ public class ControllerAppello {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().addLinkTele(link, appello.getId());
 			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Il link di teleconferenza e' stato aggiornato");
+			return true;
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean approvaAppello() {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().setAppelloApprovazione(appello.getId(),1);
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "L'appello e' stato approvato correttamente!");
+			return true;
+		}else {
+			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean richiediCorrezione() {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().setAppelloApprovazione(appello.getId(),2);
+			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "E' stato richiesto una correzione");
 			return true;
 		}else {
 			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");

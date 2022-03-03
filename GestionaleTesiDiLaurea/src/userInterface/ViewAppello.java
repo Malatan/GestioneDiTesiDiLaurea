@@ -104,6 +104,9 @@ public class ViewAppello {
 
 	}
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		appelloShell = new Shell(parentShell, SWT.CLOSE | SWT.TITLE | SWT.APPLICATION_MODAL);
@@ -169,6 +172,7 @@ public class ViewAppello {
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
+		
 		switch(controllerAppello.getRuolo()) {
 			case 0:
 				appelloShell.setText(appelloShell.getText()+" - Studente");
@@ -179,6 +183,7 @@ public class ViewAppello {
 				break;
 			case 2:
 				appelloShell.setText(appelloShell.getText()+" - Presidente Scuola");
+				createPresidenteScuolaComposite();
 				break;
 			case 3:
 				appelloShell.setText(appelloShell.getText()+" - Presidente Corso");
@@ -196,6 +201,38 @@ public class ViewAppello {
 		}
 	}
 	
+	public void createPresidenteScuolaComposite() {
+		Composite compositePresidenteScuola = new Composite(appelloShell, SWT.BORDER);
+		compositePresidenteScuola.setBounds(10, 370, 465, 80);
+		
+		Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);
+		approvaAppello.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if(Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di approvare l'appello?")) {
+					controllerAppello.approvaAppello();
+					aggiornaPagina();
+				}
+			}
+		});
+		approvaAppello.setBounds(10, 10, 120, 25);
+		approvaAppello.setText("Approva Appello");
+		
+		Button richiediCorrezione = new Button(compositePresidenteScuola, SWT.NONE);
+		richiediCorrezione.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if(Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di richiedere la correzione?")) {
+					controllerAppello.richiediCorrezione();
+					aggiornaPagina();
+				}
+			}
+		});
+		richiediCorrezione.setBounds(136, 10, 120, 25);
+		richiediCorrezione.setText("Richiedi Correzione");
+		
+	}
+	
 	public void createPresidenteCorsoComposite() {
 		Composite compositeResponsabile = new Composite(appelloShell, SWT.BORDER);
 		compositeResponsabile.setBounds(10, 370, 465, 80);
@@ -209,6 +246,10 @@ public class ViewAppello {
 		});
 		btnData.setBounds(10, 10, 120, 25);
 		btnData.setText("Inserisci Data");
+		
+		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
+		lblStatusAppello.setBounds(10, 45, 465, 15);
+		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
 		
 		Button btnIdentificaMembri = new Button(compositeResponsabile, SWT.NONE);
 		btnIdentificaMembri.addMouseListener(new MouseAdapter() {
@@ -367,9 +408,7 @@ public class ViewAppello {
 		child.open();
 	}
 	
-	/**
-	 * @wbp.parser.entryPoint
-	 */
+
 	public void dataAulaDialog() {
 		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);

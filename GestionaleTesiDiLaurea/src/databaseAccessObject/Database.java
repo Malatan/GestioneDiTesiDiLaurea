@@ -285,6 +285,19 @@ public class Database {
 		} 
 	}
 	
+	public void setAppelloApprovazione(int id_appello, int val) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "UPDATE appello SET approvazione = '" + val + "' WHERE id_appello = " + id_appello;
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public void addDateToAppello(String Date, int id_appello) {
 		Connection connection = null;
 		try {
@@ -327,6 +340,31 @@ public class Database {
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
 				s = rs.getString("teleconferenza");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+	
+	public String getStatusApprovazioneAppello(int id_appello) {
+		Connection connection = null;
+		String s = "";
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT approvazione FROM appello WHERE id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				int approvazione = rs.getInt("approvazione");
+				if(approvazione == 1) {
+					s = "Approvato";
+				}else if(approvazione == 2) {
+					s = "Correzione dell'appello";
+				}else {
+					s = "In Revisione";
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
