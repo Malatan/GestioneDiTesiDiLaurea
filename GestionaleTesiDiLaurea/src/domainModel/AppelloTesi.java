@@ -12,13 +12,16 @@ public class AppelloTesi {
 	
 	private int id;
 	private String date;
+	private int idCorso;
 	private Pair<Integer, String> aula;
 	private String startTime;
 	private String linkTeleconferenza;
 	private String nota;
 	
-	public AppelloTesi(int idAppello, String data, String startTime, Pair<Integer, String> aula, String linkTeleconferenza, String nota) {
+	public AppelloTesi(int idAppello, int idCorso, String data, String startTime, 
+			Pair<Integer, String> aula, String linkTeleconferenza, String nota) {
 		this.id = idAppello;
+		this.idCorso = idCorso;
 		this.date = data;
 		this.startTime = startTime;
 		this.aula = aula;
@@ -35,8 +38,6 @@ public class AppelloTesi {
 	}
 
 	public String getDateString() {
-		
-		
 		if (date == null)
 			return "INDEFINITO";
 		else {
@@ -93,5 +94,13 @@ public class AppelloTesi {
 
 	public void setLinkTeleconferenza(String linkTeleconferenza) {
 		this.linkTeleconferenza = linkTeleconferenza;
+	}
+
+	public int getIdCorso() {
+		return idCorso;
+	}
+
+	public void setIdCorso(int idCorso) {
+		this.idCorso = idCorso;
 	}
 }

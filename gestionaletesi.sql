@@ -21,6 +21,7 @@ CREATE TABLE corso(
 
 CREATE TABLE appello(
 	id_appello int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_corso int NOT NULL,
 	data date DEFAULT NULL,
 	pubblicato_da int NOT NULL,
 	pub_data date NOT NULL,
@@ -28,7 +29,8 @@ CREATE TABLE appello(
 	nota text DEFAULT NULL,
 	orario time DEFAULT NULL,
 	approvazione int DEFAULT NULL COMMENT '1 = approvato, 2 = richiedi correzione',
-	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola)
+	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola),
+	FOREIGN KEY (id_corso ) REFERENCES corso(id_corso )
 )AUTO_INCREMENT=30000;
 
 CREATE TABLE dipartimento(
