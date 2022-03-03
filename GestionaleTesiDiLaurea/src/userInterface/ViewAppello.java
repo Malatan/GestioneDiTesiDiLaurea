@@ -350,6 +350,11 @@ public class ViewAppello {
 				}
 			}
 		});
+		
+		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
+		lblStatusAppello.setBounds(10, 45, 465, 15);
+		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
+		
 		btnPrenotaAula.setBounds(10, 10, 180, 25);
 		btnPrenotaAula.setText("Prenota Aula e Inserisci Orario");
 		
