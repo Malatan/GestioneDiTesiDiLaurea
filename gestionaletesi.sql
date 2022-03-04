@@ -60,11 +60,10 @@ CREATE TABLE docente_dipartimento(
 	FOREIGN KEY (matricola) REFERENCES utente(matricola)
 );
 
-
-CREATE TABLE appello_studentedocente(
+CREATE TABLE appello_membro(
 	id_appello int NOT NULL,
 	matricola int NOT NULL,
-	ruolo int DEFAULT 0 COMMENT '0 = Studente, 1 = Membro Della Commissione, 2 = Presidente della commissione',
+	ruolo int DEFAULT 0 COMMENT '0 = Studente, 1 = Membro Della Commissione, 2 = Relatore, 3 = Presidente della commissione',
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (matricola) REFERENCES utente(matricola),
 	PRIMARY KEY (id_appello, matricola)
@@ -178,3 +177,11 @@ VALUES(40000, 10009),
 (40004, 10026),
 (40004, 10027),
 (40004, 10028);
+
+--popolamento appello
+INSERT INTO appello (id_corso, pubblicato_da, pub_data)
+VALUES(20000, 10002, 2022-2-2), 
+(20001, 10002, 2022-3-3), 
+(20002, 10002, 2022-4-4), 
+(20003, 10002, 2022-5-5), 
+(20004, 10002, 2022-6-6);
