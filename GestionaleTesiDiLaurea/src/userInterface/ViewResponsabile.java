@@ -240,13 +240,8 @@ public class ViewResponsabile {
 					ca.run();
 				}
 			});
-<<<<<<< HEAD
 			btnDettaglio.setBounds(350, offset_y, 75, 25);
-			btnDettaglio.setText("Dettaglio");
-=======
-			btnDettaglio.setBounds(230, offset_y, 75, 25);
 			btnDettaglio.setText("Dettagli");
->>>>>>> 204fdddef77f5617ca71e6940668f0b2c26dd1e2
 			
 			Label lblSeperator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
 			lblSeperator.setBounds(10, offset_y - 5, 415, 2);

@@ -221,12 +221,7 @@ public class ViewAppello {
 		});
 		approvaAppello.setBounds(10, 10, 120, 25);
 		approvaAppello.setText("Approva Appello");
-<<<<<<< HEAD
-
-=======
 		
-		
->>>>>>> 204fdddef77f5617ca71e6940668f0b2c26dd1e2
 		Button richiediCorrezione = new Button(compositePresidenteScuola, SWT.NONE);
 		richiediCorrezione.addMouseListener(new MouseAdapter() {
 			@Override
