@@ -37,5 +37,12 @@ public class Docente{
 		this.cognome = cognome;
 	}
 	
+	public String getNomeCognome() {
+		return new String(nome + " " + cognome);
+	}
+	
+	public int getMatricolaInt() {
+		return Integer.parseInt(matricola);
+	}
 	
 }

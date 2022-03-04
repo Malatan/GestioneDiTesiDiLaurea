@@ -220,33 +220,38 @@ public class Database {
 		}
 	}
 
-	public void aggiungiStudentiDocenti(int id_appello, ArrayList<Integer> studenti,
-			ArrayList<Integer> docentiRelatori) {
+	public void updateMembriAppello(int id_appello, ArrayList<Integer> studenti, ArrayList<Integer> relatori, ArrayList<Integer> commissioni) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String elimination = "DELETE FROM appello_studentedocente WHERE id_appello=" + id_appello;
+			String elimination = "DELETE FROM appello_membro WHERE id_appello=" + id_appello;
 			stm.executeUpdate(elimination);
 
-			String query = "INSERT INTO appello_studentedocente (id_appello, matricola, ruolo) VALUES(?,?,?)";
-
-			for (Integer matricolaStudente : studenti) {
+			String query = "INSERT INTO appello_membro (id_appello, matricola, ruolo) VALUES(?,?,?)";
+			for (Integer matricola : studenti) {
 				PreparedStatement prepared = connection.prepareStatement(query);
 				prepared.setInt(1, id_appello);
-				prepared.setInt(2, matricolaStudente);
+				prepared.setInt(2, matricola);
 				prepared.setInt(3, 0);
-
 				Console.print(prepared.toString(), "sql");
 				prepared.executeUpdate();
 			}
-
-			for (Integer matricolaDocentiRelatori : docentiRelatori) {
+			
+			for (Integer matricola : commissioni) {
 				PreparedStatement prepared = connection.prepareStatement(query);
 				prepared.setInt(1, id_appello);
-				prepared.setInt(2, matricolaDocentiRelatori);
+				prepared.setInt(2, matricola);
 				prepared.setInt(3, 1);
-
+				Console.print(prepared.toString(), "sql");
+				prepared.executeUpdate();
+			}
+			
+			for (Integer matricola : relatori) {
+				PreparedStatement prepared = connection.prepareStatement(query);
+				prepared.setInt(1, id_appello);
+				prepared.setInt(2, matricola);
+				prepared.setInt(3, 2);
 				Console.print(prepared.toString(), "sql");
 				prepared.executeUpdate();
 			}
@@ -362,18 +367,18 @@ public class Database {
 		return s;
 	}
 
-	public Pair<Integer, String> getPresidenteCommissione(int id_appello) {
+	public Docente getPresidenteCommissione(int id_appello) {
 		Connection connection = null;
-		Pair<Integer, String> s = null;
+		Docente s = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT ut.nome,ut.cognome,ut.matricola FROM appello_studentedocente aps, utente as ut WHERE aps.ruolo = 2 AND"
+			String query = "SELECT ut.nome,ut.cognome,ut.matricola FROM appello_membro aps, utente as ut WHERE aps.ruolo = 3 AND"
 					+ " aps.matricola = ut.matricola AND" + " aps.id_appello = " + id_appello;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
-				s = Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome"));
+				s = new Docente (rs.getString("matricola"), rs.getString("cognome"), rs.getString("nome"));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -583,7 +588,7 @@ public class Database {
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
-				docenti.add(Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome")));
+				docenti.add(Pair.of(rs.getInt("matricola"), rs.getString("nome") + " " + rs.getString("Cognome")));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -591,7 +596,28 @@ public class Database {
 		}
 		return docenti;
 	}
-
+	
+	public ArrayList<Pair<Docente, String>> getDocentiAndDip() {
+		Connection connection = null;
+		ArrayList<Pair<Docente, String>> docentiDip = new ArrayList<Pair<Docente, String>>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT u.matricola, u.nome, u.cognome, p.nome as nome_dip FROM utente u, dipartimento p, docente_dipartimento dd "
+					+ "where u.ruolo = 4 and u.matricola = dd.matricola and dd.id_dipartimento = p.id_dipartimento";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				docentiDip.add(Pair.of(new Docente(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome")), 
+						rs.getString("nome_dip")));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return docentiDip;
+	}
+	
 	public String getDateFromDB(int idAppello) {
 		Connection connection = null;
 		String dataAppello = null;
@@ -613,53 +639,55 @@ public class Database {
 		return dataAppello;
 	}
 
-	public ArrayList<Pair<Integer, String>> getRelatori() {
+	public ArrayList<Docente> getRelatori() {
 		Connection connection = null;
-		ArrayList<Pair<Integer, String>> relatori = new ArrayList<Pair<Integer, String>>();
+		ArrayList<Docente> relatori = new ArrayList<Docente>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut WHERE dt.approvato = 1 AND dt.relatore = ut.matricola";
+			String query = "SELECT u.matricola, u.nome, u.cognome "
+					+ "FROM appello_membro am, utente u "
+					+ "WHERE am.ruolo = 2 and am.matricola = u.matricola";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
-
 			while (rs.next()) {
-				relatori.add(Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome")));
+				relatori.add(new Docente(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome")));
 			}
-
 			connection.close();
 			return relatori;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public void aggiungiPresidenteCorso(int id_appello, int matricola) {
+	public void updatePresidenteCommissione(int id_appello, int matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
-			String query = "UPDATE appello_studentedocente SET ruolo = ? WHERE matricola = ? AND id_appello = ?";
-
+			String query = "UPDATE appello_membro SET ruolo = 1 WHERE id_appello = ? AND ruolo = 3";
 			PreparedStatement prepared = connection.prepareStatement(query);
-			prepared.setInt(3, id_appello);
-			prepared.setInt(2, matricola);
-			prepared.setInt(1, 2);
-
+			prepared.setInt(1, id_appello);
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+			
+			query = "UPDATE appello_membro SET ruolo = 3 WHERE matricola = ? AND id_appello = ?";
+			prepared = connection.prepareStatement(query);
+			prepared.setInt(2, id_appello);
+			prepared.setInt(1, matricola);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			
+			
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public ArrayList<Pair<Integer, String>> getMyStudenti(String matricola) {
+	public ArrayList<Studente> getMyStudenti(String matricola) {
 		Connection connection = null;
-		ArrayList<Pair<Integer, String>> studenti = new ArrayList<Pair<Integer, String>>();
+		ArrayList<Studente> studenti = new ArrayList<Studente>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -671,7 +699,7 @@ public class Database {
 			ResultSet rs = stm.executeQuery(query);
 
 			while (rs.next()) {
-				studenti.add(Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome")));
+				studenti.add(new Studente(rs.getString("nome"), rs.getString("cognome"), rs.getString("matricola")));
 			}
 
 			connection.close();
@@ -684,56 +712,96 @@ public class Database {
 			return null;
 		}
 	}
-
-	public ArrayList<Pair<Integer, String>> getStudentiFromAppello(int id_appello) {
+	
+	public ArrayList<Pair<Studente, Docente>> getRelatoriByStudenti(ArrayList<Studente> studenti) {
 		Connection connection = null;
-		ArrayList<Pair<Integer, String>> studentimembri = new ArrayList<Pair<Integer, String>>();
+		ArrayList<Pair<Studente, Docente>> relatori = new ArrayList<Pair<Studente, Docente>>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT ut.cognome, ut.nome, ut.matricola from appello_studentedocente aps, utente as ut WHERE aps.matricola = ut.matricola "
+			for (int i = 0 ; i < studenti.size() ; i ++) {
+				String query = "SELECT u.matricola, u.nome, u.cognome from utente u, domandatesi d "
+						+ "where u.matricola = d.relatore and d.matricola = " + studenti.get(i).getMatricola() ;
+				Console.print(query, "sql");
+				ResultSet rs = stm.executeQuery(query);
+				if (rs.next()) {
+					relatori.add(Pair.of(studenti.get(i), 
+							new Docente(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome"))));
+				}
+			}
+			connection.close();
+			return relatori;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ArrayList<Pair<Studente, Docente>> getRelatoriStudentiFromAppello(int id_appello) {
+		Connection connection = null;
+		ArrayList<Pair<Studente, Docente>> studentiRelatori = new ArrayList<Pair<Studente, Docente>>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT us.matricola as matricola_studente, us.nome as nome_studente, us.cognome as cognome_studente, "
+					+ "ur.matricola as matricola_relatore, ur.nome as nome_relatore, ur.cognome as cognome_relatore "
+					+ "FROM appello_membro am, utente us, utente ur, domandatesi d "
+					+ "WHERE am.matricola = us.matricola AND d.matricola = am.matricola AND ur.matricola = d.relatore "
+					+ "AND am.ruolo = 0 AND am.id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				studentiRelatori.add(Pair.of(new Studente(rs.getString("nome_studente"), rs.getString("cognome_studente"), 
+															rs.getString("matricola_studente")), 
+											new Docente(rs.getString("matricola_relatore"), rs.getString("nome_relatore"), 
+															rs.getString("cognome_relatore"))));
+			}
+			connection.close();
+			return studentiRelatori;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ArrayList<Studente> getStudentiFromAppello(int id_appello) {
+		Connection connection = null;
+		ArrayList<Studente> studenti = new ArrayList<Studente>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from appello_membro aps, utente as ut WHERE aps.matricola = ut.matricola "
 					+ "AND aps.ruolo = 0 " + "AND aps.id_appello = " + id_appello;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
-
 			while (rs.next()) {
-				studentimembri
-						.add(Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome")));
+				studenti.add(new Studente(rs.getString("nome"), rs.getString("cognome"), rs.getString("matricola")));
 			}
-
 			connection.close();
-			return studentimembri;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			return studenti;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public ArrayList<Pair<Integer, String>> getMembriCommissioneById(int id_appello) {
+	public ArrayList<Docente> getCommissioniByAppello(int id_appello) {
 		Connection connection = null;
-		ArrayList<Pair<Integer, String>> membri = new ArrayList<Pair<Integer, String>>();
+		ArrayList<Docente> commissioni = new ArrayList<Docente>();
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT ut.cognome, ut.nome, ut.matricola from appello_studentedocente aps, utente as ut WHERE aps.matricola = ut.matricola "
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from appello_membro aps, utente as ut WHERE aps.matricola = ut.matricola "
 					+ "AND aps.ruolo = 1 " + "AND aps.id_appello = " + id_appello;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
-
 			while (rs.next()) {
-				membri.add(Pair.of(rs.getInt("matricola"), rs.getString("cognome") + " " + rs.getString("nome")));
+				commissioni.add(new Docente(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome")));
 			}
-
 			connection.close();
-			return membri;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			return commissioni;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}

@@ -50,6 +50,10 @@ public class Studente {
 		this.statusTesi = statusTesi;
 	}
 	
+	public String getNomeCognome() {
+		return new String(nome + " " + cognome);
+	}
+	
 }
 
 	

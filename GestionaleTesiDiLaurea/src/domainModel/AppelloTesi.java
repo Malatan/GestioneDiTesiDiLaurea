@@ -104,5 +104,11 @@ public class AppelloTesi {
 	public void setCorso(Pair<Integer, String> corso) {
 		this.corso = corso;
 	}
-
+	
+	public String getAulaOreString() {
+		if (aula == null || aula.second == null || aula.first == null)
+			return "INDEFINITO";
+		String s = aula.second + "(" + startTime + ")";
+		return s;
+	}
 }

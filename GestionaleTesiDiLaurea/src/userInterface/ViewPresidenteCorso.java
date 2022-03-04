@@ -43,7 +43,7 @@ public class ViewPresidenteCorso {
 	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
-		presidenteCorsoShell = new Shell();
+		presidenteCorsoShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		presidenteCorsoShell.setSize(400, 500);
 		presidenteCorsoShell.setText("Presidente del Corso di " + controllerPresidenteCorso.getPresidenteCorso().getCorso().second);
 		Utils.setShellToCenterMonitor(presidenteCorsoShell, display);

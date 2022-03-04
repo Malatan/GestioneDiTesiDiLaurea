@@ -37,7 +37,7 @@ public class ViewResponsabile {
 	private Label lblId;
 	private Label lblData;
 	private Label lblCorso;
-	private Label lblAula;
+	private Label lblAulaOre;
 	public ViewResponsabile(ControllerResponsabile cr) {
 		this.controllerResponsabile = cr;
 	}
@@ -214,11 +214,11 @@ public class ViewResponsabile {
 		lblData.setBounds(100, 126, 100, 15);
 		lblData.setText("Data");
 		
-		lblAula = new Label(responsabileShell, SWT.NONE);
-		lblAula.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-		lblAula.setAlignment(SWT.CENTER);
-		lblAula.setBounds(209, 126, 100, 15);
-		lblAula.setText("Aula");
+		lblAulaOre = new Label(responsabileShell, SWT.NONE);
+		lblAulaOre.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+		lblAulaOre.setAlignment(SWT.CENTER);
+		lblAulaOre.setBounds(215, 126, 100, 15);
+		lblAulaOre.setText("Aula");
 		
 		lblCorso = new Label(responsabileShell, SWT.NONE);
 		lblCorso.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
@@ -243,8 +243,8 @@ public class ViewResponsabile {
 			Label lblAula = new Label(compositeListaAppelli, SWT.NONE);
 			lblAula.setAlignment(SWT.CENTER);
 			lblAula.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-			lblAula.setBounds(200, offset_y+3, 80, 25);
-			lblAula.setText(a.getAula().second);
+			lblAula.setBounds(175, offset_y+3, 140, 25);
+			lblAula.setText(a.getAulaOreString());
 			
 			Label lblCorso = new Label(compositeListaAppelli, SWT.NONE);
 			lblCorso.setAlignment(SWT.CENTER);
