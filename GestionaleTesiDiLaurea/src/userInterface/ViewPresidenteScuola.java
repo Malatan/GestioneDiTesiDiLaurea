@@ -167,7 +167,7 @@ public class ViewPresidenteScuola {
 					}
 				});
 				btnDettaglio.setBounds(230, offset_y, 75, 25);
-				btnDettaglio.setText("Dettaglio");
+				btnDettaglio.setText("Dettagli");
 				
 				Label lblSeperator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
 				lblSeperator.setBounds(10, offset_y - 5, 325, 2);

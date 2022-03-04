@@ -206,11 +206,15 @@ public class ViewAppello {
 		compositePresidenteScuola.setBounds(10, 370, 465, 80);
 		
 		Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);
+		Label lblStatusAppello = new Label(compositePresidenteScuola, SWT.NONE);
+		lblStatusAppello.setBounds(10, 45, 465, 15);
+		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
 		approvaAppello.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if(Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di approvare l'appello?")) {
 					controllerAppello.approvaAppello();
+					lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
 					aggiornaPagina();
 				}
 			}
@@ -218,12 +222,14 @@ public class ViewAppello {
 		approvaAppello.setBounds(10, 10, 120, 25);
 		approvaAppello.setText("Approva Appello");
 		
+		
 		Button richiediCorrezione = new Button(compositePresidenteScuola, SWT.NONE);
 		richiediCorrezione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if(Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di richiedere la correzione?")) {
 					controllerAppello.richiediCorrezione();
+					lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
 					aggiornaPagina();
 				}
 			}
