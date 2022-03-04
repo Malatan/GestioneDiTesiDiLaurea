@@ -82,6 +82,19 @@ CREATE TABLE domandatesi(
 	FOREIGN KEY (id_corso) REFERENCES corso(id_corso)
 );
 
+DELIMITER $$
+CREATE TRIGGER appello_date_change 
+AFTER UPDATE ON appello FOR EACH ROW
+BEGIN
+IF NEW.data <> OLD.data THEN 
+	BEGIN
+	DELETE FROM prenotazione_aula_giorno WHERE id_appello = NEW.id_appello;
+	END;
+END IF;
+END;
+$$
+DELIMITER ;
+
 -- popolamento utente
 INSERT INTO utente (nome, cognome, password, ruolo)
 VALUES("Tizio", "Caio", 123, 0), -- 10000 Studente
