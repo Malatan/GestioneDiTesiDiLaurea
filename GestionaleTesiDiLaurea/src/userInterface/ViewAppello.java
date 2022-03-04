@@ -430,40 +430,53 @@ public class ViewAppello {
 		child.setText("Prenotazione Aula");
 		Utils.setShellToCenterParent(child, appelloShell);
 		ArrayList<Pair<Integer, String>> aule = controllerAppello.getAuleFromDB();
-
+		Pair<Integer, String> original_aula = controllerAppello.getAppello().getAula();
+		String original_orario = controllerAppello.getAppello().getStartTime();
 		Combo comboAule = new Combo(child, SWT.READ_ONLY);
 		comboAule.setBounds(30, 20, 80, 23);
 		for (int i = 0; i < aule.size(); i++) {
+			int id = aule.get(i).first;
 			comboAule.add(aule.get(i).second);
+			if (original_aula.first != null && id == original_aula.first) {
+				comboAule.select(i);
+			}
 		}
-
+		
 		DateTime dateTime = new DateTime(child, SWT.BORDER | SWT.TIME);
 		dateTime.setBounds(120, 20, 104, 24);
-
-		LocalDateTime now = LocalDateTime.now();
-		dateTime.setHours(now.getHour());
-		dateTime.setMinutes(now.getMinute());
-		dateTime.setSeconds(0);
-
+		if (original_orario != null && !original_orario.equals("")) {
+			String [] parts = original_orario.split(":");
+			dateTime.setHours(Integer.parseInt(parts[0]));
+			dateTime.setMinutes(Integer.parseInt(parts[1]));
+			dateTime.setSeconds(Integer.parseInt(parts[2]));
+		}else {
+			dateTime.setHours(8);
+			dateTime.setMinutes(0);
+			dateTime.setSeconds(0);
+		}
+		
 		Button btnYes = new Button(child, SWT.NONE);
 		btnYes.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (comboAule.getSelectionIndex() != -1) {
-					int id_aula = 0;
-					String nome_aula = comboAule.getText();
-					for (Pair<Integer, String> p : aule) {
-						if (p.second.equals(nome_aula)) {
-							id_aula = p.first;
-							break;
+					String new_orario = Utils.hhmmssTimeFormat(dateTime.getHours(), dateTime.getMinutes(), dateTime.getSeconds());
+					if (!comboAule.getText().equals(original_aula.second) || !new_orario.equals(original_orario)) {
+						int id_aula = 0;
+						String nome_aula = comboAule.getText();
+						for (Pair<Integer, String> p : aule) {
+							if (p.second.equals(nome_aula)) {
+								id_aula = p.first;
+								break;
+							}
 						}
-					}
 
-					String orario = dateTime.getHours() + ":" + dateTime.getMinutes();
-					if (controllerAppello.prenotaAula(id_aula) && controllerAppello.setOrario(orario)) {
-						controllerAppello.updateAppelloFromDB();
-						aggiornaPagina();
-						child.close();
+						String orario = dateTime.getHours() + ":" + dateTime.getMinutes();
+						if (controllerAppello.prenotaAula(id_aula) && controllerAppello.setOrario(orario)) {
+							controllerAppello.updateAppelloFromDB();
+							aggiornaPagina();
+							child.close();
+						}
 					}
 				} else {
 					Utils.createWarningDialog(child, "Messaggio", "Nessuna aula selezionata");

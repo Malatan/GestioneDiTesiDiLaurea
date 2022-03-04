@@ -488,13 +488,17 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.teleconferenza, a.nota "
-					+ "from appello a, corso c where a.id_corso = c.id_corso";
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, pag.id_aula, "
+					+ "au.nome as nome_aula, a.data, a.orario, a.teleconferenza, a.nota "
+					+ "FROM appello a "
+					+ "LEFT JOIN corso c on a.id_corso = c.id_corso "
+					+ "LEFT JOIN prenotazione_aula_giorno pag on pag.id_appello = a.id_appello "
+					+ "LEFT JOIN aula au on pag.id_aula = au.id_aula";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
 				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
-						rs.getString("data"), rs.getString("orario"), null,
+						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("nome_aula")),
 						rs.getString("teleconferenza"), rs.getString("nota")));
 			}
 

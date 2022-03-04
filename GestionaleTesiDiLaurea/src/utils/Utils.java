@@ -73,6 +73,28 @@ public class Utils {
 		return data;
 	}
 	
+	public static String hhmmssTimeFormat(int h, int m, int s) {
+		String output = "";
+		if(h<10) {
+			output += "0" + h;
+		} else {
+			output += h;
+		}
+		output += ":";
+		if(m<10) {
+			output += "0" + m;
+		} else {
+			output += m;
+		}
+		output += ":";
+		if(s<10) {
+			output += "0" + s;
+		} else {
+			output += s;
+		}
+		return output;
+	}
+	
 	public static int getRuolo(Object o) {
 		if (o instanceof Studente) {
 			return 0;

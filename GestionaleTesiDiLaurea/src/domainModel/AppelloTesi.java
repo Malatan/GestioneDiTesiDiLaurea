@@ -41,7 +41,6 @@ public class AppelloTesi {
 		if (date == null)
 			return "INDEFINITO";
 		else {
-			Console.print("(getDateString) " + date, date);
 		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			return new String(LocalDate.parse(date, formatter).format(formatter2));
@@ -65,6 +64,8 @@ public class AppelloTesi {
 	}
 
 	public Pair<Integer, String> getAula() {
+		if (aula == null || aula.second == null || aula.first == null)
+			return Pair.of(null, "INDEFINITO");
 		return aula;
 	}
 
