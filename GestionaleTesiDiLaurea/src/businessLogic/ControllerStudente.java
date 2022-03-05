@@ -13,11 +13,11 @@ import utils.Utils;
 public class ControllerStudente {
 
 	private Studente studente;
-	private ViewStudente viewStudente;
+	private ViewStudente view;
 	
 	public ControllerStudente(String matricola, String nome, String cognome) {
 		this.studente = new Studente(nome, cognome, matricola);
-		viewStudente = new ViewStudente(this);
+		view = new ViewStudente(this);
 		
 	}
 	
@@ -26,14 +26,14 @@ public class ControllerStudente {
 	}
 	
 	public void run() {
-		viewStudente.createAndRun();
+		view.createAndRun();
 	}
 	
 	public ArrayList<Pair<Integer, String>> getCorsiFromDB() {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getCorsi();
 		}else {
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
 	}
@@ -42,7 +42,7 @@ public class ControllerStudente {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getDocenti();
 		}else {
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
 	}
@@ -51,7 +51,7 @@ public class ControllerStudente {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getAppelloByMatricola(getStudente().getMatricolaInt());
 		}else {
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
 	}
@@ -59,10 +59,10 @@ public class ControllerStudente {
 	public String getStatusTesi() {
 		Pair<Integer, String> status = Pair.of(-1, "");
 		if(Database.getInstance().isConnected()) {
-			status = Database.getInstance().getStatusTesi(studente.getMatricolaInt());
+			status = Database.getInstance().getStatusTesiAndString(studente.getMatricolaInt());
 			studente.setStatusTesi(status.first);	
 		}else {
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return status.second;
 	}
@@ -72,10 +72,10 @@ public class ControllerStudente {
 		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().iscrizioneTesi(studente, data, id_corso, matricola_relatore);
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Iscrizione e' avvenuta con successo!");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Iscrizione e' avvenuta con successo!");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -83,10 +83,10 @@ public class ControllerStudente {
 	public boolean ritiraDomanda() {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().ritiraDomanda(studente.getMatricola());
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "La domanda per la tesi e' stata ritirata.");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "La domanda per la tesi e' stata ritirata.");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -94,10 +94,10 @@ public class ControllerStudente {
 	public boolean addRepo(String file) {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().addRepo(file, studente.getMatricola());
-			Utils.createConfirmDialog(viewStudente.getShell(), "Messaggio", "Il repository e' stato aggiornato");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Il repository e' stato aggiornato");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -107,7 +107,7 @@ public class ControllerStudente {
 		if(Database.getInstance().isConnected()) {
 			s = Database.getInstance().getRepository(studente.getMatricola());
 		}else {
-			Utils.createErrorDialog(viewStudente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		if (s != null)
 			return s;

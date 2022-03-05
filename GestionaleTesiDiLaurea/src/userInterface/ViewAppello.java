@@ -32,9 +32,9 @@ import utils.Pair;
 import utils.Utils;
 
 public class ViewAppello {
-	private ControllerAppello controllerAppello;
+	private ControllerAppello controller;
 	private Shell parentShell;
-	private Shell appelloShell;
+	private Shell shell;
 	private int countDocentiRelatori;
 
 	private Label lblData;
@@ -46,18 +46,18 @@ public class ViewAppello {
 	private Text candidati;
 
 	public ViewAppello(Shell parent, ControllerAppello cr) {
-		this.controllerAppello = cr;
+		this.controller = cr;
 		this.parentShell = parent;
 		this.countDocentiRelatori = 0;
 	}
 
 	public Shell getShell() {
-		return appelloShell;
+		return shell;
 	}
 
 	public void aggiornaPagina() {
 		this.countDocentiRelatori = 0;
-		AppelloTesi appello = controllerAppello.getAppello();
+		AppelloTesi appello = controller.getAppello();
 		String no_value = "INDEFINITO";
 		//aggiorna info appello
 		if (appello.getData() != null) {
@@ -83,9 +83,9 @@ public class ViewAppello {
 		lblCorso.setText(appello.getCorso().second);
 		
 		//aggiorna lista commissione
-		ArrayList<Docente> commissioni = controllerAppello.getCommissioniDB();
+		ArrayList<Docente> commissioni = controller.getCommissioniDB();
 		String text = "";
-		Docente presidenteC = controllerAppello.getPresidenteCommissioneFromDB();
+		Docente presidenteC = controller.getPresidenteCommissioneFromDB();
 		if (presidenteC != null) {
 			text += presidenteC.getNomeCognome() + "-Presidente Commissione" + "\n";
 		} 
@@ -95,7 +95,7 @@ public class ViewAppello {
 		membri.setText(text);
 		
 		//aggiorna lista candidati relatori
-		ArrayList<Pair<Studente, Docente>> studentiRelatori = controllerAppello.getStudentiRelatoriFromAppelloFromDB();
+		ArrayList<Pair<Studente, Docente>> studentiRelatori = controller.getStudentiRelatoriFromAppelloFromDB();
 		text = "";
 		for (Pair<Studente, Docente> p : studentiRelatori) {
 			text += p.first.getNomeCognome() + "-" + p.second.getNomeCognome() + "\n";
@@ -108,12 +108,12 @@ public class ViewAppello {
 	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
-		appelloShell = new Shell(parentShell, SWT.CLOSE | SWT.TITLE | SWT.APPLICATION_MODAL);
-		appelloShell.setSize(500, 500);
-		appelloShell.setText("Appello [" + controllerAppello.getAppello().getId() + "]");
-		Utils.setShellToCenterMonitor(appelloShell, display);
+		shell = new Shell(parentShell, SWT.CLOSE | SWT.TITLE | SWT.APPLICATION_MODAL);
+		shell.setSize(500, 500);
+		shell.setText("Appello [" + controller.getAppello().getId() + "]");
+		Utils.setShellToCenterMonitor(shell, display);
 
-		ScrolledComposite scrolledComposite = new ScrolledComposite(appelloShell, SWT.BORDER | SWT.V_SCROLL);
+		ScrolledComposite scrolledComposite = new ScrolledComposite(shell, SWT.BORDER | SWT.V_SCROLL);
 		scrolledComposite.setBounds(10, 10, 465, 350);
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
@@ -157,7 +157,7 @@ public class ViewAppello {
 
 		membri = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		membri.setEditable(false);
-		membri.setBounds(10, 136, 441, 90);
+		membri.setBounds(10, 136, 435, 90);
 
 		Label lblCorsoLabel = new Label(composite, SWT.NONE);
 		lblCorsoLabel.setBounds(10, 31, 35, 15);
@@ -172,33 +172,33 @@ public class ViewAppello {
 		
 		candidati = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		candidati.setEditable(false);
-		candidati.setBounds(10, 253, 441, 100);
+		candidati.setBounds(10, 253, 435, 100);
 
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-		switch (controllerAppello.getRuolo()) {
+		switch (controller.getRuolo()) {
 		case 0:
-			appelloShell.setText(appelloShell.getText() + " - Studente");
+			shell.setText(shell.getText() + " - Studente");
 			break;
 		case 1:
-			appelloShell.setText(appelloShell.getText() + " - Responsabile");
+			shell.setText(shell.getText() + " - Responsabile");
 			createResponsabileComposite();
 			break;
 		case 2:
-			appelloShell.setText(appelloShell.getText() + " - Presidente Scuola");
+			shell.setText(shell.getText() + " - Presidente Scuola");
 			createPresidenteScuolaComposite();
 			break;
 		case 3:
-			appelloShell.setText(appelloShell.getText() + " - Presidente Corso");
+			shell.setText(shell.getText() + " - Presidente Corso");
 			createPresidenteCorsoComposite();
 			break;
 		}
 
 		aggiornaPagina();
-		appelloShell.open();
-		appelloShell.layout();
-		while (!appelloShell.isDisposed()) {
+		shell.open();
+		shell.layout();
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -206,19 +206,19 @@ public class ViewAppello {
 	}
 
 	public void createPresidenteScuolaComposite() {
-		Composite compositePresidenteScuola = new Composite(appelloShell, SWT.BORDER);
+		Composite compositePresidenteScuola = new Composite(shell, SWT.BORDER);
 		compositePresidenteScuola.setBounds(10, 370, 465, 80);
 
 		Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);
 		Label lblStatusAppello = new Label(compositePresidenteScuola, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
-		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
+		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
 		approvaAppello.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if (Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di approvare l'appello?")) {
-					controllerAppello.approvaAppello();
-					lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
+				if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di approvare l'appello?")) {
+					controller.approvaAppello();
+					lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
 					aggiornaPagina();
 				}
 			}
@@ -230,9 +230,9 @@ public class ViewAppello {
 		richiediCorrezione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if (Utils.createYesNoDialog(appelloShell, "Conferma", "Confermi di richiedere la correzione?")) {
-					controllerAppello.richiediCorrezione();
-					lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
+				if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di richiedere la correzione?")) {
+					controller.richiediCorrezione();
+					lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
 					aggiornaPagina();
 				}
 			}
@@ -243,7 +243,7 @@ public class ViewAppello {
 	}
 
 	public void createPresidenteCorsoComposite() {
-		Composite compositeResponsabile = new Composite(appelloShell, SWT.BORDER);
+		Composite compositeResponsabile = new Composite(shell, SWT.BORDER);
 		compositeResponsabile.setBounds(10, 370, 465, 80);
 
 		Button btnData = new Button(compositeResponsabile, SWT.NONE);
@@ -258,7 +258,7 @@ public class ViewAppello {
 
 		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
-		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
+		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
 
 		Button btnIdentificaMembri = new Button(compositeResponsabile, SWT.NONE);
 		btnIdentificaMembri.addMouseListener(new MouseAdapter() {
@@ -282,12 +282,12 @@ public class ViewAppello {
 	}
 
 	public void aggiungereDataDialog() {
-		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
 		child.setText("Inserisci data dell'appello");
-		Utils.setShellToCenterParent(child, appelloShell);
-		String original = controllerAppello.getAppello().getDateString();
-		AppelloTesi a = controllerAppello.getAppello();
+		Utils.setShellToCenterParent(child, shell);
+		String original = controller.getAppello().getDateString();
+		AppelloTesi a = controller.getAppello();
 
 		DateTime dateTimeAula = new DateTime(child, SWT.BORDER);
 		dateTimeAula.setBounds(25, 20, 175, 23);
@@ -326,8 +326,8 @@ public class ViewAppello {
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
 				} else if (!s.equals(original)) {
-					controllerAppello.addDateToAppello(s);
-					controllerAppello.updateAppelloFromDB();
+					controller.addDateToAppello(s);
+					controller.updateAppelloFromDB();
 					aggiornaPagina();
 					child.close();
 				} else {
@@ -351,24 +351,24 @@ public class ViewAppello {
 	}
 
 	public void createResponsabileComposite() {
-		Composite compositeResponsabile = new Composite(appelloShell, SWT.BORDER);
+		Composite compositeResponsabile = new Composite(shell, SWT.BORDER);
 		compositeResponsabile.setBounds(10, 370, 465, 80);
 
 		Button btnPrenotaAula = new Button(compositeResponsabile, SWT.NONE);
 		btnPrenotaAula.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if (controllerAppello.getAppello().getData() != null) {
+				if (controller.getAppello().getData() != null) {
 					dataAulaDialog();
 				} else {
-					Utils.createWarningDialog(appelloShell, "Messaggio", "La data dell'appello non e' definita");
+					Utils.createWarningDialog(shell, "Messaggio", "La data dell'appello non e' definita");
 				}
 			}
 		});
 
 		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
-		lblStatusAppello.setText("Status Appello: " + controllerAppello.getStatusAppello());
+		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
 
 		btnPrenotaAula.setBounds(10, 10, 180, 25);
 		btnPrenotaAula.setText("Prenota Aula e Inserisci Orario");
@@ -386,11 +386,11 @@ public class ViewAppello {
 	}
 
 	public void aggiungeLinkTeleDialog() {
-		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
 		child.setText("Link Teleconferenza");
-		Utils.setShellToCenterParent(child, appelloShell);
-		String original = controllerAppello.getLinkTeleFromDB();
+		Utils.setShellToCenterParent(child, shell);
+		String original = controller.getLinkTeleFromDB();
 
 		Text textRepository = new Text(child, SWT.BORDER);
 		textRepository.setBounds(30, 20, 171, 23);
@@ -404,8 +404,8 @@ public class ViewAppello {
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
 				} else if (!s.equals(original)) {
-					controllerAppello.addLinkTele(s);
-					controllerAppello.updateAppelloFromDB();
+					controller.addLinkTele(s);
+					controller.updateAppelloFromDB();
 					aggiornaPagina();
 					child.close();
 				} else {
@@ -429,13 +429,13 @@ public class ViewAppello {
 	}
 
 	public void dataAulaDialog() {
-		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
 		child.setText("Prenotazione Aula");
-		Utils.setShellToCenterParent(child, appelloShell);
-		ArrayList<Pair<Integer, String>> aule = controllerAppello.getAuleFromDB();
-		Pair<Integer, String> original_aula = controllerAppello.getAppello().getAula();
-		String original_orario = controllerAppello.getAppello().getStartTime();
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<Pair<Integer, String>> aule = controller.getAuleFromDB();
+		Pair<Integer, String> original_aula = controller.getAppello().getAula();
+		String original_orario = controller.getAppello().getStartTime();
 		Combo comboAule = new Combo(child, SWT.READ_ONLY);
 		comboAule.setBounds(30, 20, 80, 23);
 		for (int i = 0; i < aule.size(); i++) {
@@ -477,8 +477,8 @@ public class ViewAppello {
 						}
 
 						String orario = dateTime.getHours() + ":" + dateTime.getMinutes();
-						if (controllerAppello.prenotaAula(id_aula) && controllerAppello.setOrario(orario)) {
-							controllerAppello.updateAppelloFromDB();
+						if (controller.prenotaAula(id_aula) && controller.setOrario(orario)) {
+							controller.updateAppelloFromDB();
 							aggiornaPagina();
 							child.close();
 						}
@@ -505,17 +505,17 @@ public class ViewAppello {
 	}
 
 	public void scegliStudentiDocentiDialog() {
-		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(600, 330);
 		child.setText("Membri appello");
-		Utils.setShellToCenterParent(child, appelloShell);
-		ArrayList<Pair<Studente, Docente>> studentiRelatori = controllerAppello.getStudentiRelatoriFromDB();
-		ArrayList<Pair<Docente, String>> docentiDip = controllerAppello.getDocentiDipFromDB();
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<Pair<Studente, Docente>> studentiRelatori = controller.getStudentiRelatoriFromDB();
+		ArrayList<Pair<Docente, String>> docentiDip = controller.getDocentiDipFromDB();
 
-		ArrayList<Studente> studentiMembri = controllerAppello.getStudentiFromAppelloDB();
-		ArrayList<Docente> relatoriMembri = controllerAppello.getRelatoriFromDB();
-		ArrayList<Docente> commissioniMembri = controllerAppello.getCommissioniDB();
-		Docente presidenteC = controllerAppello.getPresidenteCommissioneFromDB();
+		ArrayList<Studente> studentiMembri = controller.getStudentiFromAppelloDB();
+		ArrayList<Docente> relatoriMembri = controller.getRelatoriFromDB();
+		ArrayList<Docente> commissioniMembri = controller.getCommissioniDB();
+		Docente presidenteC = controller.getPresidenteCommissioneFromDB();
 
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
 		lblCorsoLabel.setBounds(30, 20, 100, 15);
@@ -524,8 +524,10 @@ public class ViewAppello {
 		Combo comboStudentiRelatori = new Combo(child, SWT.READ_ONLY);
 		comboStudentiRelatori.setBounds(166, 17, 385, 23);
 		for (int i = 0; i < studentiRelatori.size(); i++) {
-			comboStudentiRelatori.add(studentiRelatori.get(i).first.getNomeCognome() + "-"
-					+ studentiRelatori.get(i).second.getNomeCognome());
+			if(studentiRelatori.get(i).first.getStatusTesi() != 2) {
+				comboStudentiRelatori.add(studentiRelatori.get(i).first.getNomeCognome() + "-"
+						+ studentiRelatori.get(i).second.getNomeCognome());
+			}
 		}
 
 		Label lblDocenti = new Label(child, SWT.NONE);
@@ -639,7 +641,7 @@ public class ViewAppello {
 						}
 					}
 					System.out.println(matricoleStudenti.size() +"-"+matricoleRelatori.size()+"-"+matricoleCommissioni.size());
-					if (controllerAppello.updateMembriAppello(controllerAppello.getAppello().getId(), matricoleStudenti,
+					if (controller.updateMembriAppello(controller.getAppello().getId(), matricoleStudenti,
 							matricoleRelatori, matricoleCommissioni))
 						aggiornaPagina();
 					child.close();
@@ -676,6 +678,7 @@ public class ViewAppello {
 									String[] split = s.split("-");
 									if (split[0].equals(studentiRelatori.get(i).second.getNomeCognome())) {
 										list.remove(list.indexOf(s));
+										countDocentiRelatori--;
 										i = studentiRelatori.size();
 										break;
 									}
@@ -712,11 +715,11 @@ public class ViewAppello {
 	}
 
 	public void scegliPresidenteCommissioneDialog() {
-		Shell child = new Shell(appelloShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(311, 150);
 		child.setText("Identificazione Presidente di Commissione di tesi");
-		Utils.setShellToCenterParent(child, appelloShell);
-		ArrayList<Docente> commissioni = controllerAppello.getCommissioniDB();
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<Docente> commissioni = controller.getCommissioniDB();
 		
 		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
 		lblRelatoreLabel_1.setText("Membri:");
@@ -742,7 +745,7 @@ public class ViewAppello {
 						}
 					}
 
-					if (controllerAppello.updatePresidenteCommissione(controllerAppello.getAppello().getId(),
+					if (controller.updatePresidenteCommissione(controller.getAppello().getId(),
 							matricola))
 						aggiornaPagina();
 					child.close();

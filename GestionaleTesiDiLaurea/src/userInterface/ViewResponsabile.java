@@ -76,7 +76,7 @@ public class ViewResponsabile {
 
 
 		Button btnCreaAppello = new Button(compositeMenu, SWT.NONE);
-		btnCreaAppello.setBounds(170, 79, 200, 30);
+		btnCreaAppello.setBounds(10, 10, 517, 40);
 		btnCreaAppello.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -86,7 +86,7 @@ public class ViewResponsabile {
 		btnCreaAppello.setText("Pubblica appello");
 		
 		Button btnVisualizzaAppelli = new Button(compositeMenu, SWT.NONE);
-		btnVisualizzaAppelli.setBounds(170, 115, 200, 30);
+		btnVisualizzaAppelli.setBounds(10, 56, 517, 40);
 		btnVisualizzaAppelli.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -105,7 +105,7 @@ public class ViewResponsabile {
 				cl.run();
 			}
 		});
-		btnLogOut.setBounds(170, 278, 200, 30);
+		btnLogOut.setBounds(10, 278, 517, 30);
 		btnLogOut.setText("Log out");
 		
 		Button btnIndietro = new Button(responsabileShell, SWT.NONE);

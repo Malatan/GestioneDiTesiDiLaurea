@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.List;
 
 public class ViewPresidenteCorso {
-	private ControllerPresidenteCorso controllerPresidenteCorso;
-	private Shell presidenteCorsoShell;
+	private ControllerPresidenteCorso controller;
+	private Shell shell;
 	private Composite compositeMenu;
 	private Label lblId;
 	private Label lblData;
@@ -32,11 +32,11 @@ public class ViewPresidenteCorso {
 	private ScrolledComposite scrolledCompositeListaAppelli;
 
 	public ViewPresidenteCorso(ControllerPresidenteCorso cpc) {
-		this.controllerPresidenteCorso = cpc;
+		this.controller = cpc;
 	}
 
 	public Shell getShell() {
-		return presidenteCorsoShell;
+		return shell;
 	}
 
 	/**
@@ -44,44 +44,44 @@ public class ViewPresidenteCorso {
 	 */
 	public void createAndRun() {
 		Display display = Display.getDefault();
-		presidenteCorsoShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		presidenteCorsoShell.setSize(480, 500);
-		presidenteCorsoShell.setText("Presidente del Corso di " + controllerPresidenteCorso.getPresidenteCorso().getCorso().second);
-		Utils.setShellToCenterMonitor(presidenteCorsoShell, display);
+		shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
+		shell.setSize(480, 500);
+		shell.setText("Presidente del Corso di " + controller.getPresidenteCorso().getCorso().second);
+		Utils.setShellToCenterMonitor(shell, display);
 
-		Composite composite = new Composite(presidenteCorsoShell, SWT.BORDER);
+		Composite composite = new Composite(shell, SWT.BORDER);
 		composite.setBounds(21, 22, 420, 80);
 
 		Label lblMatricola = new Label(composite, SWT.NONE);
 		lblMatricola.setBounds(10, 10, 320, 15);
-		lblMatricola.setText("Matricola: " + controllerPresidenteCorso.getPresidenteCorso().getMatricola());
+		lblMatricola.setText("Matricola: " + controller.getPresidenteCorso().getMatricola());
 
 		Label lblNome = new Label(composite, SWT.NONE);
 		lblNome.setBounds(10, 31, 320, 15);
-		lblNome.setText("Nome: " + controllerPresidenteCorso.getPresidenteCorso().getNome());
+		lblNome.setText("Nome: " + controller.getPresidenteCorso().getNome());
 
 		Label lblCognome = new Label(composite, SWT.NONE);
 		lblCognome.setBounds(10, 52, 320, 15);
-		lblCognome.setText("Cognome: " + controllerPresidenteCorso.getPresidenteCorso().getCognome());
+		lblCognome.setText("Cognome: " + controller.getPresidenteCorso().getCognome());
 
-		compositeMenu = new Composite(presidenteCorsoShell, SWT.BORDER);
+		compositeMenu = new Composite(shell, SWT.BORDER);
 		compositeMenu.setBounds(20, 125, 421, 326);
 		
-		lblId = new Label(presidenteCorsoShell, SWT.NONE);
+		lblId = new Label(shell, SWT.NONE);
 		lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 		lblId.setAlignment(SWT.CENTER);
 		lblId.setBounds(40, 126, 50, 15);
 		lblId.setText("ID");
 		lblId.setVisible(false);
 		
-		lblData = new Label(presidenteCorsoShell, SWT.NONE);
+		lblData = new Label(shell, SWT.NONE);
 		lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 		lblData.setAlignment(SWT.CENTER);
 		lblData.setBounds(100, 126, 100, 15);
 		lblData.setText("Data");
 		lblData.setVisible(false);
 		
-		lblStatus = new Label(presidenteCorsoShell, SWT.NONE);
+		lblStatus = new Label(shell, SWT.NONE);
 		lblStatus.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 		lblStatus.setAlignment(SWT.CENTER);
 		lblStatus.setBounds(215, 126, 100, 15);
@@ -110,14 +110,14 @@ public class ViewPresidenteCorso {
 		btnLogout.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				presidenteCorsoShell.close();
-				controllerPresidenteCorso = null;
+				shell.close();
+				controller = null;
 				ControllerLogin cl = new ControllerLogin();
 				cl.run();
 			}
 		});
 
-		Button btnIndietro = new Button(presidenteCorsoShell, SWT.NONE);
+		Button btnIndietro = new Button(shell, SWT.NONE);
 		btnIndietro.setLocation(365, 125);
 		btnIndietro.setSize(75, 25);
 		btnIndietro.setText("Indietro");
@@ -133,10 +133,10 @@ public class ViewPresidenteCorso {
 			}
 		});
 
-		presidenteCorsoShell.open();
-		presidenteCorsoShell.layout();
+		shell.open();
+		shell.layout();
 
-		while (!presidenteCorsoShell.isDisposed()) {
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -145,12 +145,12 @@ public class ViewPresidenteCorso {
 	}
 
 	public void visualizzaListaAppelli() {
-		scrolledCompositeListaAppelli = new ScrolledComposite(presidenteCorsoShell, SWT.BORDER | SWT.V_SCROLL);
+		scrolledCompositeListaAppelli = new ScrolledComposite(shell, SWT.BORDER | SWT.V_SCROLL);
 		scrolledCompositeListaAppelli.setBounds(20, 152, 421, 297);
 		scrolledCompositeListaAppelli.setExpandVertical(true);
 		Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
 		compositeListaAppelli.setBounds(scrolledCompositeListaAppelli.getBounds());
-		ArrayList<AppelloTesi> appelli = controllerPresidenteCorso.getAppelliFromDB();
+		ArrayList<AppelloTesi> appelli = controller.getAppelliFromDB();
 		int offset_y = 10;
 		for (AppelloTesi a : appelli) {
 			Label lblId = new Label(compositeListaAppelli, SWT.NONE);
@@ -175,10 +175,10 @@ public class ViewPresidenteCorso {
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					AppelloTesi appello = controllerPresidenteCorso.getAppelloFromDB(a.getId());
-					ControllerAppello ca = new ControllerAppello(appello, presidenteCorsoShell,
-							controllerPresidenteCorso.getPresidenteCorso().getMatricola(),
-							Utils.getRuolo(controllerPresidenteCorso.getPresidenteCorso()));
+					AppelloTesi appello = controller.getAppelloFromDB(a.getId());
+					ControllerAppello ca = new ControllerAppello(appello, shell,
+							controller.getPresidenteCorso().getMatricola(),
+							Utils.getRuolo(controller.getPresidenteCorso()));
 					ca.run();
 				}
 			});

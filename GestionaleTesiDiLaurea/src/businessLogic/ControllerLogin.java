@@ -45,7 +45,8 @@ public class ControllerLogin {
 							controllerPresidenteCorso.run();
 							break;
 						case 4:		
-							ControllerDocente controllerDocente = new ControllerDocente(info[0],info[1],info[3]);
+							ControllerDocente controllerDocente = new ControllerDocente(info[0],info[1],info[3],
+									getDipByDocente(info[0]));
 							controllerDocente.run();
 							break;
 					}
@@ -63,6 +64,16 @@ public class ControllerLogin {
 		Pair<Integer, String> corso = null;
 		if (Database.getInstance().isConnected()) {
 			corso = Database.getInstance().getCorsoByPresidente(Integer.parseInt(matricola));
+		} else {
+			Utils.createConfirmDialog(viewLogin.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return corso;
+	}
+	
+	public Pair<Integer, String> getDipByDocente(String matricola) {
+		Pair<Integer, String> corso = null;
+		if (Database.getInstance().isConnected()) {
+			corso = Database.getInstance().getDipByDocente(matricola);
 		} else {
 			Utils.createConfirmDialog(viewLogin.getShell(), "Messaggio", "Connessione al database persa");
 		}

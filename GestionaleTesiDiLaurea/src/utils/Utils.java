@@ -1,6 +1,7 @@
 package utils;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -95,6 +96,22 @@ public class Utils {
 		return output;
 	}
 	
+	public static String yymmddTimeFormat(int y, int m, int d) {
+		String output = y + "-";
+		if(m<10) {
+			output += "0" + m;
+		} else {
+			output += m;
+		}
+		output += "-";
+		if(d<10) {
+			output += "0" + d;
+		} else {
+			output += d;
+		}
+		return output;
+	}
+	
 	public static int getRuolo(Object o) {
 		if (o instanceof Studente) {
 			return 0;
@@ -106,5 +123,32 @@ public class Utils {
 			return 3;
 		}
 		return -1;
+	}
+	
+	public static String dateSubtractDays(String data, int minus_day) {
+		//yy-mm-dd
+		String[] parseData = data.split("-");
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.MONTH, Integer.parseInt(parseData[1]));
+		c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parseData[2]));
+		c.set(Calendar.YEAR, Integer.parseInt(parseData[0]));
+		
+		c.add(Calendar.DAY_OF_MONTH, -minus_day);
+		return yymmddTimeFormat(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+	}
+	
+	public static String getAppelloRuoloByInt(int ruolo) {
+		switch(ruolo) {
+			case 0:
+				return "Studente";
+			case 1:
+				return "Membro Commissione";
+			case 2:
+				return "Relatore";
+			case 3:
+				return "Presidente Commissione";
+			default:
+				return "error";
+		}
 	}
 }

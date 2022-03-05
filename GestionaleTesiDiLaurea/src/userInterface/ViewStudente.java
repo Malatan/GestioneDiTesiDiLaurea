@@ -36,7 +36,6 @@ public class ViewStudente {
 	private Button btnIscrizione;
 	private Button btnRitira;
 	private Button btnAddRepo;
-	private Button btnAppello;
 	private Composite compositeUserInfo_1;
 	public ViewStudente(ControllerStudente cs) {
 		this.controllerStudente = cs;
@@ -79,7 +78,7 @@ public class ViewStudente {
 		Display display = Display.getDefault();
 		studenteShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		studenteShell.setSize(400, 567);
-		studenteShell.setText("Gestionale di tesi di laurea - Studente");
+		studenteShell.setText("Studente");
 		Utils.setShellToCenterMonitor(studenteShell, display);
 		
 		Composite compositeUserInfo = new Composite(studenteShell, SWT.BORDER);
@@ -99,14 +98,14 @@ public class ViewStudente {
 		
 		textStatusTesi = new Text(studenteShell, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		textStatusTesi.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
-		textStatusTesi.setBounds(20, 119, 340, 150);
+		textStatusTesi.setBounds(20, 96, 340, 170);
 		
 		compositeUserInfo_1 = new Composite(studenteShell, SWT.BORDER);
-		compositeUserInfo_1.setBounds(20, 298, 340, 218);
+		compositeUserInfo_1.setBounds(20, 272, 340, 244);
 		
 		btnIscrizione = new Button(compositeUserInfo_1, SWT.NONE);
-		btnIscrizione.setLocation(62, 15);
-		btnIscrizione.setSize(200, 25);
+		btnIscrizione.setLocation(10, 10);
+		btnIscrizione.setSize(316, 35);
 		btnIscrizione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -116,8 +115,8 @@ public class ViewStudente {
 		btnIscrizione.setText("Iscrizione Tesi");
 		
 		btnRitira = new Button(compositeUserInfo_1, SWT.NONE);
-		btnRitira.setLocation(63, 55);
-		btnRitira.setSize(200, 25);
+		btnRitira.setLocation(10, 51);
+		btnRitira.setSize(316, 35);
 		btnRitira.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -127,8 +126,8 @@ public class ViewStudente {
 		btnRitira.setText("Ritira domanda");
 		
 		btnAddRepo = new Button(compositeUserInfo_1, SWT.NONE);
-		btnAddRepo.setLocation(63, 95);
-		btnAddRepo.setSize(200, 25);
+		btnAddRepo.setLocation(10, 92);
+		btnAddRepo.setSize(316, 35);
 		btnAddRepo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -137,28 +136,9 @@ public class ViewStudente {
 		});
 		btnAddRepo.setText("Repository tesi");
 		
-		btnAppello = new Button(compositeUserInfo_1, SWT.NONE);
-		btnAppello.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				AppelloTesi appello = controllerStudente.getAppello();
-				if(appello != null) {
-					ControllerAppello ca = new ControllerAppello(appello, studenteShell, 
-						controllerStudente.getStudente().getMatricola(),
-						Utils.getRuolo(controllerStudente.getStudente()));
-					ca.run();
-				}else {
-					Utils.createWarningDialog(studenteShell, "Messaggio", "Non sei ancora stato assegnato a nessun appello.");
-				}
-			}
-		});
-		btnAppello.setLocation(63, 135);
-		btnAppello.setSize(200, 25);
-		btnAppello.setText("Visualizza Appello");
-		
 		Button btnLogOut = new Button(compositeUserInfo_1, SWT.NONE);
-		btnLogOut.setLocation(63, 175);
-		btnLogOut.setSize(200, 25);
+		btnLogOut.setLocation(10, 205);
+		btnLogOut.setSize(316, 25);
 		btnLogOut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {

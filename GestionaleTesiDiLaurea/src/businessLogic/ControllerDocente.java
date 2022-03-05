@@ -3,20 +3,22 @@ package businessLogic;
 import java.util.ArrayList;
 
 import databaseAccessObject.Database;
+import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.DomandaTesi;
 import domainModel.Responsabile;
 import userInterface.ViewDocente;
+import utils.Pair;
 import utils.Utils;
 
 public class ControllerDocente {
 	
 	private Docente docente;
-	private ViewDocente viewDocente;
+	private ViewDocente view;
 	
-	public ControllerDocente(String matricola, String nome, String cognome) {
-		this.docente = new Docente(matricola, nome, cognome);
-		viewDocente = new ViewDocente(this);
+	public ControllerDocente(String matricola, String nome, String cognome, Pair<Integer, String> dipartimento) {
+		this.docente = new Docente(matricola, nome, cognome, dipartimento);
+		view = new ViewDocente(this);
 	}
 	
 	public Docente getDocente() {
@@ -24,33 +26,53 @@ public class ControllerDocente {
 	}
 
 	public ViewDocente getViewDocente() {
-		return viewDocente;
+		return view;
 	}
 
 	public void run() {
-		viewDocente.createAndRun();
+		view.createAndRun();
 	}
 	
 	public ArrayList<DomandaTesi> getDomandeTesiFromDB(){
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getDomandeTesi(Integer.parseInt(docente.getMatricola()));
 		}else {
-			Utils.createErrorDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
 	}
 	
+	public ArrayList<Pair<AppelloTesi, Integer>> getAppelliFromDB(){
+		ArrayList<Pair<AppelloTesi, Integer>> appelli = new ArrayList<Pair<AppelloTesi, Integer>>();
+		if(Database.getInstance().isConnected()) {
+			appelli =  Database.getInstance().getAppelliAndRuoloByDocente(docente.getMatricola());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return appelli;
+	}
+	
+	public AppelloTesi getAppelloFromDB(int id_appello) {
+		AppelloTesi appello = null;
+		if (Database.getInstance().isConnected()) {
+			appello = Database.getInstance().getAppello(id_appello);
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return appello;
+	}
+	
+	
 	public boolean approvaDomandaTesi(DomandaTesi domanda) {
 		if(Database.getInstance().isConnected()) {
-			if(Utils.createYesNoDialog(viewDocente.getShell(), "Conferma", "Vuole confermare l'approvazione della domanda di tesi dello studente?")) {
+			if(Utils.createYesNoDialog(view.getShell(), "Conferma", "Vuole confermare l'approvazione della domanda di tesi dello studente?")) {
 				Database.getInstance().approvaDomandaTesi(domanda);
-				Utils.createConfirmDialog(viewDocente.getShell(), "Messaggio", "Domanda di tesi approvata");
+				Utils.createConfirmDialog(view.getShell(), "Messaggio", "Domanda di tesi approvata");
 				return true;
 			}
-
 			return false;
 		}else {
-			Utils.createErrorDialog(viewDocente.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}

@@ -77,7 +77,7 @@ public class Database {
 	 * 0 = non e' presenta la domanda, 1 = e' presente la domanda ma non ancora in
 	 * appello, 2 = e' stato assegnato ad un appello
 	 */
-	public Pair<Integer, String> getStatusTesi(int matricola) {
+	public Pair<Integer, String> getStatusTesiAndString(int matricola) {
 		Connection connection = null;
 		int status = -1;
 		String s = "";
@@ -101,9 +101,41 @@ public class Database {
 					s += "Repository Tesi: " + rs.getString("repository") + ".\n";
 				}
 				if (!rs.getBoolean("approvato")) {
-					s += "Attendi l'approvazione da parte del relatore.";
+					s += "Attendi l'approvazione da parte del relatore.\n";
 				} else {
-					s += "Domanda approvata.";
+					s += "Domanda approvata.\n";
+					query = "SELECT a.id_appello, a.data, a.orario, au.id_aula, au.nome as nome_aula "
+							+ "FROM appello_membro am, appello a, aula au, prenotazione_aula_giorno pag "
+							+ "WHERE am.id_appello = a.id_appello AND am.id_appello = pag.id_appello "
+							+ "AND pag.id_aula = au.id_aula AND am.matricola = " + matricola;
+					Console.print(query, "sql");
+					ResultSet rs2 = stm.executeQuery(query);
+					if (!rs2.next()) {
+						s += "Attendi l'assegnazione all'appello.\n";
+					} else {
+						status = 2;
+						s += "Sei stato assegnato all'appello di:\n";
+						boolean data_definita = false;
+						if(rs2.getString("data") != null) {
+							s += "Data: " + rs2.getString("data") + ".\n";
+							data_definita = true;
+						}else {
+							s += "Data: INDEFINITO";
+						}
+						if(rs2.getString("orario") != null) {
+							s += "Ore: " + rs2.getString("orario") + ".\n";
+						}else {
+							s += "Ore: INDEFINITO";
+						}
+						if(rs2.getString("id_aula") != null) {
+							s += "Aula: " + rs2.getString("nome_aula") + ".\n";
+						}else {
+							s += "Aula: INDEFINITO";
+						}
+						if (data_definita) {
+							s += "Puoi ritirare la domanda prima di " + Utils.dateSubtractDays(rs2.getString("data"), 7) + ".\n";
+						}
+					}
 				}
 				status = 1;
 			} else {
@@ -115,6 +147,39 @@ public class Database {
 			e.printStackTrace();
 		}
 		return Pair.of(status, s);
+	}
+	
+	public boolean getStudentiStatusTesi(ArrayList<Studente> studenti) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			for ( int i = 0 ; i < studenti.size() ; i ++) {
+				String query = "SELECT A.matricola, A.approvato, B.id_appello FROM "
+						+ "(SELECT d.matricola, d.approvato FROM domandatesi d WHERE d.matricola = " + studenti.get(i).getMatricola() + ") AS A "
+						+ "LEFT JOIN "
+						+ "(SELECT am.matricola, am.id_appello FROM appello_membro am WHERE am.matricola = " + studenti.get(i).getMatricola() + ") AS B "
+						+ "ON A.matricola = B.matricola";
+				Console.print(query, "sql");
+				ResultSet rs = stm.executeQuery(query);
+				if (rs.next()) {
+					int s = -1;
+					if (rs.getInt("id_appello") != 0) {
+						s = 2;
+					} else if (rs.getInt("matricola") != 0) {
+						s = 1;
+					} else {
+						s = 0;
+					}
+					studenti.get(i).setStatusTesi(s);
+				}
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	public void iscrizioneTesi(Studente studente, String data, int id_corso, int matricola_relatore) {
@@ -372,7 +437,7 @@ public class Database {
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
-				s = new Docente (rs.getString("matricola"), rs.getString("cognome"), rs.getString("nome"));
+				s = new Docente (rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome"));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -482,7 +547,35 @@ public class Database {
 		}
 		return appello;
 	}
-
+	
+	// appello - ruolo
+	public ArrayList<Pair<AppelloTesi, Integer>> getAppelliAndRuoloByDocente(String matricola){
+		Connection connection = null;
+		ArrayList<Pair<AppelloTesi, Integer>> appelli = new ArrayList<Pair<AppelloTesi, Integer>>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.status, a.teleconferenza, "
+					+ "a.nota, am.ruolo, pag.id_aula, au.nome as nome_aula "
+					+ "FROM appello a, corso c,  appello_membro am "
+					+ "LEFT JOIN prenotazione_aula_giorno pag ON pag.id_appello = am.id_appello "
+					+ "LEFT JOIN aula au ON pag.id_aula = au.id_aula "
+					+ "WHERE a.id_appello = am.id_appello AND a.id_corso = c.id_corso AND am.matricola = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				appelli.add(Pair.of(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("nome_aula")), 
+						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status")), 
+						rs.getInt("ruolo")));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appelli;
+	}
+	
 	public ArrayList<AppelloTesi> getAppelli() {
 		Connection connection = null;
 		ArrayList<AppelloTesi> appelli = new ArrayList<AppelloTesi>();
@@ -614,6 +707,26 @@ public class Database {
 		return docentiDip;
 	}
 	
+	public Pair<Integer, String> getDipByDocente(String matricola){
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT dd.id_dipartimento, d.nome "
+					+ "FROM docente_dipartimento dd, dipartimento d "
+					+ "WHERE dd.id_dipartimento = d.id_dipartimento AND dd.matricola = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return Pair.of(rs.getInt("id_dipartimento"), rs.getString("nome"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public String getDateFromDB(int idAppello) {
 		Connection connection = null;
 		String dataAppello = null;
@@ -635,7 +748,7 @@ public class Database {
 		return dataAppello;
 	}
 
-	public ArrayList<Docente> getRelatori() {
+	public ArrayList<Docente> getRelatoriByAppello(int id_appello) {
 		Connection connection = null;
 		ArrayList<Docente> relatori = new ArrayList<Docente>();
 		try {
@@ -643,7 +756,7 @@ public class Database {
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			String query = "SELECT u.matricola, u.nome, u.cognome "
 					+ "FROM appello_membro am, utente u "
-					+ "WHERE am.ruolo = 2 and am.matricola = u.matricola";
+					+ "WHERE am.ruolo = 2 AND am.matricola = u.matricola AND am.id_appello = " + id_appello;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
@@ -687,24 +800,23 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			/*String query = "SELECT ut.cognome, ut.nome, ut.matricola "
+					+ "FROM domandatesi dt, utente as ut "
+					+ "WHERE dt.approvato = 1 AND dt.matricola = ut.matricola "
+					+ "AND dt.id_corso = (SELECT id_corso FROM corso WHERE presidente = " + matricola + ") "
+					+ "AND ut.matricola NOT IN (SELECT matricola FROM  appello_membro WHERE RUOLO = 0)";*/
 			String query = "SELECT ut.cognome, ut.nome, ut.matricola from domandatesi dt, utente as ut"
 					+ " WHERE dt.approvato = 1 AND dt.matricola = ut.matricola"
-
 					+ " AND dt.id_corso = (SELECT id_corso FROM corso WHERE presidente = " + matricola + ")";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
-
 			while (rs.next()) {
 				studenti.add(new Studente(rs.getString("nome"), rs.getString("cognome"), rs.getString("matricola")));
 			}
-
 			connection.close();
 			return studenti;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}

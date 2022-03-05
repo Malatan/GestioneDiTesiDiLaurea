@@ -1,16 +1,28 @@
 package domainModel;
 
+import utils.Pair;
+
 public class Docente{
 
 	private String matricola;
 	private String nome;
 	private String cognome;
+	private Pair<Integer, String> dipartimento;
 	
 	public Docente(String matricola, String nome, String cognome) {
 		super();
 		this.matricola = matricola;
 		this.nome = nome;
 		this.cognome = cognome;
+		this.dipartimento = null;
+	}
+	
+	public Docente(String matricola, String nome, String cognome, Pair<Integer, String> dipartimento) {
+		super();
+		this.matricola = matricola;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.dipartimento = dipartimento;
 	}
 
 	public String getMatricola() {
@@ -44,5 +56,13 @@ public class Docente{
 	public int getMatricolaInt() {
 		return Integer.parseInt(matricola);
 	}
-	
+
+	public Pair<Integer, String> getDipartimento() {
+		return dipartimento;
+	}
+
+	public void setDipartimento(Pair<Integer, String> dipartimento) {
+		this.dipartimento = dipartimento;
+	}
+
 }

@@ -11,12 +11,12 @@ import utils.Utils;
 
 public class ControllerPresidenteCorso {
 	
-	private ViewPresidenteCorso viewPresidenteCorso;
+	private ViewPresidenteCorso view;
 	private PresidenteCorso presidenteCorso;
 	
 	public ControllerPresidenteCorso(String matricola, String nome, String cognome, Pair<Integer, String> corso) {
 		presidenteCorso = new PresidenteCorso(nome,cognome,matricola, corso);
-		viewPresidenteCorso = new ViewPresidenteCorso(this);
+		view = new ViewPresidenteCorso(this);
 	}
 	
 	public PresidenteCorso getPresidenteCorso() {
@@ -28,7 +28,7 @@ public class ControllerPresidenteCorso {
 		if (Database.getInstance().isConnected()) {
 			appelli = Database.getInstance().getAppelliByCorso(presidenteCorso.getCorso().first);
 		} else {
-			Utils.createConfirmDialog(viewPresidenteCorso.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appelli;
 	}
@@ -38,13 +38,13 @@ public class ControllerPresidenteCorso {
 		if (Database.getInstance().isConnected()) {
 			appello = Database.getInstance().getAppello(id_appello);
 		} else {
-			Utils.createConfirmDialog(viewPresidenteCorso.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appello;
 	}
 	
 	public void run() {
-		viewPresidenteCorso.createAndRun();
+		view.createAndRun();
 		
 	}
 

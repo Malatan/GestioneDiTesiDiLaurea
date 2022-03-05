@@ -28,7 +28,7 @@ CREATE TABLE appello(
 	teleconferenza varchar(50) DEFAULT NULL,
 	nota text DEFAULT NULL,
 	orario time DEFAULT NULL,
-	status int DEFAULT 0 COMMENT '1 = approvato, 2 = richiedi correzione',
+	status int DEFAULT 0 COMMENT '1 = approvato, 2 = richiedi correzione, 3 = completato, 4 = scaduto, 5 = annullato',
 	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola),
 	FOREIGN KEY (id_corso ) REFERENCES corso(id_corso )
 )AUTO_INCREMENT=30000;
@@ -90,6 +90,15 @@ IF NEW.data <> OLD.data THEN
 	DELETE FROM prenotazione_aula_giorno WHERE id_appello = NEW.id_appello;
 	END;
 END IF;
+END;
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER ritira_domanda 
+AFTER DELETE ON domandatesi FOR EACH ROW
+BEGIN
+	DELETE FROM appello_membro WHERE appello_membro.matricola = old.matricola OR appello_membro.matricola = old.relatore;
 END;
 $$
 DELIMITER ;

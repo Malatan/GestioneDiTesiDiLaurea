@@ -44,7 +44,7 @@ public class ViewPresidenteScuola {
 		Display display = Display.getDefault();
 		presidenteScuolaShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		presidenteScuolaShell.setSize(500, 508);
-		presidenteScuolaShell.setText("Gestionale di tesi di laurea - Presidente della Scuola\r\n");
+		presidenteScuolaShell.setText("Presidente della Scuola");
 		Utils.setShellToCenterMonitor(presidenteScuolaShell, display);
 
 		Composite composite = new Composite(presidenteScuolaShell, SWT.BORDER);

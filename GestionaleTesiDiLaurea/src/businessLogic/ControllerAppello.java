@@ -20,7 +20,7 @@ import utils.Utils;
 
 public class ControllerAppello {
 	private AppelloTesi appello;
-	private ViewAppello viewAppello;
+	private ViewAppello view;
 	private String matricola;
 	private int ruolo;
 	
@@ -28,7 +28,7 @@ public class ControllerAppello {
 		this.appello = appello;
 		this.matricola = matricola;
 		this.ruolo = ruolo;
-		viewAppello = new ViewAppello(parent, this);
+		view = new ViewAppello(parent, this);
 	}
 	
 	public AppelloTesi getAppello() {
@@ -36,16 +36,16 @@ public class ControllerAppello {
 	}
 	
 	public void run() {
-		viewAppello.createAndRun();
+		view.createAndRun();
 	}
 	
 	public boolean updateMembriAppello(int id_appello, ArrayList<Integer> studenti, ArrayList<Integer> relatori, ArrayList<Integer> commissioni) {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().updateMembriAppello(id_appello, studenti, relatori, commissioni);
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "I membri della commissione di tesi sono stati identificati correttamente!");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "I membri della commissione di tesi sono stati identificati correttamente!");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -53,10 +53,10 @@ public class ControllerAppello {
 	public boolean updatePresidenteCommissione(int id_appello, int matricola) {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().updatePresidenteCommissione(id_appello, matricola);
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Presidente di commissione di tesi aggiunto correttamente!");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Presidente di commissione di tesi aggiunto correttamente!");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -65,7 +65,7 @@ public class ControllerAppello {
 		if (Database.getInstance().isConnected()) {
 			appello = Database.getInstance().getAppello(appello.getId());
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class ControllerAppello {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getAule();
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
 	}
@@ -83,7 +83,7 @@ public class ControllerAppello {
 		if(Database.getInstance().isConnected()) {
 			s = Database.getInstance().getLinkTele(appello.getId());
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		if (s != null)
 			return s;
@@ -96,7 +96,7 @@ public class ControllerAppello {
 		if(Database.getInstance().isConnected()) {
 			s = Database.getInstance().getStatusAppello(appello.getId());
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		if (s != null)
 			return s;
@@ -109,9 +109,10 @@ public class ControllerAppello {
 		ArrayList<Pair<Studente, Docente>> studentiRelatori = new ArrayList<Pair<Studente, Docente>>();
 		if (Database.getInstance().isConnected()) {
 			studenti = Database.getInstance().getMyStudenti(matricola);
+			Database.getInstance().getStudentiStatusTesi(studenti);
 			studentiRelatori = Database.getInstance().getRelatoriByStudenti(studenti);
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return studentiRelatori;
 	}
@@ -121,7 +122,7 @@ public class ControllerAppello {
 		if (Database.getInstance().isConnected()) {
 			studentiRelatori = Database.getInstance().getRelatoriStudentiFromAppello(appello.getId());
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return studentiRelatori;
 	}
@@ -131,7 +132,7 @@ public class ControllerAppello {
 		if (Database.getInstance().isConnected()) {
 			presidente = Database.getInstance().getPresidenteCommissione(getAppello().getId());
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return presidente;
 	}
@@ -141,7 +142,7 @@ public class ControllerAppello {
 		if (Database.getInstance().isConnected()) {
 			membri = Database.getInstance().getCommissioniByAppello(getAppello().getId());
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return membri;
 	}
@@ -151,7 +152,7 @@ public class ControllerAppello {
 		if (Database.getInstance().isConnected()) {
 			studenti = Database.getInstance().getStudentiFromAppello(getAppello().getId());
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return studenti;
 	}
@@ -159,9 +160,9 @@ public class ControllerAppello {
 	public ArrayList<Docente> getRelatoriFromDB(){
 		ArrayList<Docente> relatori = new ArrayList<Docente>();
 		if (Database.getInstance().isConnected()) {
-			relatori = Database.getInstance().getRelatori();
+			relatori = Database.getInstance().getRelatoriByAppello(appello.getId());
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return relatori;
 	}
@@ -171,7 +172,7 @@ public class ControllerAppello {
 		if (Database.getInstance().isConnected()) {
 			docenti = Database.getInstance().getDocentiAndDip();
 		} else {
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return docenti;
 	}
@@ -186,7 +187,7 @@ public class ControllerAppello {
 				Console.print(sqlDate.toString(),"GUI");
 				
 				Database.getInstance().addDateToAppello(sqlDate.toString(), appello.getId());
-				Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "La data dell'appello e' stata inserita correttamente!");
+				Utils.createConfirmDialog(view.getShell(), "Messaggio", "La data dell'appello e' stata inserita correttamente!");
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -197,7 +198,7 @@ public class ControllerAppello {
 
 			return true;
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -205,10 +206,10 @@ public class ControllerAppello {
 	public boolean addLinkTele(String link) {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().addLinkTele(link, appello.getId());
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "Il link di teleconferenza e' stato aggiornato");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Il link di teleconferenza e' stato aggiornato");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -216,10 +217,10 @@ public class ControllerAppello {
 	public boolean approvaAppello() {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().setAppelloApprovazione(appello.getId(),1);
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "L'appello e' stato approvato correttamente!");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "L'appello e' stato approvato correttamente!");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -227,10 +228,10 @@ public class ControllerAppello {
 	public boolean richiediCorrezione() {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().setAppelloApprovazione(appello.getId(),2);
-			Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "E' stato richiesto una correzione");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "E' stato richiesto una correzione");
 			return true;
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -238,13 +239,13 @@ public class ControllerAppello {
 	public boolean prenotaAula(int id_aula) {
 		if(Database.getInstance().isConnected()) {
 			if (Database.getInstance().prenotaAula(id_aula, appello.getId(), matricola)){
-				Utils.createConfirmDialog(viewAppello.getShell(), "Messaggio", "L'aula prenotata con successo e orario settato correttamente.");
+				Utils.createConfirmDialog(view.getShell(), "Messaggio", "L'aula prenotata con successo e orario settato correttamente.");
 				return true;
 			} else {
-				Utils.createWarningDialog(viewAppello.getShell(), "Messaggio", "L'aula occupata");
+				Utils.createWarningDialog(view.getShell(), "Messaggio", "L'aula occupata");
 			}
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -255,10 +256,10 @@ public class ControllerAppello {
 
 				return true;
 			} else {
-				Utils.createWarningDialog(viewAppello.getShell(), "Messaggio", "Orario gia' inserito");
+				Utils.createWarningDialog(view.getShell(), "Messaggio", "Orario gia' inserito");
 			}
 		}else {
-			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}

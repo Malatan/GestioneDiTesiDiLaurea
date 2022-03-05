@@ -73,7 +73,7 @@ public class ViewLogin {
 		lblTitolo.setBounds(0, 10, 493, 40);
 		lblTitolo.setText("Gestionale Di Tesi Di Laurea");
 		
-		textFieldMatricola.setText("10008");
+		textFieldMatricola.setText("10010");
 		textFieldPassword.setText("123");
 		
 		Label label = new Label(loginShell, SWT.SEPARATOR | SWT.HORIZONTAL);
