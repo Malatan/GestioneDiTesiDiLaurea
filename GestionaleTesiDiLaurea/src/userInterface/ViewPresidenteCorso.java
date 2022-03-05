@@ -28,6 +28,7 @@ public class ViewPresidenteCorso {
 	private Composite compositeMenu;
 	private Label lblId;
 	private Label lblData;
+	private Label lblStatus;
 	private ScrolledComposite scrolledCompositeListaAppelli;
 
 	public ViewPresidenteCorso(ControllerPresidenteCorso cpc) {
@@ -44,12 +45,12 @@ public class ViewPresidenteCorso {
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		presidenteCorsoShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		presidenteCorsoShell.setSize(400, 500);
+		presidenteCorsoShell.setSize(480, 500);
 		presidenteCorsoShell.setText("Presidente del Corso di " + controllerPresidenteCorso.getPresidenteCorso().getCorso().second);
 		Utils.setShellToCenterMonitor(presidenteCorsoShell, display);
 
 		Composite composite = new Composite(presidenteCorsoShell, SWT.BORDER);
-		composite.setBounds(21, 22, 344, 80);
+		composite.setBounds(21, 22, 420, 80);
 
 		Label lblMatricola = new Label(composite, SWT.NONE);
 		lblMatricola.setBounds(10, 10, 320, 15);
@@ -64,42 +65,47 @@ public class ViewPresidenteCorso {
 		lblCognome.setText("Cognome: " + controllerPresidenteCorso.getPresidenteCorso().getCognome());
 
 		compositeMenu = new Composite(presidenteCorsoShell, SWT.BORDER);
-		compositeMenu.setBounds(20, 125, 344, 326);
-
+		compositeMenu.setBounds(20, 125, 421, 326);
+		
+		lblId = new Label(presidenteCorsoShell, SWT.NONE);
+		lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+		lblId.setAlignment(SWT.CENTER);
+		lblId.setBounds(40, 126, 50, 15);
+		lblId.setText("ID");
+		lblId.setVisible(false);
+		
+		lblData = new Label(presidenteCorsoShell, SWT.NONE);
+		lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+		lblData.setAlignment(SWT.CENTER);
+		lblData.setBounds(100, 126, 100, 15);
+		lblData.setText("Data");
+		lblData.setVisible(false);
+		
+		lblStatus = new Label(presidenteCorsoShell, SWT.NONE);
+		lblStatus.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+		lblStatus.setAlignment(SWT.CENTER);
+		lblStatus.setBounds(215, 126, 100, 15);
+		lblStatus.setText("Status");
+		lblStatus.setVisible(false);
+		
 		Button btnVisualizzaAppelli = new Button(compositeMenu, SWT.NONE);
 		btnVisualizzaAppelli.setLocation(10, 10);
-		btnVisualizzaAppelli.setSize(320, 44);
+		btnVisualizzaAppelli.setSize(397, 44);
 		btnVisualizzaAppelli.setText("Visualizza gli appelli di tesi\r\n\r\n");
 		btnVisualizzaAppelli.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				compositeMenu.setVisible(false);
-				scrolledCompositeListaAppelli = new ScrolledComposite(presidenteCorsoShell, SWT.BORDER | SWT.V_SCROLL);
-				scrolledCompositeListaAppelli.setBounds(20, 152, 345, 297);
-				scrolledCompositeListaAppelli.setExpandVertical(true);
-				Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
-				compositeListaAppelli.setBounds(20, 152, 345, 322);
-
-				lblId = new Label(presidenteCorsoShell, SWT.NONE);
-				lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-				lblId.setAlignment(SWT.CENTER);
-				lblId.setBounds(40, 126, 50, 15);
-				lblId.setText("ID");
-
-				lblData = new Label(presidenteCorsoShell, SWT.NONE);
-				lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
-				lblData.setAlignment(SWT.CENTER);
-				lblData.setBounds(100, 126, 100, 15);
-				lblData.setText("Data");
-				visualizzaListaAppelli(compositeListaAppelli);
-				scrolledCompositeListaAppelli.setContent(compositeListaAppelli);
-				scrolledCompositeListaAppelli.setMinSize(compositeListaAppelli.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				lblId.setVisible(true);
+				lblData.setVisible(true);
+				lblStatus.setVisible(true);
+				visualizzaListaAppelli();
 			}
 		});
 
 		Button btnLogout = new Button(compositeMenu, SWT.NONE);
 		btnLogout.setText("Log out");
-		btnLogout.setBounds(10, 276, 320, 31);
+		btnLogout.setBounds(10, 276, 397, 31);
 
 		btnLogout.addMouseListener(new MouseAdapter() {
 			@Override
@@ -112,7 +118,7 @@ public class ViewPresidenteCorso {
 		});
 
 		Button btnIndietro = new Button(presidenteCorsoShell, SWT.NONE);
-		btnIndietro.setLocation(290, 125);
+		btnIndietro.setLocation(365, 125);
 		btnIndietro.setSize(75, 25);
 		btnIndietro.setText("Indietro");
 
@@ -121,8 +127,9 @@ public class ViewPresidenteCorso {
 			public void mouseDown(MouseEvent e) {
 				compositeMenu.setVisible(true);
 				scrolledCompositeListaAppelli.dispose();
-				lblId.dispose();
-				lblData.dispose();
+				lblId.setVisible(false);
+				lblData.setVisible(false);
+				lblStatus.setVisible(false);
 			}
 		});
 
@@ -137,23 +144,34 @@ public class ViewPresidenteCorso {
 
 	}
 
-	public void visualizzaListaAppelli(Composite c) {
+	public void visualizzaListaAppelli() {
+		scrolledCompositeListaAppelli = new ScrolledComposite(presidenteCorsoShell, SWT.BORDER | SWT.V_SCROLL);
+		scrolledCompositeListaAppelli.setBounds(20, 152, 421, 297);
+		scrolledCompositeListaAppelli.setExpandVertical(true);
+		Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
+		compositeListaAppelli.setBounds(scrolledCompositeListaAppelli.getBounds());
 		ArrayList<AppelloTesi> appelli = controllerPresidenteCorso.getAppelliFromDB();
 		int offset_y = 10;
 		for (AppelloTesi a : appelli) {
-			Label lblId = new Label(c, SWT.NONE);
+			Label lblId = new Label(compositeListaAppelli, SWT.NONE);
 			lblId.setAlignment(SWT.CENTER);
 			lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblId.setBounds(10, offset_y + 3, 60, 25);
 			lblId.setText(a.getId() + "");
 
-			Label lblData = new Label(c, SWT.NONE);
+			Label lblData = new Label(compositeListaAppelli, SWT.NONE);
 			lblData.setAlignment(SWT.CENTER);
 			lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblData.setBounds(90, offset_y + 3, 80, 25);
 			lblData.setText(a.getDateString());
-
-			Button btnDettaglio = new Button(c, SWT.NONE);
+			
+			Label lblStatus = new Label(compositeListaAppelli, SWT.NONE);
+			lblStatus.setAlignment(SWT.CENTER);
+			lblStatus.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
+			lblStatus.setBounds(175, offset_y + 3, 145, 25);
+			lblStatus.setText(a.getStatusString());
+			
+			Button btnDettaglio = new Button(compositeListaAppelli, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
@@ -164,12 +182,14 @@ public class ViewPresidenteCorso {
 					ca.run();
 				}
 			});
-			btnDettaglio.setBounds(230, offset_y, 75, 25);
+			btnDettaglio.setBounds(335, offset_y, 75, 25);
 			btnDettaglio.setText("Dettagli");
-			Label lblSeperator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
-			lblSeperator.setBounds(10, offset_y - 5, 325, 2);
+			Label lblSeperator = new Label(compositeListaAppelli, SWT.SEPARATOR | SWT.HORIZONTAL);
+			lblSeperator.setBounds(10, offset_y - 5, 400, 2);
 
 			offset_y = offset_y + 35;
 		}
+		scrolledCompositeListaAppelli.setContent(compositeListaAppelli);
+		scrolledCompositeListaAppelli.setMinSize(compositeListaAppelli.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 }

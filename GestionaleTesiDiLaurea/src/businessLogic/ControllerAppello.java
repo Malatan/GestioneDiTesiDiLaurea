@@ -94,7 +94,7 @@ public class ControllerAppello {
 	public String getStatusAppello() {
 		String s = "";
 		if(Database.getInstance().isConnected()) {
-			s = Database.getInstance().getStatusApprovazioneAppello(appello.getId());
+			s = Database.getInstance().getStatusAppello(appello.getId());
 		}else {
 			Utils.createErrorDialog(viewAppello.getShell(), "Messaggio", "Connessione al database persa");
 		}

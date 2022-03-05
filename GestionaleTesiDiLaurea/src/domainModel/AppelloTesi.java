@@ -17,9 +17,10 @@ public class AppelloTesi {
 	private String startTime;
 	private String linkTeleconferenza;
 	private String nota;
+	int status;
 	
 	public AppelloTesi(int idAppello, Pair<Integer, String> corso, String data, String startTime, 
-			Pair<Integer, String> aula, String linkTeleconferenza, String nota) {
+			Pair<Integer, String> aula, String linkTeleconferenza, String nota, int status) {
 		this.id = idAppello;
 		this.corso = corso;
 		this.date = data;
@@ -27,6 +28,7 @@ public class AppelloTesi {
 		this.aula = aula;
 		this.linkTeleconferenza = linkTeleconferenza;
 		this.nota = nota;
+		this.status = status;
 	}
 	
 	public int getId() {
@@ -110,5 +112,29 @@ public class AppelloTesi {
 			return "INDEFINITO";
 		String s = aula.second + "(" + startTime + ")";
 		return s;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	
+	public static String getStatusString(int status) {
+		if (status == 1) {
+			return "Approvato";
+		} else if (status == 2) {
+			return "Correzione dell'appello";
+		} else {
+			return "In Revisione";
+		}
+	}
+	
+	public String getStatusString() {
+		if (status == 1) {
+			return "Approvato";
+		} else if (status == 2) {
+			return "Correzione dell'appello";
+		} else {
+			return "In Revisione";
+		}
 	}
 }

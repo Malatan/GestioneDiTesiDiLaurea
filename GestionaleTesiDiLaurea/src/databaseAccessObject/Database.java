@@ -280,7 +280,7 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "UPDATE appello SET approvazione = '" + val + "' WHERE id_appello = " + id_appello;
+			String query = "UPDATE appello SET status = '" + val + "' WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
 			connection.close();
@@ -341,24 +341,18 @@ public class Database {
 		return s;
 	}
 
-	public String getStatusApprovazioneAppello(int id_appello) {
+	public String getStatusAppello(int id_appello) {
 		Connection connection = null;
 		String s = "";
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT approvazione FROM appello WHERE id_appello = " + id_appello;
+			String query = "SELECT status FROM appello WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
-				int approvazione = rs.getInt("approvazione");
-				if (approvazione == 1) {
-					s = "Approvato";
-				} else if (approvazione == 2) {
-					s = "Correzione dell'appello";
-				} else {
-					s = "In Revisione";
-				}
+				int status = rs.getInt("status");
+				s = AppelloTesi.getStatusString(status);
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -441,7 +435,8 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
+			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota,"
+					+ " au.id_aula,au.nome as aula, ap.status"
 					+ " FROM appello as ap INNER JOIN appello_studentedocente as aps ON aps.id_appello = aps.id_appello"
 					+ " LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
 					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula" 
@@ -453,7 +448,7 @@ public class Database {
 
 				appello = new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
 						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("aula")), 
-						rs.getString("teleconferenza"), rs.getString("nota"));
+						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status"));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -468,7 +463,8 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota, au.id_aula,au.nome as aula"
+			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota,"
+					+ " au.id_aula,au.nome as aula, ap.status"
 					+ " FROM appello as ap LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
 					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula LEFT JOIN corso c on c.id_corso = ap.id_corso"
 					+ " WHERE ap.id_appello = " + id_appello;
@@ -478,7 +474,7 @@ public class Database {
 
 				appello = new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
 						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("aula")), 
-						rs.getString("teleconferenza"), rs.getString("nota"));
+						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status"));
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -494,7 +490,7 @@ public class Database {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, pag.id_aula, "
-					+ "au.nome as nome_aula, a.data, a.orario, a.teleconferenza, a.nota "
+					+ "au.nome as nome_aula, a.data, a.orario, a.teleconferenza, a.nota, a.status "
 					+ "FROM appello a "
 					+ "LEFT JOIN corso c on a.id_corso = c.id_corso "
 					+ "LEFT JOIN prenotazione_aula_giorno pag on pag.id_appello = a.id_appello "
@@ -504,7 +500,7 @@ public class Database {
 			while (rs.next()) {
 				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
 						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("nome_aula")),
-						rs.getString("teleconferenza"), rs.getString("nota")));
+						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status")));
 			}
 
 			connection.close();
@@ -521,14 +517,14 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.teleconferenza, a.nota "
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.teleconferenza, a.nota, a.status "
 					+ "from appello a, corso c where a.id_corso = c.id_corso and a.id_corso = " + id_corso;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
 				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
 						rs.getString("data"), rs.getString("orario"), null,
-						rs.getString("teleconferenza"), rs.getString("nota")));
+						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status")));
 			}
 
 			connection.close();
