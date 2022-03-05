@@ -28,7 +28,7 @@ CREATE TABLE appello(
 	teleconferenza varchar(50) DEFAULT NULL,
 	nota text DEFAULT NULL,
 	orario time DEFAULT NULL,
-	approvazione int DEFAULT NULL COMMENT '1 = approvato, 2 = richiedi correzione',
+	status int DEFAULT 0 COMMENT '1 = approvato, 2 = richiedi correzione',
 	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola),
 	FOREIGN KEY (id_corso ) REFERENCES corso(id_corso )
 )AUTO_INCREMENT=30000;
