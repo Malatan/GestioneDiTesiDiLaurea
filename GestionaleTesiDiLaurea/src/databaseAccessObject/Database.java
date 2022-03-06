@@ -388,6 +388,28 @@ public class Database {
 		return false;
 	}
 	
+	public SuggerimentoSostituto getSuggerimentoByAppelloAndDocente(int id_appello, int matricola) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT ss.id, ss.id_appello, ss.id_richiedente, ss.id_sostituto, u.nome, u.cognome, ss.nota, ss.approvato "
+					+ " FROM suggerimento_sostituto ss, utente u "
+					+ " WHERE ss.id_sostituto = u.matricola AND ss.id_appello = " + id_appello 
+					+ " AND ss.id_richiedente = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return new SuggerimentoSostituto(rs.getInt("id"), rs.getInt("id_appello"), rs.getInt("id_richiedente"),rs.getInt("id_sostituto"),
+						rs.getString("nome") + " " + rs.getString("cognome"), rs.getString("nota"), rs.getBoolean("approvato"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public String getRepository(String matricola) {
 		Connection connection = null;
 		String s = "";

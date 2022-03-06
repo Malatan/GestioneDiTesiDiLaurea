@@ -29,6 +29,7 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.Studente;
+import domainModel.SuggerimentoSostituto;
 import utils.Console;
 import utils.Pair;
 import utils.Utils;
@@ -812,6 +813,7 @@ public class ViewAppello {
 		child.setText("Suggerimento sostituto");
 		Utils.setShellToCenterParent(child, shell);
 		ArrayList<Docente> docenti = controller.getDocentiPerSostitutzione();
+		SuggerimentoSostituto suggerimento = controller.getSuggerimentoByAppelloDocente();
 		
 		Label lblDocenteLabel = new Label(child, SWT.NONE);
 		lblDocenteLabel.setBounds(22, 24, 55, 15);
@@ -829,6 +831,17 @@ public class ViewAppello {
 		Label lblNotaLabel = new Label(child, SWT.NONE);
 		lblNotaLabel.setBounds(22, 59, 55, 15);
 		lblNotaLabel.setText("Nota:");
+		
+		if (suggerimento != null) {
+			for (String text : comboDocenti.getItems()) {
+				String[] parse = text.split("-");
+				if (parse[0].equals(suggerimento.getNomeCognomeSostituto())){
+					comboDocenti.setText(text);
+					break;
+				}
+			}
+			textNota.setText(suggerimento.getNota());
+		}
 		
 		Button btnConferma = new Button(child, SWT.NONE);
 		btnConferma.setBounds(22, 183, 120, 25);

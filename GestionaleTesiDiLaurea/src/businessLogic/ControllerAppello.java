@@ -13,6 +13,7 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.Studente;
+import domainModel.SuggerimentoSostituto;
 import domainModel.Utente;
 import userInterface.ViewAppello;
 import utils.Console;
@@ -247,6 +248,15 @@ public class ControllerAppello {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
+	}
+	
+	public SuggerimentoSostituto getSuggerimentoByAppelloDocente() {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getSuggerimentoByAppelloAndDocente(appello.getId(), utente.getMatricolaInt());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public boolean approvaAppello() {
