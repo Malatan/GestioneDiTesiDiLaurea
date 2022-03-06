@@ -9,7 +9,7 @@ CREATE TABLE utente(
 	nome varchar(50) NOT NULL,
 	cognome varchar(50) DEFAULT NULL,
 	password  varchar(50) NOT NULL,
-	ruolo int not NULL COMMENT '0 = studente, 1 = responsabile, 2 = presidente scuola, 3 = presidente corso, 4 = docente'
+	ruolo int not NULL COMMENT '0 = studente, 1 = responsabile, 2 = presidente scuola, 3 = presidente corso, 4 = docente, 10 = Sistema'
 )AUTO_INCREMENT=10000;
 
 CREATE TABLE corso(
@@ -49,11 +49,21 @@ CREATE TABLE suggerimento_sostituto(
 	id_richiedente int NOT NULL,
 	id_sostituto int NOT NULL,
 	nota text DEFAULT NULL,
-	approvato boolean DEFAULT 0,
+	status tinyint DEFAULT 0 COMMENT '0 = in attesa, 1 = approvato, 2 = rifiutato',
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (id_richiedente) REFERENCES utente(matricola),
 	FOREIGN KEY (id_sostituto) REFERENCES utente(matricola)
 )AUTO_INCREMENT=60000;
+
+CREATE TABLE messaggio(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_sorgente int NOT NULL,
+	id_destinatario int NOT NULL,
+	contenuto text DEFAULT NULL,
+	letto boolean DEFAULT 0,
+	FOREIGN KEY (id_sorgente) REFERENCES utente(matricola),
+	FOREIGN KEY (id_destinatario) REFERENCES utente(matricola)
+)AUTO_INCREMENT=70000;
 
 CREATE TABLE prenotazione_aula_giorno(
 	id_aula int NOT NULL,
@@ -116,6 +126,8 @@ $$
 DELIMITER ;
 
 -- popolamento utente
+INSERT INTO utente (matricola, nome, cognome, password, ruolo)
+VALUES(100, "Sistema", "Sistema", 123, 10); -- Sistema
 INSERT INTO utente (nome, cognome, password, ruolo)
 VALUES("Tizio", "Caio", 123, 0), -- 10000 Studente
 ("Riccardo", "Cremonesi", 123, 0), -- 10001 Studente
