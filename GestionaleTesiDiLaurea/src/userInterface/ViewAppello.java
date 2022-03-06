@@ -836,7 +836,22 @@ public class ViewAppello {
 		btnConferma.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				
+				if(comboDocenti.getSelectionIndex() != -1) {
+					String nota = textNota.getText();
+					String docente = comboDocenti.getText();
+					String[] parseDocente = docente.split("-");
+					if (nota.isBlank())
+						nota = "";
+					for (Docente d : docenti) {
+						if(parseDocente[0].equals(d.getNomeCognome())) {
+							controller.addSuggerimento(d.getMatricolaInt(), nota);
+							child.close();
+							break;
+						}
+					}
+				} else {
+					Utils.createWarningDialog(child, "Messaggio", "Nomina il sostituto.");
+				}
 			}
 		});
 		

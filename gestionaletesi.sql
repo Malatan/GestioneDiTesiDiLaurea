@@ -43,6 +43,18 @@ CREATE TABLE aula(
 	nome varchar(50) NOT NULL
 )AUTO_INCREMENT=50000;
 
+CREATE TABLE suggerimento_sostituto(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_appello int NOT NULL,
+	id_richiedente int NOT NULL,
+	id_sostituto int NOT NULL,
+	nota text DEFAULT NULL,
+	approvato boolean DEFAULT 0,
+	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
+	FOREIGN KEY (id_richiedente) REFERENCES utente(matricola),
+	FOREIGN KEY (id_sostituto) REFERENCES utente(matricola)
+)AUTO_INCREMENT=60000;
+
 CREATE TABLE prenotazione_aula_giorno(
 	id_aula int NOT NULL,
 	id_appello int NOT NULL,

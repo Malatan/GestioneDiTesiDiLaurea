@@ -367,7 +367,27 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public boolean addSuggerimentoSostituto(int id_appello, int richiedente, int sostituto, String nota) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO suggerimento_sostituto (id_appello, id_richiedente, id_sostituto, nota) VALUES (?,?,?,?)";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id_appello);
+			prepared.setInt(2, richiedente);
+			prepared.setInt(3, sostituto);
+			prepared.setString(4, nota.isEmpty() ? null : nota);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public String getRepository(String matricola) {
 		Connection connection = null;
 		String s = "";

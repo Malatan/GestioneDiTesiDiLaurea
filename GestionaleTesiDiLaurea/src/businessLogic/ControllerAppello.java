@@ -13,6 +13,7 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.Studente;
+import domainModel.Utente;
 import userInterface.ViewAppello;
 import utils.Console;
 import utils.Pair;
@@ -22,6 +23,7 @@ public class ControllerAppello {
 	private AppelloTesi appello;
 	private ViewAppello view;
 	private String matricola;
+	private Utente utente;
 	private int ruolo;
 	
 	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruolo) {
@@ -31,8 +33,20 @@ public class ControllerAppello {
 		view = new ViewAppello(parent, this);
 	}
 	
+	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruolo, Utente utente) {
+		this.appello = appello;
+		this.matricola = matricola;
+		this.ruolo = ruolo;
+		this.utente = utente;
+		view = new ViewAppello(parent, this);
+	}
+	
 	public AppelloTesi getAppello() {
 		return this.appello;
+	}
+	
+	public Utente getUtente() {
+		return this.utente;
 	}
 	
 	public void run() {
@@ -217,6 +231,17 @@ public class ControllerAppello {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().addLinkTele(link, appello.getId());
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Il link di teleconferenza e' stato aggiornato");
+			return true;
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean addSuggerimento(int id_sostituto, String nota) {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().addSuggerimentoSostituto(appello.getId(), utente.getMatricolaInt(), id_sostituto, nota);
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Il suggerimento e' stato proposto al presidente di commissione!");
 			return true;
 		}else {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");

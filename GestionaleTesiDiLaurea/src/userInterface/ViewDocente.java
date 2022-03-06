@@ -328,7 +328,7 @@ public class ViewDocente {
 				public void mouseDown(MouseEvent e) {
 					ControllerAppello ca = new ControllerAppello(p.first, shell,
 							controller.getDocente().getMatricola(),
-							Utils.getRuolo(controller.getDocente()));
+							Utils.getRuolo(controller.getDocente()), controller.getDocente());
 					ca.run();
 				}
 			});
