@@ -407,6 +407,34 @@ public class Database {
 		return false;
 	}
 	
+	public boolean setSuggerimentoSostitutoStatus(SuggerimentoSostituto suggerimento, int status) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE suggerimento_sostituto SET status = ? WHERE id = ?";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, status);
+			prepared.setInt(2, suggerimento.getId());
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			// approva si procede ad aggiornare appello_membro
+			if (status == 1) {
+				query = "UPDATE appello_membro SET matricola = ? WHERE id_appello = ? AND matricola = ?";
+				prepared = connection.prepareStatement(query);
+				prepared.setInt(1, suggerimento.getIdSosituto());
+				prepared.setInt(2, suggerimento.getIdAppello());
+				prepared.setInt(3, suggerimento.getIdRichiedente());
+				Console.print(prepared.toString(), "sql");
+				prepared.executeUpdate();
+			}
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean revocaDateToAppello(int id_suggerimento) {
 		Connection connection = null;
 		try {
@@ -443,6 +471,32 @@ public class Database {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public ArrayList<SuggerimentoSostituto> getProposteByAppelloFromDB(int id_appello){
+		Connection connection = null;
+		ArrayList<SuggerimentoSostituto> proposte = new ArrayList<SuggerimentoSostituto>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT ss.id, ss.id_appello, ss.id_richiedente, uu.nome as nome_r, uu.cognome as cognome_r, "
+					+ "ss.id_sostituto, u.nome as nome_s, u.cognome as cognome_s, ss.nota, ss.status "
+					+ "FROM suggerimento_sostituto ss "
+					+ "LEFT JOIN utente u ON ss.id_sostituto = u.matricola "
+					+ "LEFT JOIN utente uu ON ss.id_richiedente = uu.matricola "
+					+ "WHERE ss.status = 0 AND ss.id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				proposte.add(new SuggerimentoSostituto(rs.getInt("id"), rs.getInt("id_appello"), rs.getInt("id_richiedente"),
+						rs.getInt("id_sostituto"), rs.getString("nome_s") + " " + rs.getString("cognome_s"), 
+						rs.getString("nome_r") + " " + rs.getString("cognome_r"), rs.getString("nota"), rs.getInt("status")));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return proposte;
 	}
 	
 	public String getRepository(String matricola) {

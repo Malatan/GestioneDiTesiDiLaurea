@@ -180,7 +180,7 @@ public class ViewAppello {
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-		switch (controller.getRuolo()) {
+		switch (controller.getRuoloDidattica()) {
 		case 0:
 			shell.setText(shell.getText() + " - Studente");
 			break;
@@ -305,17 +305,143 @@ public class ViewAppello {
 		btnDeterminazione.setBounds(10, 10, 120, 25);
 		btnDeterminazione.setText("Determinazione");
 		
-		Button btnSostituto = new Button(compositeDocente, SWT.NONE);
-		btnSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.NORMAL));
-		btnSostituto.addMouseListener(new MouseAdapter() {
+		if (controller.getRuoloAppello() == 1) {
+			Button btnSostituto = new Button(compositeDocente, SWT.NONE);
+			btnSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.NORMAL));
+			btnSostituto.setBounds(136, 10, 120, 25);
+			btnSostituto.setText("Suggerimento sostituto");
+			btnSostituto.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					richiestaSostitutoDialog();
+				}
+			});
+		} 
+		
+		if (controller.getRuoloAppello() == 3) {
+			Button btnProposteSostituto = new Button(compositeDocente, SWT.NONE);
+			btnProposteSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
+			btnProposteSostituto.setBounds(136, 10, 120, 25);
+			btnProposteSostituto.setText("Proposte sostituto");
+			btnProposteSostituto.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					proposteSostitutoDialog();
+				}
+			});
+		}
+		
+	}
+	
+	public void proposteSostitutoDialog() {
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setText("Proposte sostituto");
+		child.setSize(450, 270);
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<SuggerimentoSostituto> proposte = controller.getProposteByAppelloFromDB();
+		
+		Label lblProposteLabel = new Label(child, SWT.NONE);
+		lblProposteLabel.setBounds(20, 13, 55, 15);
+		lblProposteLabel.setText("Proposte:");
+		
+		Label lblPropostaDettaglio = new Label(child, SWT.NONE);
+		lblPropostaDettaglio.setBounds(20, 39, 104, 15);
+		lblPropostaDettaglio.setText("Dettaglio Proposta");
+		
+		Label lblSostitutoLabel = new Label(child, SWT.NONE);
+		lblSostitutoLabel.setBounds(20, 60, 55, 15);
+		lblSostitutoLabel.setText("Sostituto:");
+		
+		Label lblSostituto = new Label(child, SWT.NONE);
+		lblSostituto.setBounds(81, 60, 150, 15);
+		
+		Text textNota = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		textNota.setBounds(20, 102, 391, 90);
+		
+		Label lblNotaLabel = new Label(child, SWT.NONE);
+		lblNotaLabel.setBounds(20, 81, 55, 15);
+		lblNotaLabel.setText("Nota:");
+		
+		Combo comboProposte = new Combo(child, SWT.READ_ONLY);
+		comboProposte.setBounds(81, 10, 330, 23);
+		
+		Button btnApprova = new Button(child, SWT.NONE);
+		btnApprova.setBounds(20, 198, 75, 25);
+		btnApprova.setText("Approva");
+		
+		Button btnRifiuta = new Button(child, SWT.NONE);
+		btnRifiuta.setBounds(109, 198, 75, 25);
+		btnRifiuta.setText("Rifiuta");
+		
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(336, 198, 75, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				richiestaSostitutoDialog();
+				child.close();
 			}
 		});
-		btnSostituto.setBounds(136, 10, 120, 25);
-		btnSostituto.setText("Suggerimento sostituto");
 		
+		btnApprova.setEnabled(false);
+		btnRifiuta.setEnabled(false);
+		if (!proposte.isEmpty()) {
+			btnRifiuta.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (Utils.createYesNoDialog(child, "Conferma", "Conferma di rifiutare la prospota?")) {
+						for (int i = 0 ; i < proposte.size() ; i++) {
+							if (comboProposte.getText().equals(proposte.get(i).getNomeCognomeRichiedente())) {
+								controller.setSuggerimentoStatus(proposte.get(i), 2);
+								Utils.createConfirmDialog(child, "Messaggio", "La proposta e' stata rifiutata.");
+								child.close();
+								break;
+							}
+						}
+					}
+				}
+			});
+			btnApprova.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (Utils.createYesNoDialog(child, "Conferma", "Conferma di approvare la prospota?")) {
+						for (int i = 0 ; i < proposte.size() ; i++) {
+							if (comboProposte.getText().equals(proposte.get(i).getNomeCognomeRichiedente())) {
+								controller.setSuggerimentoStatus(proposte.get(i), 1);
+								Utils.createConfirmDialog(child, "Messaggio", "La proposta e' stata approvata.");
+								aggiornaPagina();
+								child.close();
+								break;
+							}
+						}
+					}
+				}
+			});
+			comboProposte.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (comboProposte.getSelectionIndex() != -1) {
+						btnApprova.setEnabled(true);
+						btnRifiuta.setEnabled(true);
+						for (int i = 0 ; i < proposte.size() ; i++) {
+							if (comboProposte.getText().equals(proposte.get(i).getNomeCognomeRichiedente())) {
+								textNota.setText(proposte.get(i).getNota());
+								lblSostituto.setText(proposte.get(i).getNomeCognomeSostituto());
+								break;
+							}
+						}
+					} else {
+						btnApprova.setEnabled(false);
+						btnRifiuta.setEnabled(false);
+					}
+				}
+			});
+			for (int i = 0 ; i < proposte.size() ; i++) {
+				comboProposte.add(proposte.get(i).getNomeCognomeRichiedente());
+			}
+		}
+		
+		child.open();
 	}
 	
 	public void aggiungereDataDialog() {
@@ -655,7 +781,6 @@ public class ViewAppello {
 					ArrayList<Integer> matricoleCommissioni = new ArrayList<Integer>();
 					ArrayList<Integer> matricoleRelatori = new ArrayList<Integer>();
 					for (String s : list.getItems()) {
-						System.out.println(s);
 						String[] parseItem = s.split("-");
 						if (parseItem[1].equals("[Studente]")) {
 							for (int i = 0; i < studentiRelatori.size(); i++) {
@@ -677,7 +802,6 @@ public class ViewAppello {
 							}
 						}
 					}
-					System.out.println(matricoleStudenti.size() +"-"+matricoleRelatori.size()+"-"+matricoleCommissioni.size());
 					if (controller.updateMembriAppello(controller.getAppello().getId(), matricoleStudenti,
 							matricoleRelatori, matricoleCommissioni))
 						aggiornaPagina();

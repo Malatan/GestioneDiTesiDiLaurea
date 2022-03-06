@@ -327,8 +327,8 @@ public class ViewDocente {
 				@Override
 				public void mouseDown(MouseEvent e) {
 					ControllerAppello ca = new ControllerAppello(p.first, shell,
-							controller.getDocente().getMatricola(),
-							Utils.getRuolo(controller.getDocente()), controller.getDocente());
+							controller.getDocente().getMatricola(), Utils.getRuolo(controller.getDocente()), 
+							p.second, controller.getDocente());
 					ca.run();
 				}
 			});

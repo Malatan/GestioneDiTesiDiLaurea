@@ -6,6 +6,7 @@ public class SuggerimentoSostituto {
 	private int idRichiedente;
 	private int idSosituto;
 	private String nomeCognomeSostituto;
+	private String nomeCognomeRichiedente;
 	private String nota;
 	private int status;
 	
@@ -18,7 +19,20 @@ public class SuggerimentoSostituto {
 		this.idSosituto = idSosituto;
 		this.nomeCognomeSostituto = nomeCognomeSostituto;
 		this.nota = nota;
-		this.setStatus(status);
+		this.status = status;
+	}
+	
+	public SuggerimentoSostituto(int id, int idAppello, int idRichiedente, int idSosituto, String nomeCognomeSostituto, 
+			String nomeCognomeRichiedente, String nota,int status) {
+		super();
+		this.id = id;
+		this.idAppello = idAppello;
+		this.idRichiedente = idRichiedente;
+		this.idSosituto = idSosituto;
+		this.nomeCognomeSostituto = nomeCognomeSostituto;
+		this.setNomeCognomeRichiedente(nomeCognomeRichiedente);
+		this.nota = nota;
+		this.status = status;
 	}
 	
 	public int getId() {
@@ -74,6 +88,14 @@ public class SuggerimentoSostituto {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getNomeCognomeRichiedente() {
+		return nomeCognomeRichiedente;
+	}
+
+	public void setNomeCognomeRichiedente(String nomeCognomeRichiedente) {
+		this.nomeCognomeRichiedente = nomeCognomeRichiedente;
 	}
 	
 	

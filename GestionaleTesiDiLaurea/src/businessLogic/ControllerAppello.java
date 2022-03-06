@@ -25,20 +25,30 @@ public class ControllerAppello {
 	private ViewAppello view;
 	private String matricola;
 	private Utente utente;
-	private int ruolo;
+	private int ruoloDidattica;
+	private int ruoloAppello;
 	
-	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruolo) {
+	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruoloDidattica) {
 		this.appello = appello;
 		this.matricola = matricola;
-		this.ruolo = ruolo;
+		this.ruoloDidattica = ruoloDidattica;
 		view = new ViewAppello(parent, this);
 	}
 	
 	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruolo, Utente utente) {
 		this.appello = appello;
 		this.matricola = matricola;
-		this.ruolo = ruolo;
+		this.ruoloDidattica = ruolo;
 		this.utente = utente;
+		view = new ViewAppello(parent, this);
+	}
+	
+	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruoloDidattica, int ruoloAppello, Utente utente) {
+		this.appello = appello;
+		this.matricola = matricola;
+		this.ruoloDidattica = ruoloDidattica;
+		this.utente = utente;
+		this.setRuoloAppello(ruoloAppello);
 		view = new ViewAppello(parent, this);
 	}
 	
@@ -258,6 +268,15 @@ public class ControllerAppello {
 		return false;
 	}
 	
+	public boolean setSuggerimentoStatus(SuggerimentoSostituto suggerimento, int status) {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().setSuggerimentoSostitutoStatus(suggerimento, status);
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
 	public boolean revocaSuggerimento(int id_suggerimento) {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().revocaDateToAppello(id_suggerimento);
@@ -274,6 +293,16 @@ public class ControllerAppello {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return null;
+	}
+	
+	public ArrayList<SuggerimentoSostituto> getProposteByAppelloFromDB(){
+		ArrayList<SuggerimentoSostituto> proposte = new ArrayList<SuggerimentoSostituto>();
+		if (Database.getInstance().isConnected()) {
+			proposte = Database.getInstance().getProposteByAppelloFromDB(appello.getId());
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return proposte;
 	}
 	
 	public boolean approvaAppello() {
@@ -326,11 +355,19 @@ public class ControllerAppello {
 		return false;
 	}
 
-	public int getRuolo() {
-		return ruolo;
+	public int getRuoloDidattica() {
+		return ruoloDidattica;
 	}
 
-	public void setRuolo(int ruolo) {
-		this.ruolo = ruolo;
+	public void setRuoloDidattica(int ruolo) {
+		this.ruoloDidattica = ruolo;
+	}
+
+	public int getRuoloAppello() {
+		return ruoloAppello;
+	}
+
+	public void setRuoloAppello(int ruoloAppello) {
+		this.ruoloAppello = ruoloAppello;
 	}
 }
