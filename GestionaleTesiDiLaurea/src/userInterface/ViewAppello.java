@@ -291,7 +291,7 @@ public class ViewAppello {
 	public void createDocenteComposite() {
 		Composite compositeDocente = new Composite(shell, SWT.BORDER);
 		compositeDocente.setBounds(10, 370, 465, 80);
-
+		
 		Button btnDeterminazione = new Button(compositeDocente, SWT.NONE);
 		Label lblStatusAppello = new Label(compositeDocente, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
@@ -304,7 +304,10 @@ public class ViewAppello {
 		});
 		btnDeterminazione.setBounds(10, 10, 120, 25);
 		btnDeterminazione.setText("Determinazione");
-		
+		if (controller.getAppello().getStatus() != 3) {
+			btnDeterminazione.setEnabled(false);
+		}
+		// membro commissione
 		if (controller.getRuoloAppello() == 1) {
 			Button btnSostituto = new Button(compositeDocente, SWT.NONE);
 			btnSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.NORMAL));
@@ -317,7 +320,7 @@ public class ViewAppello {
 				}
 			});
 		} 
-		
+		// presidente commissione
 		if (controller.getRuoloAppello() == 3) {
 			Button btnProposteSostituto = new Button(compositeDocente, SWT.NONE);
 			btnProposteSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
@@ -329,7 +332,25 @@ public class ViewAppello {
 					proposteSostitutoDialog();
 				}
 			});
+			
+			Button btnFineAppello = new Button(compositeDocente, SWT.NONE);
+			btnFineAppello.setBounds(262, 10, 139, 25);
+			btnFineAppello.setText("Fine discussione");
+			if (controller.getAppello().getStatus() == 1) {
+				btnFineAppello.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseDown(MouseEvent e) {
+						assegnaVotoDialog();
+					}
+				});
+			} else {
+				btnFineAppello.setVisible(false);
+			}
 		}
+		
+	}
+	
+	public void assegnaVotoDialog() {
 		
 	}
 	
@@ -667,6 +688,7 @@ public class ViewAppello {
 		child.open();
 	}
 
+	
 	public void scegliStudentiDocentiDialog() {
 		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(600, 330);
@@ -729,9 +751,6 @@ public class ViewAppello {
 		btnAggiungi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				// setStudente();
-				// setDocenteRelatore(comboDocenti, "(Docente)");
-				// setDocenteRelatore(comboRelatori, "(Relatore)");
 				boolean add = true;
 				if (comboStudentiRelatori.getSelectionIndex() != -1) {
 					// studente-relatore
@@ -874,6 +893,7 @@ public class ViewAppello {
 
 		child.open();
 	}
+	
 
 	public void scegliPresidenteCommissioneDialog() {
 		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
@@ -930,6 +950,7 @@ public class ViewAppello {
 
 		child.open();
 	}
+	
 
 	public void richiestaSostitutoDialog() {
 		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);

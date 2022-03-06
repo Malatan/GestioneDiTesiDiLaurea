@@ -11,21 +11,21 @@ import org.eclipse.swt.widgets.Text;
 import databaseAccessObject.Database;
 
 public class ControllerLogin {
-	private ViewLogin viewLogin;
+	private ViewLogin view;
 	
 	public ControllerLogin() {
-		viewLogin = new ViewLogin(this);
+		view = new ViewLogin(this);
 	}
 	
 	public void checkLogin(Text matricola, Text password) {
 		if(matricola.getText().equals("") || password.getText().equals("") || matricola.getText().equals("100")) {
-			Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
 		} else {
 			if(Database.getInstance().isConnected()) {
 				String[] info = Database.getInstance().verificaCredenziali(matricola.getText(), password.getText());
 				if(info != null) {
 					Console.print("Utente matricola: " + matricola.getText() + " password: " + password.getText() + " loggato", "app");
-					viewLogin.close();
+					view.close();
 					switch(Integer.parseInt(info[2])) {
 						case 0:					
 							ControllerStudente controllerStudente = new ControllerStudente(info[0],info[1],info[3]);
@@ -51,11 +51,11 @@ public class ControllerLogin {
 							break;
 					}
 				}else {
-					Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Matricola o Password errata");
+					Utils.createErrorDialog(view.getShell(), "Messaggio", "Matricola o Password errata");
 				}	
 			}
 			else {
-				Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Connessione al database fallita");
+				Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database fallita");
 			}
 		}
 	}
@@ -65,7 +65,7 @@ public class ControllerLogin {
 		if (Database.getInstance().isConnected()) {
 			corso = Database.getInstance().getCorsoByPresidente(Integer.parseInt(matricola));
 		} else {
-			Utils.createConfirmDialog(viewLogin.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return corso;
 	}
@@ -75,13 +75,13 @@ public class ControllerLogin {
 		if (Database.getInstance().isConnected()) {
 			corso = Database.getInstance().getDipByDocente(matricola);
 		} else {
-			Utils.createConfirmDialog(viewLogin.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return corso;
 	}
 	
 	public void run() {
-		viewLogin.createAndRun();
+		view.createAndRun();
 	}
 	
 }

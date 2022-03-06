@@ -66,6 +66,12 @@ public class ControllerAppello {
 	
 	public boolean updateMembriAppello(int id_appello, ArrayList<Integer> studenti, ArrayList<Integer> relatori, ArrayList<Integer> commissioni) {
 		if(Database.getInstance().isConnected()) {
+			// controlla se il relatore era gia un membro oppure il presidente, se si verra' dato il ruolo di relatore
+			for (int i = 0 ; i < relatori.size() ; i++) {
+				if(commissioni.contains(relatori.get(i))) {
+					commissioni.remove(relatori.get(i));
+				}
+			}
 			Database.getInstance().updateMembriAppello(id_appello, studenti, relatori, commissioni);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "I membri della commissione di tesi sono stati identificati correttamente!");
 			return true;
