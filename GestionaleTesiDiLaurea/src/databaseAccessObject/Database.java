@@ -388,20 +388,55 @@ public class Database {
 		return false;
 	}
 	
+	public boolean updateSuggerimentoSostituto(SuggerimentoSostituto suggerimento) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE suggerimento_sostituto SET id_sostituto = ?, nota = ? WHERE id = ?";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, suggerimento.getIdSosituto());
+			prepared.setString(2, suggerimento.getNota());
+			prepared.setInt(3, suggerimento.getId());
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean revocaDateToAppello(int id_suggerimento) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "DELETE FROM suggerimento_sostituto WHERE id = " + id_suggerimento;
+			Console.print(query, "sql");
+			stm.executeUpdate(query);
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public SuggerimentoSostituto getSuggerimentoByAppelloAndDocente(int id_appello, int matricola) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT ss.id, ss.id_appello, ss.id_richiedente, ss.id_sostituto, u.nome, u.cognome, ss.nota, ss.approvato "
+			String query = "SELECT ss.id, ss.id_appello, ss.id_richiedente, ss.id_sostituto, u.nome, u.cognome, ss.nota, ss.status "
 					+ " FROM suggerimento_sostituto ss, utente u "
-					+ " WHERE ss.id_sostituto = u.matricola AND ss.id_appello = " + id_appello 
+					+ " WHERE ss.id_sostituto = u.matricola AND ss.status = 0 AND ss.id_appello = " + id_appello 
 					+ " AND ss.id_richiedente = " + matricola;
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
 				return new SuggerimentoSostituto(rs.getInt("id"), rs.getInt("id_appello"), rs.getInt("id_richiedente"),rs.getInt("id_sostituto"),
-						rs.getString("nome") + " " + rs.getString("cognome"), rs.getString("nota"), rs.getBoolean("approvato"));
+						rs.getString("nome") + " " + rs.getString("cognome"), rs.getString("nota"), rs.getInt("status"));
 			}
 			connection.close();
 		} catch (SQLException e) {

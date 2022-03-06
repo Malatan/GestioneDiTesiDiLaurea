@@ -832,50 +832,77 @@ public class ViewAppello {
 		lblNotaLabel.setBounds(22, 59, 55, 15);
 		lblNotaLabel.setText("Nota:");
 		
-		if (suggerimento != null) {
-			for (String text : comboDocenti.getItems()) {
-				String[] parse = text.split("-");
-				if (parse[0].equals(suggerimento.getNomeCognomeSostituto())){
-					comboDocenti.setText(text);
-					break;
-				}
-			}
-			textNota.setText(suggerimento.getNota());
-		}
-		
 		Button btnConferma = new Button(child, SWT.NONE);
 		btnConferma.setBounds(22, 183, 120, 25);
-		btnConferma.setText("Conferma");
+		btnConferma.setText("Invia");
 		btnConferma.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if(comboDocenti.getSelectionIndex() != -1) {
-					String nota = textNota.getText();
-					String docente = comboDocenti.getText();
-					String[] parseDocente = docente.split("-");
-					if (nota.isBlank())
-						nota = "";
-					for (Docente d : docenti) {
-						if(parseDocente[0].equals(d.getNomeCognome())) {
-							controller.addSuggerimento(d.getMatricolaInt(), nota);
+				if (suggerimento != null) {
+					String original_sostituto = suggerimento.getNomeCognomeSostituto();
+					String original_nota = suggerimento.getNota();
+					String combo_docente = comboDocenti.getText().split("-")[0];
+					if (!combo_docente.equals(original_sostituto) || !textNota.getText().equals(original_nota)) {
+						if(comboDocenti.getSelectionIndex() != -1) {
+							int new_docente = suggerimento.getIdSosituto();
+							String new_nota = original_nota;
+							if (!combo_docente.equals(original_sostituto)) {
+								String docente = comboDocenti.getText().split("-")[0];
+								for (Docente d : docenti) {
+									if(docente.equals(d.getNomeCognome())) {
+										new_docente = d.getMatricolaInt();
+										break;
+									}
+								}
+							}
+							if (!textNota.getText().equals(original_nota)) {
+								new_nota = textNota.getText().isBlank() ? "" : textNota.getText();
+							}
+							suggerimento.setIdSosituto(new_docente);
+							suggerimento.setNota(new_nota);
+							if (controller.updateSuggerimento(suggerimento)) {
+								Utils.createConfirmDialog(child, "Messaggio", "Il suggerimento e' stato aggiornato.");
+							}
 							child.close();
-							break;
+						} else {
+							Utils.createWarningDialog(child, "Messaggio", "Nomina il sostituto.");
 						}
+					} else {
+						child.close();
 					}
 				} else {
-					Utils.createWarningDialog(child, "Messaggio", "Nomina il sostituto.");
+					if(comboDocenti.getSelectionIndex() != -1) {
+						String nota = textNota.getText().isBlank() ? "" : textNota.getText();
+						String docente = comboDocenti.getText().split("-")[0];
+						for (Docente d : docenti) {
+							if(docente.equals(d.getNomeCognome())) {
+								if (controller.addSuggerimento(d.getMatricolaInt(), nota))
+									Utils.createConfirmDialog(child, "Messaggio", "Il suggerimento e' stato proposto al presidente di commissione!");
+								child.close();
+								break;
+							}
+						}
+					} else {
+						Utils.createWarningDialog(child, "Messaggio", "Nomina il sostituto.");
+					}
 				}
 			}
 		});
 		
-		Button btnAnnullSugge = new Button(child, SWT.NONE);
-		btnAnnullSugge.setFont(SWTResourceManager.getFont("Segoe UI", 8, SWT.NORMAL));
-		btnAnnullSugge.setBounds(148, 183, 120, 25);
-		btnAnnullSugge.setText("Annulla suggerimento");
-		btnAnnullSugge.addMouseListener(new MouseAdapter() {
+		Button btnRevoca = new Button(child, SWT.NONE);
+		btnRevoca.setFont(SWTResourceManager.getFont("Segoe UI", 8, SWT.NORMAL));
+		btnRevoca.setBounds(148, 183, 120, 25);
+		btnRevoca.setText("Revoca");
+		btnRevoca.setEnabled(false);
+		btnRevoca.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				
+				if (Utils.createYesNoDialog(child, "Conferma", "Conferma di ritirare la proposta")) {
+					if (controller.revocaSuggerimento(suggerimento.getId())) {
+						Utils.createConfirmDialog(child, "Messaggio", "La proposta e' stata revocata");
+						child.close();
+					}
+				}
 			}
 		});
 		
@@ -888,6 +915,19 @@ public class ViewAppello {
 				child.close();
 			}
 		});
+		
+		if (suggerimento != null) {
+			for (String text : comboDocenti.getItems()) {
+				String[] parse = text.split("-");
+				if (parse[0].equals(suggerimento.getNomeCognomeSostituto())){
+					comboDocenti.setText(text);
+					break;
+				}
+			}
+			textNota.setText(suggerimento.getNota());
+			btnConferma.setText("Modifica");
+			btnRevoca.setEnabled(true);
+		}
 		
 		child.open();
 	}

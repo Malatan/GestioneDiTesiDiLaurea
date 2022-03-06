@@ -242,8 +242,25 @@ public class ControllerAppello {
 	public boolean addSuggerimento(int id_sostituto, String nota) {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().addSuggerimentoSostituto(appello.getId(), utente.getMatricolaInt(), id_sostituto, nota);
-			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Il suggerimento e' stato proposto al presidente di commissione!");
 			return true;
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean updateSuggerimento(SuggerimentoSostituto suggerimento) {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().updateSuggerimentoSostituto(suggerimento);
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean revocaSuggerimento(int id_suggerimento) {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().revocaDateToAppello(id_suggerimento);
 		}else {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}

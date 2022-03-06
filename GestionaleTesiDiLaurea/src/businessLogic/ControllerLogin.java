@@ -18,7 +18,7 @@ public class ControllerLogin {
 	}
 	
 	public void checkLogin(Text matricola, Text password) {
-		if(matricola.getText().equals("") || password.getText().equals("")) {
+		if(matricola.getText().equals("") || password.getText().equals("") || matricola.getText().equals("100")) {
 			Utils.createErrorDialog(viewLogin.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
 		} else {
 			if(Database.getInstance().isConnected()) {
