@@ -43,6 +43,19 @@ CREATE TABLE aula(
 	nome varchar(50) NOT NULL
 )AUTO_INCREMENT=50000;
 
+CREATE TABLE domandatesi(
+	matricola int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	relatore int NOT NULL,
+	data date NOT NULL,
+	id_corso int NOT NULL,
+	repository varchar(50) DEFAULT NULL,
+	approvato boolean DEFAULT 0,
+	voto int DEFAULT NULL,
+	FOREIGN KEY (matricola) REFERENCES utente(matricola),
+	FOREIGN KEY (relatore) REFERENCES utente(matricola),
+	FOREIGN KEY (id_corso) REFERENCES corso(id_corso)
+)AUTO_INCREMENT=60000;
+
 CREATE TABLE suggerimento_sostituto(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	id_appello int NOT NULL,
@@ -53,7 +66,7 @@ CREATE TABLE suggerimento_sostituto(
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (id_richiedente) REFERENCES utente(matricola),
 	FOREIGN KEY (id_sostituto) REFERENCES utente(matricola)
-)AUTO_INCREMENT=60000;
+)AUTO_INCREMENT=70000;
 
 CREATE TABLE messaggio(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -63,7 +76,7 @@ CREATE TABLE messaggio(
 	letto boolean DEFAULT 0,
 	FOREIGN KEY (id_sorgente) REFERENCES utente(matricola),
 	FOREIGN KEY (id_destinatario) REFERENCES utente(matricola)
-)AUTO_INCREMENT=70000;
+)AUTO_INCREMENT=80000;
 
 CREATE TABLE prenotazione_aula_giorno(
 	id_aula int NOT NULL,
@@ -89,18 +102,6 @@ CREATE TABLE appello_membro(
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (matricola) REFERENCES utente(matricola),
 	PRIMARY KEY (id_appello, matricola)
-);
-
-CREATE TABLE domandatesi(
-	matricola int NOT NULL PRIMARY KEY,
-	relatore int NOT NULL,
-	data date NOT NULL,
-	id_corso int NOT NULL,
-	repository varchar(50) DEFAULT NULL,
-	approvato boolean DEFAULT 0,
-	FOREIGN KEY (matricola) REFERENCES utente(matricola),
-	FOREIGN KEY (relatore) REFERENCES utente(matricola),
-	FOREIGN KEY (id_corso) REFERENCES corso(id_corso)
 );
 
 DELIMITER $$
@@ -211,10 +212,25 @@ VALUES(40000, 10009),
 (40004, 10027),
 (40004, 10028);
 
---popolamento appello
+-- popolamento appello
 INSERT INTO appello (id_corso, pubblicato_da, pub_data)
-VALUES(20000, 10002, 2022-2-2), 
-(20001, 10002, 2022-3-3), 
-(20002, 10002, 2022-4-4), 
-(20003, 10002, 2022-5-5), 
-(20004, 10002, 2022-6-6);
+VALUES(20000, 10002, 2022-4-1), 
+(20000, 10002, 2022-4-2),
+(20000, 10002, 2022-4-3),
+(20000, 10002, 2022-4-4),
+(20001, 10002, 2022-5-5), 
+(20001, 10002, 2022-5-6), 
+(20001, 10002, 2022-5-7), 
+(20001, 10002, 2022-5-8), 
+(20002, 10002, 2022-6-9), 
+(20002, 10002, 2022-6-10), 
+(20002, 10002, 2022-6-11), 
+(20002, 10002, 2022-6-12), 
+(20003, 10002, 2022-7-13), 
+(20003, 10002, 2022-7-14), 
+(20003, 10002, 2022-7-15), 
+(20003, 10002, 2022-7-16), 
+(20004, 10002, 2022-8-17),
+(20004, 10002, 2022-8-18),
+(20004, 10002, 2022-8-19),
+(20004, 10002, 2022-8-20);
