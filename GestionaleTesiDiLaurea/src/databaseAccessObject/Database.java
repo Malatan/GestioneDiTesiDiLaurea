@@ -707,6 +707,29 @@ public class Database {
 		return docentiDip;
 	}
 	
+	public ArrayList<Docente> getDocentiPerSostituzione(int id_appello) {
+		Connection connection = null;
+		ArrayList<Docente> docenti = new ArrayList<Docente>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT u.matricola, u.nome, u.cognome, d.id_dipartimento, d.nome as nome_dip " 
+					+ "FROM utente u, dipartimento d, docente_dipartimento dd "
+					+ "WHERE ruolo = 4 AND dd.matricola = u.matricola AND dd.id_dipartimento = d.id_dipartimento AND u.matricola "
+					+ "NOT IN (SELECT am.matricola FROM appello_membro am WHERE am.id_appello = " + id_appello + ")";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				docenti.add(new Docente(rs.getString("matricola"), rs.getString("nome"), rs.getString("Cognome"),
+							Pair.of(rs.getInt("id_dipartimento"), rs.getString("nome_dip"))));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return docenti;
+	}
+	
 	public Pair<Integer, String> getDipByDocente(String matricola){
 		Connection connection = null;
 		try {

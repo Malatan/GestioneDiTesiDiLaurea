@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
+import domainModel.Docente;
 import domainModel.PresidenteCorso;
 import domainModel.PresidenteScuola;
 import domainModel.Responsabile;
@@ -121,6 +122,8 @@ public class Utils {
 			return 2;
 		} else if (o instanceof PresidenteCorso) {
 			return 3;
+		} else if (o instanceof Docente) {
+			return 4;
 		}
 		return -1;
 	}

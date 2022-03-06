@@ -22,8 +22,10 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 import businessLogic.ControllerAppello;
+import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.Studente;
@@ -193,6 +195,10 @@ public class ViewAppello {
 			shell.setText(shell.getText() + " - Presidente Corso");
 			createPresidenteCorsoComposite();
 			break;
+		case 4:
+			shell.setText(shell.getText() + " - Docente");
+			createDocenteComposite();
+			break;
 		}
 
 		aggiornaPagina();
@@ -280,7 +286,37 @@ public class ViewAppello {
 		btnNominaPresidente.setBounds(262, 10, 120, 25);
 		btnNominaPresidente.setText("Nomina Presidente");
 	}
+	
+	public void createDocenteComposite() {
+		Composite compositeDocente = new Composite(shell, SWT.BORDER);
+		compositeDocente.setBounds(10, 370, 465, 80);
 
+		Button btnDeterminazione = new Button(compositeDocente, SWT.NONE);
+		Label lblStatusAppello = new Label(compositeDocente, SWT.NONE);
+		lblStatusAppello.setBounds(10, 45, 465, 15);
+		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+		btnDeterminazione.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+			}
+		});
+		btnDeterminazione.setBounds(10, 10, 120, 25);
+		btnDeterminazione.setText("Determinazione");
+		
+		Button btnSostituto = new Button(compositeDocente, SWT.NONE);
+		btnSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.NORMAL));
+		btnSostituto.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				richiestaSostitutoDialog();
+			}
+		});
+		btnSostituto.setBounds(136, 10, 120, 25);
+		btnSostituto.setText("Suggerimento sostituto");
+		
+	}
+	
 	public void aggiungereDataDialog() {
 		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
@@ -767,6 +803,64 @@ public class ViewAppello {
 		btnNo.setBounds(168, 69, 75, 25);
 		btnNo.setText("Indietro");
 
+		child.open();
+	}
+
+	public void richiestaSostitutoDialog() {
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setSize(450, 260);
+		child.setText("Suggerimento sostituto");
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<Docente> docenti = controller.getDocentiPerSostitutzione();
+		
+		Label lblDocenteLabel = new Label(child, SWT.NONE);
+		lblDocenteLabel.setBounds(22, 24, 55, 15);
+		lblDocenteLabel.setText("Sostituto:");
+		
+		Combo comboDocenti = new Combo(child, SWT.READ_ONLY);
+		comboDocenti.setBounds(83, 21, 328, 23);
+		for (Docente d : docenti) {
+			comboDocenti.add(d.getNomeCognome() + "-" + d.getDipartimento().second);
+		}
+		
+		Text textNota = new Text(child, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		textNota.setBounds(22, 80, 389, 86);
+		
+		Label lblNotaLabel = new Label(child, SWT.NONE);
+		lblNotaLabel.setBounds(22, 59, 55, 15);
+		lblNotaLabel.setText("Nota:");
+		
+		Button btnConferma = new Button(child, SWT.NONE);
+		btnConferma.setBounds(22, 183, 120, 25);
+		btnConferma.setText("Conferma");
+		btnConferma.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+			}
+		});
+		
+		Button btnAnnullSugge = new Button(child, SWT.NONE);
+		btnAnnullSugge.setFont(SWTResourceManager.getFont("Segoe UI", 8, SWT.NORMAL));
+		btnAnnullSugge.setBounds(148, 183, 120, 25);
+		btnAnnullSugge.setText("Annulla suggerimento");
+		btnAnnullSugge.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+			}
+		});
+		
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(331, 183, 80, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				child.close();
+			}
+		});
+		
 		child.open();
 	}
 }

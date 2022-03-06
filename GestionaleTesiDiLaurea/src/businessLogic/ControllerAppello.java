@@ -78,6 +78,16 @@ public class ControllerAppello {
 		return null;
 	}
 	
+	public ArrayList<Docente> getDocentiPerSostitutzione(){
+		ArrayList<Docente> docenti = new ArrayList<Docente>();
+		if(Database.getInstance().isConnected()) {
+			docenti = Database.getInstance().getDocentiPerSostituzione(appello.getId());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return docenti;
+	}
+	
 	public String getLinkTeleFromDB() {
 		String s = "";
 		if(Database.getInstance().isConnected()) {
