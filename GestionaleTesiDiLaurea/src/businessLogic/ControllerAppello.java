@@ -295,7 +295,7 @@ public class ControllerAppello {
 	
 	public boolean revocaSuggerimento(int id_suggerimento) {
 		if(Database.getInstance().isConnected()) {
-			return Database.getInstance().revocaDateToAppello(id_suggerimento);
+			return Database.getInstance().revocaPropostaSostituto(id_suggerimento);
 		}else {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
@@ -323,7 +323,7 @@ public class ControllerAppello {
 	
 	public boolean approvaAppello() {
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().setAppelloApprovazione(appello.getId(),1);
+			Database.getInstance().setAppelloStatus(appello.getId(),1);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "L'appello e' stato approvato correttamente!");
 			return true;
 		}else {
@@ -334,7 +334,7 @@ public class ControllerAppello {
 	
 	public boolean richiediCorrezione() {
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().setAppelloApprovazione(appello.getId(),2);
+			Database.getInstance().setAppelloStatus(appello.getId(),2);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "E' stato richiesto una correzione");
 			return true;
 		}else {
@@ -371,6 +371,18 @@ public class ControllerAppello {
 		return false;
 	}
 
+	public boolean fineDiscussione(ArrayList<Pair<Studente, Integer>> esiti, ArrayList<Docente> membri_presenti) {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().updateAppelloMembriPresente(membri_presenti, appello.getId());
+			Database.getInstance().addEsiti(esiti, appello.getId());
+			Database.getInstance().setAppelloStatus(appello.getId(), 3);
+			return true;
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
 	public int getRuoloDidattica() {
 		return ruoloDidattica;
 	}

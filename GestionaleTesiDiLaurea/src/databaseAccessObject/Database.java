@@ -340,12 +340,12 @@ public class Database {
 		}
 	}
 
-	public void setAppelloApprovazione(int id_appello, int val) {
+	public void setAppelloStatus(int id_appello, int new_status) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "UPDATE appello SET status = '" + val + "' WHERE id_appello = " + id_appello;
+			String query = "UPDATE appello SET status = '" + new_status + "' WHERE id_appello = " + id_appello;
 			Console.print(query, "sql");
 			stm.executeUpdate(query);
 			connection.close();
@@ -435,7 +435,7 @@ public class Database {
 		return false;
 	}
 	
-	public boolean revocaDateToAppello(int id_suggerimento) {
+	public boolean revocaPropostaSostituto(int id_suggerimento) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
@@ -446,6 +446,55 @@ public class Database {
 			connection.close();
 			return true;
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean updateAppelloMembriPresente(ArrayList<Docente> commissione, int id_appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE appello_membro SET presenza = 1 WHERE id_appello = ? AND ruolo = 0";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id_appello);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			
+			query = "UPDATE appello_membro SET presenza = 1 WHERE id_appello = ? AND matricola = ?";
+			for (int i = 0 ; i < commissione.size() ;i++) {
+				prepared = connection.prepareStatement(query);
+				prepared.setInt(1, id_appello);
+				prepared.setInt(2, commissione.get(i).getMatricolaInt());
+				Console.print(prepared.toString(), "sql");
+				prepared.executeUpdate();
+			}
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean addEsiti(ArrayList<Pair<Studente, Integer>> esiti, int id_appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO esito_tesi (matricola, id_appello, voto) values (?,?,?)";
+			for(int i = 0 ; i < esiti.size() ; i++) {
+				PreparedStatement prepared = connection.prepareStatement(query);
+				prepared.setInt(1, esiti.get(i).first.getMatricolaInt());
+				prepared.setInt(2, id_appello);
+				prepared.setInt(3, esiti.get(i).second);
+				Console.print(prepared.toString(), "sql");
+				prepared.executeUpdate();
+			}
+			connection.close();
+			return true;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -1089,7 +1138,6 @@ public class Database {
 		}
 	}
 	
-
 	public Pair<Integer, String> getCorsoByPresidente(int matricola) {
 		Connection connection = null;
 		try {

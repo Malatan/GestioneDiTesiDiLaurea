@@ -133,8 +133,14 @@ public class AppelloTesi {
 			return "Approvato";
 		} else if (status == 2) {
 			return "Correzione dell'appello";
-		} else {
+		} else if (status == 3) {
+			return "Completato";
+		} else if (status == 4) {
+			return "Verbalizzato";
+		} else if (status == 0){
 			return "In Revisione";
+		} else {
+			return "Error";
 		}
 	}
 }

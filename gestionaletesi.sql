@@ -28,7 +28,7 @@ CREATE TABLE appello(
 	teleconferenza varchar(50) DEFAULT NULL,
 	nota text DEFAULT NULL,
 	orario time DEFAULT NULL,
-	status int DEFAULT 0 COMMENT '1 = approvato, 2 = richiedi correzione, 3 = completato, 4 = scaduto, 5 = annullato',
+	status int DEFAULT 0 COMMENT '1 = approvato, 2 = richiedi correzione, 3 = completato, 4 = verbalizzato, 5 = scaduto, 6 = annullato',
 	FOREIGN KEY (pubblicato_da) REFERENCES utente(matricola),
 	FOREIGN KEY (id_corso ) REFERENCES corso(id_corso )
 )AUTO_INCREMENT=30000;
@@ -43,18 +43,18 @@ CREATE TABLE aula(
 	nome varchar(50) NOT NULL
 )AUTO_INCREMENT=50000;
 
+-- vincolo: uno studente puo presentare solo una domanda di tesi
 CREATE TABLE domandatesi(
-	matricola int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	matricola int NOT NULL PRIMARY KEY,
 	relatore int NOT NULL,
 	data date NOT NULL,
 	id_corso int NOT NULL,
 	repository varchar(50) DEFAULT NULL,
 	approvato boolean DEFAULT 0,
-	voto int DEFAULT NULL,
 	FOREIGN KEY (matricola) REFERENCES utente(matricola),
 	FOREIGN KEY (relatore) REFERENCES utente(matricola),
 	FOREIGN KEY (id_corso) REFERENCES corso(id_corso)
-)AUTO_INCREMENT=60000;
+);
 
 CREATE TABLE suggerimento_sostituto(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -78,6 +78,24 @@ CREATE TABLE messaggio(
 	FOREIGN KEY (id_destinatario) REFERENCES utente(matricola)
 )AUTO_INCREMENT=80000;
 
+CREATE TABLE esito_tesi(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	matricola int NOT NULL,
+	id_appello int NOT NULL,
+	voto int NOT NULL,
+	FOREIGN KEY (matricola) REFERENCES utente(matricola),
+	FOREIGN KEY (id_appello) REFERENCES appello(id_appello)
+)AUTO_INCREMENT=90000;
+
+CREATE TABLE appello_determinazione(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_docente int NOT NULL,
+	id_appello int NOT NULL,
+	contenuto text NOT NULL,
+	FOREIGN KEY (id_docente) REFERENCES utente(matricola),
+	FOREIGN KEY (id_appello) REFERENCES appello(id_appello)
+)AUTO_INCREMENT=95000;
+
 CREATE TABLE prenotazione_aula_giorno(
 	id_aula int NOT NULL,
 	id_appello int NOT NULL,
@@ -99,7 +117,7 @@ CREATE TABLE appello_membro(
 	id_appello int NOT NULL,
 	matricola int NOT NULL,
 	ruolo int DEFAULT 0 COMMENT '0 = Studente, 1 = Membro Della Commissione, 2 = Relatore, 3 = Presidente della commissione',
-	presenza boolean DEFAULT 0,
+	presenza boolean DEFAULT 0 COMMENT '0 = assente, 1 = presente',
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (matricola) REFERENCES utente(matricola),
 	PRIMARY KEY (id_appello, matricola)
