@@ -96,6 +96,15 @@ CREATE TABLE appello_determinazione(
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello)
 )AUTO_INCREMENT=95000;
 
+CREATE TABLE verbale(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_appello int NOT NULL,
+	data date NOT NULL,
+	contenuto text NOT NULL,
+	approvato boolean DEFAULT 0,
+	FOREIGN KEY (id_appello) REFERENCES appello(id_appello)
+)AUTO_INCREMENT=99000;
+
 CREATE TABLE prenotazione_aula_giorno(
 	id_aula int NOT NULL,
 	id_appello int NOT NULL,
