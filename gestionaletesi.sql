@@ -101,6 +101,7 @@ CREATE TABLE verbale(
 	id_appello int NOT NULL,
 	data date NOT NULL,
 	contenuto text NOT NULL,
+	data_approvazione date DEFAULT NULL,
 	approvato boolean DEFAULT 0,
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello)
 )AUTO_INCREMENT=99000;

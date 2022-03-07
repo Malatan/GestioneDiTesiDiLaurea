@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import businessLogic.ControllerAppello;
@@ -21,8 +22,8 @@ import domainModel.Verbale;
 import utils.Utils;
 
 public class ViewPresidenteScuola {
-	private ControllerPresidenteScuola controllerPresidenteScuola;
-	private Shell presidenteScuolaShell;
+	private ControllerPresidenteScuola controller;
+	private Shell shell;
 	private Composite compositeMenu;
 	private Label lbl1;
 	private Label lbl2;
@@ -30,11 +31,11 @@ public class ViewPresidenteScuola {
 	private ScrolledComposite scrolledCompositeListaAppelli;
 
 	public ViewPresidenteScuola(ControllerPresidenteScuola cps) {
-		this.controllerPresidenteScuola = cps;
+		this.controller = cps;
 	}
 
 	public Shell getShell() {
-		return presidenteScuolaShell;
+		return shell;
 	}
 
 	/**
@@ -43,40 +44,40 @@ public class ViewPresidenteScuola {
 	public void createAndRun() {
 
 		Display display = Display.getDefault();
-		presidenteScuolaShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		presidenteScuolaShell.setSize(500, 508);
-		presidenteScuolaShell.setText("Presidente della Scuola");
-		Utils.setShellToCenterMonitor(presidenteScuolaShell, display);
+		shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
+		shell.setSize(500, 508);
+		shell.setText("Presidente della Scuola");
+		Utils.setShellToCenterMonitor(shell, display);
 
-		Composite composite = new Composite(presidenteScuolaShell, SWT.BORDER);
+		Composite composite = new Composite(shell, SWT.BORDER);
 		composite.setBounds(20, 22, 441, 80);
 
 		Label lblMatricola = new Label(composite, SWT.NONE);
 		lblMatricola.setBounds(10, 10, 340, 15);
-		lblMatricola.setText("Matricola: " + controllerPresidenteScuola.getPresidenteScuola().getMatricola());
+		lblMatricola.setText("Matricola: " + controller.getPresidenteScuola().getMatricola());
 
 		Label lblNome = new Label(composite, SWT.NONE);
 		lblNome.setBounds(10, 31, 340, 15);
-		lblNome.setText("Nome: " + controllerPresidenteScuola.getPresidenteScuola().getNome());
+		lblNome.setText("Nome: " + controller.getPresidenteScuola().getNome());
 
 		Label lblCognome = new Label(composite, SWT.NONE);
 		lblCognome.setBounds(10, 52, 340, 15);
-		lblCognome.setText("Cognome: " + controllerPresidenteScuola.getPresidenteScuola().getCognome());
+		lblCognome.setText("Cognome: " + controller.getPresidenteScuola().getCognome());
 
-		compositeMenu = new Composite(presidenteScuolaShell, SWT.BORDER);
+		compositeMenu = new Composite(shell, SWT.BORDER);
 		compositeMenu.setBounds(22, 126, 439, 333);
 		
-		lbl1 = new Label(presidenteScuolaShell, SWT.NONE);
+		lbl1 = new Label(shell, SWT.NONE);
 		lbl1.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 		lbl1.setAlignment(SWT.CENTER);
 		lbl1.setVisible(false);
 		
-		lbl2 = new Label(presidenteScuolaShell, SWT.NONE);
+		lbl2 = new Label(shell, SWT.NONE);
 		lbl2.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 		lbl2.setAlignment(SWT.CENTER);
 		lbl2.setVisible(false);
 		
-		lbl3 = new Label(presidenteScuolaShell, SWT.NONE);
+		lbl3 = new Label(shell, SWT.NONE);
 		lbl3.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 		lbl3.setAlignment(SWT.CENTER);
 		lbl3.setVisible(false);
@@ -114,14 +115,14 @@ public class ViewPresidenteScuola {
 		btnLogOut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				presidenteScuolaShell.close();
-				controllerPresidenteScuola = null;
+				shell.close();
+				controller = null;
 				ControllerLogin cl = new ControllerLogin();
 				cl.run();
 			}
 		});
 
-		Button btnIndietro = new Button(presidenteScuolaShell, SWT.NONE);
+		Button btnIndietro = new Button(shell, SWT.NONE);
 		btnIndietro.setLocation(385, 125);
 		btnIndietro.setSize(75, 25);
 		btnIndietro.setText("Indietro");
@@ -136,9 +137,9 @@ public class ViewPresidenteScuola {
 			}
 		});
 
-		presidenteScuolaShell.open();
-		presidenteScuolaShell.layout();
-		while (!presidenteScuolaShell.isDisposed()) {
+		shell.open();
+		shell.layout();
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -156,13 +157,13 @@ public class ViewPresidenteScuola {
 		lbl2.setText("Data");
 		lbl3.setBounds(215, 126, 100, 15);
 		lbl3.setText("Approvato");
-		scrolledCompositeListaAppelli = new ScrolledComposite(presidenteScuolaShell, SWT.BORDER | SWT.V_SCROLL);
+		scrolledCompositeListaAppelli = new ScrolledComposite(shell, SWT.BORDER | SWT.V_SCROLL);
 		scrolledCompositeListaAppelli.setBounds(20, 152, 439, 297);
 		scrolledCompositeListaAppelli.setExpandVertical(true);
 		Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
 		compositeListaAppelli.setBounds(scrolledCompositeListaAppelli.getBounds());
 		
-		ArrayList<Verbale> verbali = controllerPresidenteScuola.getVerbaliFromDB();
+		ArrayList<Verbale> verbali = controller.getVerbaliFromDB();
 		int offset_y = 10;
 		for (Verbale v : verbali) {
 			Label lblId = new Label(compositeListaAppelli, SWT.NONE);
@@ -187,7 +188,7 @@ public class ViewPresidenteScuola {
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					
+					verbaleView(v);
 				}
 			});
 			btnDettaglio.setBounds(345, offset_y, 75, 25);
@@ -212,12 +213,12 @@ public class ViewPresidenteScuola {
 		lbl2.setText("Data");
 		lbl3.setBounds(215, 126, 100, 15);
 		lbl3.setText("Status");
-		scrolledCompositeListaAppelli = new ScrolledComposite(presidenteScuolaShell, SWT.BORDER | SWT.V_SCROLL);
+		scrolledCompositeListaAppelli = new ScrolledComposite(shell, SWT.BORDER | SWT.V_SCROLL);
 		scrolledCompositeListaAppelli.setBounds(20, 152, 439, 297);
 		scrolledCompositeListaAppelli.setExpandVertical(true);
 		Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
 		compositeListaAppelli.setBounds(scrolledCompositeListaAppelli.getBounds());
-		ArrayList<AppelloTesi> appelli = controllerPresidenteScuola.getAppelliFromDB();
+		ArrayList<AppelloTesi> appelli = controller.getAppelliFromDB();
 		int offset_y = 10;
 		for (AppelloTesi a : appelli) {
 			Label lblId = new Label(compositeListaAppelli, SWT.NONE);
@@ -242,10 +243,10 @@ public class ViewPresidenteScuola {
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					AppelloTesi appello = controllerPresidenteScuola.getAppelloFromDB(a.getId());
-					ControllerAppello ca = new ControllerAppello(appello, presidenteScuolaShell,
-							controllerPresidenteScuola.getPresidenteScuola().getMatricola(),
-							Utils.getRuolo(controllerPresidenteScuola.getPresidenteScuola()));
+					AppelloTesi appello = controller.getAppelloFromDB(a.getId());
+					ControllerAppello ca = new ControllerAppello(appello, shell,
+							controller.getPresidenteScuola().getMatricola(),
+							Utils.getRuolo(controller.getPresidenteScuola()));
 					ca.run();
 				}
 			});
@@ -259,5 +260,51 @@ public class ViewPresidenteScuola {
 		}
 		scrolledCompositeListaAppelli.setContent(compositeListaAppelli);
 		scrolledCompositeListaAppelli.setMinSize(compositeListaAppelli.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	}
+
+	public void verbaleView(Verbale v) {
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setSize(450, 500);
+		child.setText("Visualizzazione verbale");
+		Utils.setShellToCenterParent(child, shell);
+		
+		Label lblTitolo = new Label(child, SWT.CENTER);
+		lblTitolo.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
+		lblTitolo.setBounds(10, 10, 415, 20);
+		lblTitolo.setText("Verbale n." + v.getId());
+		
+		Text textContenuto = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.H_SCROLL | SWT.CANCEL);
+		textContenuto.setBounds(10, 36, 415, 385);
+		textContenuto.setText(v.getContenuto());
+		
+		Button btnApprova = new Button(child, SWT.NONE);
+		btnApprova.setBounds(10, 427, 75, 25);
+		btnApprova.setText("Approva");
+		btnApprova.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (Utils.createYesNoDialog(child, "Messaggio", "Conferma di approvare il verbale?")) {
+					if (controller.approvaVerbale(v.getId())) {
+						Utils.createConfirmDialog(child, "Messaggio", "Il verbale e' stato approvato.");
+						child.close();
+					}
+				}
+			}
+		});
+		
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(350, 427, 75, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				child.close();
+			}
+		});
+		
+		if(v.isApprovato()) {
+			btnApprova.setEnabled(false);
+		}
+		child.open();
 	}
 }

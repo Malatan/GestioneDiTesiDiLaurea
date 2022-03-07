@@ -25,7 +25,16 @@ public class ControllerPresidenteScuola {
 	public void run() {
 		viewPresidenteScuola.createAndRun();
 	}
-
+	
+	public boolean approvaVerbale(int id_verbale) {
+		if (Database.getInstance().isConnected()) {
+			return Database.getInstance().approvaVerbale(id_verbale, Utils.getTodayDate());
+		} else {
+			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
 	public ArrayList<AppelloTesi> getAppelliFromDB() {
 		ArrayList<AppelloTesi> appelli = null;
 		if (Database.getInstance().isConnected()) {

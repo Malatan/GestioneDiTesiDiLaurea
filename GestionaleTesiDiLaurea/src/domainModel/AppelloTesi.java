@@ -118,6 +118,10 @@ public class AppelloTesi {
 		return status;
 	}
 	
+	public void setStatus(int new_status) {
+		this.status = new_status;
+	}
+	
 	public static String getStatusString(int status) {
 		if (status == 1) {
 			return "Approvato";

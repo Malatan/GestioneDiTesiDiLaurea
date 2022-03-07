@@ -536,6 +536,8 @@ public class ViewAppello {
 						if (controller.fineDiscussione(esiti, commissione)) {
 							controller.generaVerbale(commissione, esiti, presidenteC);
 							Utils.createConfirmDialog(child, "Messaggio", "Valutazione inserita con successo.");
+							controller.getAppello().setStatus(3);
+							aggiornaPagina();
 							child.close();
 						}
 					}

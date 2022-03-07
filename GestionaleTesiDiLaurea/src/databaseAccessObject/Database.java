@@ -500,6 +500,24 @@ public class Database {
 		return false;
 	}
 	
+	public boolean approvaVerbale(int id_verbale, String data_approvazione) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE verbale SET approvato = 1, data_approvazione = ? WHERE id = ?";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setString(1, data_approvazione);
+			prepared.setInt(2, id_verbale);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean generaVerbale(int id_appello, String data, String contenuto) {
 		Connection connection = null;
 		try {

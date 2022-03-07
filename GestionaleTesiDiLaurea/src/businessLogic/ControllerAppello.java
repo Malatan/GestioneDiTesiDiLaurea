@@ -105,15 +105,15 @@ public class ControllerAppello {
 							appello.getDateString() + ".\n";
 		contenuto += "Candidati: \n";
 		for (int i = 0 ; i < esiti.size() ; i++) {
-			contenuto += "Matricola: " + esiti.get(i).first.getMatricola() + " Nome: " + esiti.get(i).first.getNome() 
-					+ " Cognome: " + esiti.get(i).first.getCognome() + " Esito: " + esiti.get(i).second + "\n";
+			contenuto += "Matricola: " + esiti.get(i).first.getMatricola() + " | Nome: " + esiti.get(i).first.getNome() 
+					+ " | Cognome: " + esiti.get(i).first.getCognome() + " | Esito: " + esiti.get(i).second + "\n";
 		}
-		contenuto += "Membri della Commissione presenti: ";
-		contenuto += "Matricola: " + presidente_commissione.getMatricola() + " Nome: " + presidente_commissione.getNome() 
-				+ " Cognome: " + presidente_commissione.getCognome() + "(Presidente della Commissione)\n";
+		contenuto += "Membri della Commissione presenti: \n";
+		contenuto += "Matricola: " + presidente_commissione.getMatricola() + " | Nome: " + presidente_commissione.getNome() 
+				+ " | Cognome: " + presidente_commissione.getCognome() + "(Presidente della Commissione)\n";
 		for (int i = 0 ; i < commissione.size() ; i++) {
-			contenuto += "Matricola: " + commissione.get(i).getMatricola() + " Nome: " + commissione.get(i).getNome() 
-					+ " Cognome: " + commissione.get(i).getCognome() + "\n";
+			contenuto += "Matricola: " + commissione.get(i).getMatricola() + " | Nome: " + commissione.get(i).getNome() 
+					+ " | Cognome: " + commissione.get(i).getCognome() + "\n";
 		}
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().generaVerbale(appello.getId(), Utils.getTodayDate(), contenuto);
