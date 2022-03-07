@@ -26,9 +26,9 @@ public class ControllerPresidenteScuola {
 		viewPresidenteScuola.createAndRun();
 	}
 	
-	public boolean approvaVerbale(int id_verbale) {
+	public boolean approvaVerbale(Verbale verbale) {
 		if (Database.getInstance().isConnected()) {
-			return Database.getInstance().approvaVerbale(id_verbale, Utils.getTodayDate());
+			return Database.getInstance().approvaVerbale(verbale);
 		} else {
 			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
 		}

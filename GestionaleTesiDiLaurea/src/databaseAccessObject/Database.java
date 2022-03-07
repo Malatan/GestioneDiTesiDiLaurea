@@ -500,16 +500,23 @@ public class Database {
 		return false;
 	}
 	
-	public boolean approvaVerbale(int id_verbale, String data_approvazione) {
+	public boolean approvaVerbale(Verbale verbale) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			String query = "UPDATE verbale SET approvato = 1, data_approvazione = ? WHERE id = ?";
 			PreparedStatement prepared = connection.prepareStatement(query);
-			prepared.setString(1, data_approvazione);
-			prepared.setInt(2, id_verbale);
+			prepared.setString(1, Utils.getTodayDate());
+			prepared.setInt(2, verbale.getId());
 			Console.print(prepared.toString(), "sql");
 			prepared.executeUpdate();
+			
+			query = "UPDATE appello SET status = 4 WHERE id_appello = ?";
+			prepared = connection.prepareStatement(query);
+			prepared.setInt(1, verbale.getIdAppello());
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			
 			connection.close();
 			return true;
 		} catch (SQLException e) {
@@ -641,13 +648,28 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
+			Statement stm2 = connection.createStatement();
 			String query = "SELECT v.id, v.id_appello, v.data, v.contenuto, v.approvato "
 					+ "FROM verbale v";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
-				verbali.add(new Verbale(rs.getInt("id"), rs.getInt("id_appello"), rs.getString("data"),
-						rs.getString("contenuto"), rs.getBoolean("approvato") , null));
+				Verbale v = new Verbale(rs.getInt("id"), rs.getInt("id_appello"), rs.getString("data"),
+						rs.getString("contenuto"), rs.getBoolean("approvato") , null);
+				String query2 = "SELECT am.matricola, u.nome, u.cognome, ad.contenuto "
+						+ "FROM appello_membro am "
+						+ "LEFT JOIN appello_determinazione ad ON am.id_appello = ad.id_appello AND am.matricola = ad.id_docente "
+						+ "AND ad.id_appello = " + rs.getInt("id_appello") + " AND am.presenza = 1 "
+						+ "LEFT JOIN utente u ON am.matricola = u.matricola "
+						+ "WHERE am.ruolo = 1 OR am.ruolo = 2 OR am.ruolo = 3";
+				ResultSet rs2 = stm2.executeQuery(query2);
+				ArrayList<Pair<Docente, String>> d = new ArrayList<Pair<Docente, String>>();
+				while (rs2.next()) {
+					d.add(Pair.of(new Docente(rs2.getString("matricola"), rs2.getString("nome"), rs2.getString("cognome")), 
+							rs2.getString("contenuto")));
+				}
+				v.setDeterminazioni(d);
+				verbali.add(v);
 			}
 			connection.close();
 		} catch (SQLException e) {

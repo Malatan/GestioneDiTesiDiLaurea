@@ -272,9 +272,9 @@ public class ViewPresidenteScuola {
 		lblTitolo.setBounds(10, 10, 415, 20);
 		lblTitolo.setText("Verbale n." + v.getId());
 		
-		Text textContenuto = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.H_SCROLL | SWT.CANCEL);
+		Text textContenuto = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL | SWT.CANCEL);
 		textContenuto.setBounds(10, 36, 415, 385);
-		textContenuto.setText(v.getContenuto());
+		textContenuto.setText(v.getVerbaleContenuto());
 		
 		Button btnApprova = new Button(child, SWT.NONE);
 		btnApprova.setBounds(10, 427, 75, 25);
@@ -283,7 +283,7 @@ public class ViewPresidenteScuola {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if (Utils.createYesNoDialog(child, "Messaggio", "Conferma di approvare il verbale?")) {
-					if (controller.approvaVerbale(v.getId())) {
+					if (controller.approvaVerbale(v)) {
 						Utils.createConfirmDialog(child, "Messaggio", "Il verbale e' stato approvato.");
 						child.close();
 					}

@@ -71,5 +71,16 @@ public class Verbale {
 		this.determinazioni = determinazioni;
 	}
 	
+	public String getVerbaleContenuto() {
+		String s = contenuto + "\nDeterminazione: \n";
+		for (int i = 0 ; i < determinazioni.size() ; i ++) {
+			if (determinazioni.get(i).second != null) {
+				s += determinazioni.get(i).first.getNomeCognome() + ": " + determinazioni.get(i).second + " \n";
+			} else {
+				s += determinazioni.get(i).first.getNomeCognome() + ": nessuna determinazione.\n";
+			}
+		}
+		return s;
+	}
 	
 }

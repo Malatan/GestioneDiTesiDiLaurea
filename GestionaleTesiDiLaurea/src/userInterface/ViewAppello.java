@@ -296,6 +296,11 @@ public class ViewAppello {
 			btnIdentificaMembri.setEnabled(false);
 			btnData.setEnabled(false);
 		}
+		if (appello_status == 4) {
+			btnNominaPresidente.setEnabled(false);
+			btnIdentificaMembri.setEnabled(false);
+			btnData.setEnabled(false);
+		}
 	}
 
 	public void createDocenteComposite() {
@@ -320,7 +325,8 @@ public class ViewAppello {
 			btnDeterminazione.setEnabled(false);
 		}
 		// membro commissione
-		if (controller.getRuoloAppello() == 1) {
+		if (controller.getRuoloAppello() == 1 && controller.getAppello().getStatus() != 3 && controller.getAppello().getStatus() != 4) {
+			System.out.println("123");
 			Button btnSostituto = new Button(compositeDocente, SWT.NONE);
 			btnSostituto.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.NORMAL));
 			btnSostituto.setBounds(136, 10, 120, 25);
@@ -360,7 +366,7 @@ public class ViewAppello {
 				btnProposteSostituto.setVisible(false);
 			}
 		}
-
+		
 	}
 	
 	public void determinazioneDialog() {
@@ -615,6 +621,7 @@ public class ViewAppello {
 								}
 							}
 						}
+						commissione.add(presidenteC);
 						if (controller.fineDiscussione(esiti, commissione)) {
 							controller.generaVerbale(commissione, esiti, presidenteC);
 							Utils.createConfirmDialog(child, "Messaggio", "Valutazione inserita con successo.");
@@ -840,7 +847,7 @@ public class ViewAppello {
 
 		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
-		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+		lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
 
 		btnPrenotaAula.setBounds(10, 10, 180, 25);
 		btnPrenotaAula.setText("Prenota Aula e Inserisci Orario");
@@ -854,7 +861,11 @@ public class ViewAppello {
 		});
 		btnLinkTele.setBounds(196, 10, 120, 25);
 		btnLinkTele.setText("Link teleconferenza");
-
+		
+		if (controller.getAppello().getStatus() == 4) {
+			btnPrenotaAula.setEnabled(false);
+			btnLinkTele.setEnabled(false);
+		}
 	}
 
 	public void aggiungeLinkTeleDialog() {
