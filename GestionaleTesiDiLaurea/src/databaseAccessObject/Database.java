@@ -500,6 +500,25 @@ public class Database {
 		return false;
 	}
 	
+	public boolean generaVerbale(int id_appello, String data, String contenuto) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO verbale (id_appello, data, contenuto) values (?,?,?)";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id_appello);
+			prepared.setString(2, data);
+			prepared.setString(3, contenuto);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public SuggerimentoSostituto getSuggerimentoByAppelloAndDocente(int id_appello, int matricola) {
 		Connection connection = null;
 		try {
@@ -768,6 +787,35 @@ public class Database {
 					+ "LEFT JOIN corso c on a.id_corso = c.id_corso "
 					+ "LEFT JOIN prenotazione_aula_giorno pag on pag.id_appello = a.id_appello "
 					+ "LEFT JOIN aula au on pag.id_aula = au.id_aula";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				appelli.add(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("nome_aula")),
+						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status")));
+			}
+
+			connection.close();
+			return appelli;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ArrayList<AppelloTesi> getAppelliCompletati() {
+		Connection connection = null;
+		ArrayList<AppelloTesi> appelli = new ArrayList<AppelloTesi>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, pag.id_aula, "
+					+ "au.nome as nome_aula, a.data, a.orario, a.teleconferenza, a.nota, a.status "
+					+ "FROM appello a "
+					+ "LEFT JOIN corso c on a.id_corso = c.id_corso "
+					+ "LEFT JOIN prenotazione_aula_giorno pag on pag.id_appello = a.id_appello "
+					+ "LEFT JOIN aula au on pag.id_aula = au.id_aula "
+					+ "WHERE a.status = 3";
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {

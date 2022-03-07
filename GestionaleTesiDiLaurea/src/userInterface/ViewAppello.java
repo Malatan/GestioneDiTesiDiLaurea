@@ -215,44 +215,51 @@ public class ViewAppello {
 	public void createPresidenteScuolaComposite() {
 		Composite compositePresidenteScuola = new Composite(shell, SWT.BORDER);
 		compositePresidenteScuola.setBounds(10, 370, 465, 80);
-
-		Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);
+		
 		Label lblStatusAppello = new Label(compositePresidenteScuola, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
-		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
-		approvaAppello.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di approvare l'appello?")) {
-					controller.approvaAppello();
-					lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
-					aggiornaPagina();
+		lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
+		int appello_status = controller.getAppello().getStatus();
+		if (appello_status == 2 || appello_status == 1 || appello_status == 0) {
+			Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);	
+			approvaAppello.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di approvare l'appello?")) {
+						controller.approvaAppello();
+						lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+						aggiornaPagina();
+					}
 				}
-			}
-		});
-		approvaAppello.setBounds(10, 10, 120, 25);
-		approvaAppello.setText("Approva Appello");
+			});
+			approvaAppello.setBounds(10, 10, 120, 25);
+			approvaAppello.setText("Approva Appello");
 
-		Button richiediCorrezione = new Button(compositePresidenteScuola, SWT.NONE);
-		richiediCorrezione.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di richiedere la correzione?")) {
-					controller.richiediCorrezione();
-					lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
-					aggiornaPagina();
+			Button richiediCorrezione = new Button(compositePresidenteScuola, SWT.NONE);
+			richiediCorrezione.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di richiedere la correzione?")) {
+						controller.richiediCorrezione();
+						lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+						aggiornaPagina();
+					}
 				}
-			}
-		});
-		richiediCorrezione.setBounds(136, 10, 120, 25);
-		richiediCorrezione.setText("Richiedi Correzione");
-
+			});
+			richiediCorrezione.setBounds(136, 10, 120, 25);
+			richiediCorrezione.setText("Richiedi Correzione");
+		}
 	}
 
 	public void createPresidenteCorsoComposite() {
 		Composite compositeResponsabile = new Composite(shell, SWT.BORDER);
 		compositeResponsabile.setBounds(10, 370, 465, 80);
-
+		
+		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
+		lblStatusAppello.setBounds(10, 45, 465, 15);
+		lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
+		int appello_status = controller.getAppello().getStatus();
+		
 		Button btnData = new Button(compositeResponsabile, SWT.NONE);
 		btnData.addMouseListener(new MouseAdapter() {
 			@Override
@@ -262,11 +269,7 @@ public class ViewAppello {
 		});
 		btnData.setBounds(10, 10, 120, 25);
 		btnData.setText("Inserisci Data");
-
-		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
-		lblStatusAppello.setBounds(10, 45, 465, 15);
-		lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
-
+		
 		Button btnIdentificaMembri = new Button(compositeResponsabile, SWT.NONE);
 		btnIdentificaMembri.addMouseListener(new MouseAdapter() {
 			@Override
@@ -286,6 +289,12 @@ public class ViewAppello {
 		});
 		btnNominaPresidente.setBounds(262, 10, 120, 25);
 		btnNominaPresidente.setText("Nomina Presidente");
+		
+		if (appello_status == 1) {
+			btnNominaPresidente.setEnabled(false);
+			btnIdentificaMembri.setEnabled(false);
+			btnData.setEnabled(false);
+		}
 	}
 
 	public void createDocenteComposite() {
@@ -525,6 +534,7 @@ public class ViewAppello {
 							}
 						}
 						if (controller.fineDiscussione(esiti, commissione)) {
+							controller.generaVerbale(commissione, esiti, presidenteC);
 							Utils.createConfirmDialog(child, "Messaggio", "Valutazione inserita con successo.");
 							child.close();
 						}

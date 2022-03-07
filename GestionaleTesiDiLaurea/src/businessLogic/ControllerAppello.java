@@ -100,6 +100,30 @@ public class ControllerAppello {
 		}
 	}
 	
+	public boolean generaVerbale(ArrayList<Docente> commissione, ArrayList<Pair<Studente, Integer>> esiti, Docente presidente_commissione) {
+		String contenuto = "Verbale di Esame.\nAppello di Tesi di corso " + appello.getCorso().second + "\n" + "Appello previsto in data: " +
+							appello.getDateString() + ".\n";
+		contenuto += "Candidati: \n";
+		for (int i = 0 ; i < esiti.size() ; i++) {
+			contenuto += "Matricola: " + esiti.get(i).first.getMatricola() + " Nome: " + esiti.get(i).first.getNome() 
+					+ " Cognome: " + esiti.get(i).first.getCognome() + " Esito: " + esiti.get(i).second + "\n";
+		}
+		contenuto += "Membri della Commissione presenti: ";
+		contenuto += "Matricola: " + presidente_commissione.getMatricola() + " Nome: " + presidente_commissione.getNome() 
+				+ " Cognome: " + presidente_commissione.getCognome() + "(Presidente della Commissione)\n";
+		for (int i = 0 ; i < commissione.size() ; i++) {
+			contenuto += "Matricola: " + commissione.get(i).getMatricola() + " Nome: " + commissione.get(i).getNome() 
+					+ " Cognome: " + commissione.get(i).getCognome() + "\n";
+		}
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().generaVerbale(appello.getId(), Utils.getTodayDate(), contenuto);
+			return true;
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
 	public ArrayList<Pair<Integer, String>> getAuleFromDB(){
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().getAule();

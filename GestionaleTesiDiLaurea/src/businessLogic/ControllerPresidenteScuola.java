@@ -35,6 +35,16 @@ public class ControllerPresidenteScuola {
 		return appelli;
 	}
 	
+	public ArrayList<AppelloTesi> getAppelliCompletatiFromDB() {
+		ArrayList<AppelloTesi> appelli = null;
+		if (Database.getInstance().isConnected()) {
+			appelli = Database.getInstance().getAppelliCompletati();
+		} else {
+			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return appelli;
+	}
+	
 	public AppelloTesi getAppelloFromDB(int id_appello) {
 		AppelloTesi appello = null;
 		if (Database.getInstance().isConnected()) {
