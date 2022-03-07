@@ -38,17 +38,25 @@ public class ViewLogin {
 	public void createAndRun() {
 		Display display = Display.getDefault();
 		shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-
 		shell.setSize(509, 317);
 		shell.setText("Gestionale di tesi di laurea");
 		Utils.setShellToCenterMonitor(shell, display);
-
+		
+		Label lblTitolo = new Label(shell, SWT.NONE);
+		lblTitolo.setAlignment(SWT.CENTER);
+		lblTitolo.setFont(SWTResourceManager.getFont("Segoe UI", 20, SWT.NORMAL));
+		lblTitolo.setBounds(0, 10, 493, 40);
+		lblTitolo.setText("Gestionale Di Tesi Di Laurea");
+		
+		Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setBounds(0, 56, 493, 4);
+		
 		Text textFieldMatricola = new Text(shell, SWT.BORDER);
 		textFieldMatricola.setBounds(141, 90, 227, 21);
-
+		
 		Text textFieldPassword = new Text(shell, SWT.BORDER | SWT.PASSWORD);
 		textFieldPassword.setBounds(141, 140, 227, 21);
-
+		
 		Button btnLogin = new Button(shell, SWT.NONE);
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
@@ -67,17 +75,26 @@ public class ViewLogin {
 		lblPassword.setBounds(72, 143, 55, 15);
 		lblPassword.setText("Password");
 
-		Label lblTitolo = new Label(shell, SWT.NONE);
-		lblTitolo.setAlignment(SWT.CENTER);
-		lblTitolo.setFont(SWTResourceManager.getFont("Segoe UI", 20, SWT.NORMAL));
-		lblTitolo.setBounds(0, 10, 493, 40);
-		lblTitolo.setText("Gestionale Di Tesi Di Laurea");
-
+		textFieldMatricola.addKeyListener(new KeyAdapter() {
+		      public void keyPressed(KeyEvent event) {
+		    	  if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
+		    		  controller.checkLogin(textFieldMatricola, textFieldPassword);
+		    	  }
+		      }
+		    });
+		
+		textFieldPassword.addKeyListener(new KeyAdapter() {
+		      public void keyPressed(KeyEvent event) {
+		    	  if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
+		    		  controller.checkLogin(textFieldMatricola, textFieldPassword);
+		    	  }
+		      }
+		    });
+		
 		textFieldMatricola.setText("10003");
 		textFieldPassword.setText("123");
-
-		Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-		label.setBounds(0, 56, 493, 4);
+		
+		
 		
 		shell.open();
 		shell.layout();
