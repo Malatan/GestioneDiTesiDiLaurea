@@ -91,6 +91,7 @@ CREATE TABLE appello_determinazione(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	id_docente int NOT NULL,
 	id_appello int NOT NULL,
+	ultima_modifica date DEFAULT NULL,
 	contenuto text NOT NULL,
 	FOREIGN KEY (id_docente) REFERENCES utente(matricola),
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello)
@@ -126,7 +127,7 @@ CREATE TABLE docente_dipartimento(
 CREATE TABLE appello_membro(
 	id_appello int NOT NULL,
 	matricola int NOT NULL,
-	ruolo int DEFAULT 0 COMMENT '0 = Studente, 1 = Membro Della Commissione, 2 = Relatore, 3 = Presidente della commissione',
+	ruolo int DEFAULT 0 COMMENT '0 = Studente, 1 = Membro Della Commissione, 2 = Relatore, 3 = Presidente della commissione, 4 = Responsabile, 5 = Presidente corso, 6 = Presidente scuola',
 	presenza boolean DEFAULT 0 COMMENT '0 = assente, 1 = presente',
 	FOREIGN KEY (id_appello) REFERENCES appello(id_appello),
 	FOREIGN KEY (matricola) REFERENCES utente(matricola),
