@@ -178,10 +178,20 @@ public class ControllerAppello {
 		return presidente;
 	}
 	
-	public ArrayList<Docente> getCommissioniDB(){
+	public ArrayList<Docente> getCommissioneNoRelatoriDB(){
 		ArrayList<Docente> membri = new ArrayList<Docente>();
 		if (Database.getInstance().isConnected()) {
-			membri = Database.getInstance().getCommissioniByAppello(getAppello().getId());
+			membri = Database.getInstance().getCommissioneNoRelatoreByAppello(getAppello().getId());
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return membri;
+	}
+	
+	public ArrayList<Docente> getCommissioneFromDB(){
+		ArrayList<Docente> membri = new ArrayList<Docente>();
+		if (Database.getInstance().isConnected()) {
+			membri = Database.getInstance().getCommissioneByAppello(getAppello().getId());
 		} else {
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}

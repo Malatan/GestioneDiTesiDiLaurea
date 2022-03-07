@@ -1047,7 +1047,7 @@ public class Database {
 		}
 	}
 
-	public ArrayList<Docente> getCommissioniByAppello(int id_appello) {
+	public ArrayList<Docente> getCommissioneNoRelatoreByAppello(int id_appello) {
 		Connection connection = null;
 		ArrayList<Docente> commissioni = new ArrayList<Docente>();
 		try {
@@ -1067,6 +1067,28 @@ public class Database {
 			return null;
 		}
 	}
+	
+	public ArrayList<Docente> getCommissioneByAppello(int id_appello) {
+		Connection connection = null;
+		ArrayList<Docente> commissioni = new ArrayList<Docente>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "SELECT ut.cognome, ut.nome, ut.matricola from appello_membro aps, utente as ut WHERE (aps.matricola = ut.matricola "
+					+ "AND aps.id_appello = " + id_appello + ") AND (aps.ruolo = 2 OR aps.ruolo = 1)";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				commissioni.add(new Docente(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome")));
+			}
+			connection.close();
+			return commissioni;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 	public Pair<Integer, String> getCorsoByPresidente(int matricola) {
 		Connection connection = null;

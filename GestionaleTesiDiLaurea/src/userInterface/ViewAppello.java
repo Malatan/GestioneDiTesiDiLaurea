@@ -86,13 +86,13 @@ public class ViewAppello {
 		lblCorso.setText(appello.getCorso().second);
 		
 		//aggiorna lista commissione
-		ArrayList<Docente> commissioni = controller.getCommissioniDB();
+		ArrayList<Docente> commissione = controller.getCommissioneNoRelatoriDB();
 		String text = "";
 		Docente presidenteC = controller.getPresidenteCommissioneFromDB();
 		if (presidenteC != null) {
 			text += presidenteC.getNomeCognome() + "-Presidente Commissione" + "\n";
 		} 
-		for (Docente membro : commissioni) {
+		for (Docente membro : commissione) {
 			text += membro.getNomeCognome() + "\n";
 		}
 		membri.setText(text);
@@ -340,7 +340,7 @@ public class ViewAppello {
 				btnFineAppello.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-						assegnaVotoDialog();
+						fineDiscussioneDialog();
 					}
 				});
 			} else {
@@ -350,8 +350,107 @@ public class ViewAppello {
 		
 	}
 	
-	public void assegnaVotoDialog() {
+	public void fineDiscussioneDialog() {
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setText("Fine discussione");
+		child.setSize(430, 335);
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<Docente> commissione = controller.getCommissioneFromDB();
+		Docente presidenteC = controller.getPresidenteCommissioneFromDB();
+		for (int i = 0 ; i < commissione.size() ; i++) {
+			if (commissione.get(i).getMatricolaInt() == presidenteC.getMatricolaInt()) {
+				commissione.remove(i);
+				break;
+			}
+		}
 		
+		Label lblVotoLabel = new Label(child, SWT.NONE);
+		lblVotoLabel.setBounds(10, 13, 55, 15);
+		lblVotoLabel.setText("Voto tesi:");
+		
+		Text textVoto = new Text(child, SWT.BORDER);
+		textVoto.setBounds(71, 10, 100, 21);
+		textVoto.addListener(SWT.Verify, new Listener() {
+		      public void handleEvent(Event e) {
+		        String string = e.text;
+		        char[] chars = new char[string.length()];
+		        string.getChars(0, chars.length, chars, 0);
+		        for (int i = 0; i < chars.length; i++) {
+		          if (!('0' <= chars[i] && chars[i] <= '9')) {
+		            e.doit = false;
+		            return;
+		          }
+		        }
+		      }
+		    });
+		
+		Label lblMembriPresentiLabel = new Label(child, SWT.NONE);
+		lblMembriPresentiLabel.setBounds(10, 34, 210, 15);
+		lblMembriPresentiLabel.setText("Membri della commissione presenti:");
+		
+		List listMembri = new List(child, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
+		listMembri.setBounds(10, 55, 150, 200);
+		for (Docente d : commissione) {
+			listMembri.add(d.getNomeCognome());
+		}
+		
+		List listPresenti = new List(child, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
+		listPresenti.setBounds(250, 55, 150, 200);
+		
+		Button btnAddPresente = new Button(child, SWT.NONE);
+		btnAddPresente.setBounds(166, 111, 78, 25);
+		btnAddPresente.setText("Presente-->");
+		btnAddPresente.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				for(int index : listMembri.getSelectionIndices()) {
+					listPresenti.add(listMembri.getItem(index));
+				}
+				listMembri.remove(listMembri.getSelectionIndices());
+			}
+		});
+		
+		Button btnRemovePresente = new Button(child, SWT.NONE);
+		btnRemovePresente.setBounds(166, 177, 78, 25);
+		btnRemovePresente.setText("<--Rimuove");
+		btnRemovePresente.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				for(int index : listPresenti.getSelectionIndices()) {
+					listMembri.add(listPresenti.getItem(index));
+				}
+				listPresenti.remove(listPresenti.getSelectionIndices());
+			}
+		});
+		
+		Button btnConferma = new Button(child, SWT.NONE);
+		btnConferma.setBounds(85, 265, 100, 25);
+		btnConferma.setText("Conferma");
+		btnConferma.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (textVoto.getText().length() > 0) {
+					if (Utils.createYesNoDialog(child, "Conferma", "Conferma di chiudere la discussione?")){
+						
+						child.close();
+					}
+				} else {
+					Utils.createWarningDialog(child, "Messaggio", "Inserisci il voto!");
+				}
+			}
+		});
+		
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(225, 265, 100, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				child.close();
+			}
+		});
+		
+		child.open();
 	}
 	
 	public void proposteSostitutoDialog() {
@@ -699,7 +798,7 @@ public class ViewAppello {
 
 		ArrayList<Studente> studentiMembri = controller.getStudentiFromAppelloDB();
 		ArrayList<Docente> relatoriMembri = controller.getRelatoriFromDB();
-		ArrayList<Docente> commissioniMembri = controller.getCommissioniDB();
+		ArrayList<Docente> commissioniMembri = controller.getCommissioneNoRelatoriDB();
 		Docente presidenteC = controller.getPresidenteCommissioneFromDB();
 
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
@@ -900,7 +999,7 @@ public class ViewAppello {
 		child.setSize(311, 150);
 		child.setText("Identificazione Presidente di Commissione di tesi");
 		Utils.setShellToCenterParent(child, shell);
-		ArrayList<Docente> commissioni = controller.getCommissioniDB();
+		ArrayList<Docente> commissioni = controller.getCommissioneNoRelatoriDB();
 		
 		Label lblRelatoreLabel_1 = new Label(child, SWT.NONE);
 		lblRelatoreLabel_1.setText("Membri:");
