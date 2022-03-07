@@ -17,6 +17,7 @@ import businessLogic.ControllerAppello;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerPresidenteScuola;
 import domainModel.AppelloTesi;
+import domainModel.Verbale;
 import utils.Utils;
 
 public class ViewPresidenteScuola {
@@ -160,36 +161,33 @@ public class ViewPresidenteScuola {
 		scrolledCompositeListaAppelli.setExpandVertical(true);
 		Composite compositeListaAppelli = new Composite(scrolledCompositeListaAppelli, SWT.NONE);
 		compositeListaAppelli.setBounds(scrolledCompositeListaAppelli.getBounds());
-		ArrayList<AppelloTesi> appelli = controllerPresidenteScuola.getAppelliCompletatiFromDB();
+		
+		ArrayList<Verbale> verbali = controllerPresidenteScuola.getVerbaliFromDB();
 		int offset_y = 10;
-		for (AppelloTesi a : appelli) {
+		for (Verbale v : verbali) {
 			Label lblId = new Label(compositeListaAppelli, SWT.NONE);
 			lblId.setAlignment(SWT.CENTER);
 			lblId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblId.setBounds(10, offset_y + 3, 60, 25);
-			lblId.setText(a.getId() + "");
+			lblId.setText(v.getId() + "");
 
 			Label lblData = new Label(compositeListaAppelli, SWT.NONE);
 			lblData.setAlignment(SWT.CENTER);
 			lblData.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblData.setBounds(90, offset_y + 3, 80, 25);
-			lblData.setText(a.getDateString());
+			lblData.setText(v.getData());
 			
 			Label lblStatus = new Label(compositeListaAppelli, SWT.NONE);
 			lblStatus.setAlignment(SWT.CENTER);
 			lblStatus.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
 			lblStatus.setBounds(175, offset_y + 3, 145, 25);
-			lblStatus.setText(a.getStatusString());
+			lblStatus.setText(v.isApprovato() ? "Si" : "No");
 			
 			Button btnDettaglio = new Button(compositeListaAppelli, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					AppelloTesi appello = controllerPresidenteScuola.getAppelloFromDB(a.getId());
-					ControllerAppello ca = new ControllerAppello(appello, presidenteScuolaShell,
-							controllerPresidenteScuola.getPresidenteScuola().getMatricola(),
-							Utils.getRuolo(controllerPresidenteScuola.getPresidenteScuola()));
-					ca.run();
+					
 				}
 			});
 			btnDettaglio.setBounds(345, offset_y, 75, 25);

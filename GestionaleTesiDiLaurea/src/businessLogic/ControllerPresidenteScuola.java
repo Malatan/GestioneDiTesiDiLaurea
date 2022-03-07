@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.PresidenteScuola;
+import domainModel.Verbale;
 import userInterface.ViewPresidenteScuola;
 import utils.Utils;
 
@@ -43,6 +44,16 @@ public class ControllerPresidenteScuola {
 			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appelli;
+	}
+	
+	public ArrayList<Verbale> getVerbaliFromDB() {
+		ArrayList<Verbale> verbali = new ArrayList<Verbale>();
+		if (Database.getInstance().isConnected()) {
+			verbali = Database.getInstance().getVerbali();
+		} else {
+			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return verbali;
 	}
 	
 	public AppelloTesi getAppelloFromDB(int id_appello) {

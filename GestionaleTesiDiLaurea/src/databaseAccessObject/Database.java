@@ -519,6 +519,27 @@ public class Database {
 		return false;
 	}
 	
+	public ArrayList<Verbale> getVerbali(){
+		Connection connection = null;
+		ArrayList<Verbale> verbali = new ArrayList<Verbale>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT v.id, v.id_appello, v.data, v.contenuto, v.approvato "
+					+ "FROM verbale v";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				verbali.add(new Verbale(rs.getInt("id"), rs.getInt("id_appello"), rs.getString("data"),
+						rs.getString("contenuto"), rs.getBoolean("approvato") , null));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return verbali;
+	}
+	
 	public SuggerimentoSostituto getSuggerimentoByAppelloAndDocente(int id_appello, int matricola) {
 		Connection connection = null;
 		try {
