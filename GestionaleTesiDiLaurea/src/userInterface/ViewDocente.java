@@ -298,6 +298,7 @@ public class ViewDocente {
 		ArrayList<Pair<AppelloTesi, Integer>> appelli = controller.getAppelliFromDB();
 		int offset_y = 10;
 		for (Pair<AppelloTesi, Integer> p : appelli) {
+			boolean ceDeterminazione = controller.getPrensenzaDeterminazione(p.first.getId());
 			Label lblAppelloId = new Label(compositeDomandeTesi, SWT.NONE);
 			lblAppelloId.setAlignment(SWT.CENTER);
 			lblAppelloId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
@@ -320,14 +321,13 @@ public class ViewDocente {
 			lblAppelloDeterminazione.setAlignment(SWT.CENTER);
 			lblAppelloDeterminazione.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblAppelloDeterminazione.setBounds(400, offset_y + 3, 140, 25);
-			lblAppelloDeterminazione.setText("Da inserire");
+			lblAppelloDeterminazione.setText(ceDeterminazione ? "Inviata" : "Da inserire");
 			
 			Button btnDettaglio = new Button(compositeDomandeTesi, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					ControllerAppello ca = new ControllerAppello(p.first, shell,
-							controller.getDocente().getMatricola(), Utils.getRuolo(controller.getDocente()), 
+					ControllerAppello ca = new ControllerAppello(p.first, shell, Utils.getRuolo(controller.getDocente()), 
 							p.second, controller.getDocente());
 					ca.run();
 				}

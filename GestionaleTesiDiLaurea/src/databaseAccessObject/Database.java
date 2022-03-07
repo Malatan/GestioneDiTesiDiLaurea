@@ -537,6 +537,104 @@ public class Database {
 		return false;
 	}
 	
+	public boolean addDeterminazione(int matricola, int id_appello, String contenuto) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO appello_determinazione (id_docente, id_appello, ultima_modifica, contenuto) values (?,?,?,?)";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, matricola);
+			prepared.setInt(2, id_appello);
+			prepared.setString(3, Utils.getTodayDate());
+			prepared.setString(4, contenuto);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean updateDeterminazione(int matricola, int id_appello, String contenuto) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE appello_determinazione SET contenuto = ?, ultima_modifica = ? WHERE id_docente = ? AND id_appello = ?";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setString(1, contenuto);
+			prepared.setString(2, Utils.getTodayDate());
+			prepared.setInt(3, matricola);
+			prepared.setInt(4, id_appello);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean ritiraDeterminazione(int id_determinazione) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "DELETE FROM appello_determinazione WHERE id = ? ";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id_determinazione);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean getPresenzaDeterminazione(String matricola, int id_appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT * "
+					+ "FROM appello_determinazione "
+					+ "WHERE id_docente = " + matricola + " AND id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return true;
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public Determinazione getDeterminazione(String matricola, int id_appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT ad.id, ad.id_docente, u.nome, u.cognome, ad.id_appello, ad.ultima_modifica, ad.contenuto "
+					+ "FROM appello_determinazione ad, utente u "
+					+ "WHERE ad.id_docente = u.matricola AND ad.id_docente = " + matricola + " AND ad.id_appello = " + id_appello;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return new Determinazione(rs.getInt("ad.id"), rs.getInt("id_docente"), rs.getInt("id_appello"), rs.getString("ultima_modifica"),
+						rs.getString("nome") + " " + rs.getString("cognome"), rs.getString("contenuto"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public ArrayList<Verbale> getVerbali(){
 		Connection connection = null;
 		ArrayList<Verbale> verbali = new ArrayList<Verbale>();

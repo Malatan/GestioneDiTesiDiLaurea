@@ -62,6 +62,14 @@ public class ControllerDocente {
 		return appello;
 	}
 	
+	public boolean getPrensenzaDeterminazione(int id_appello) {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getPresenzaDeterminazione(docente.getMatricola(), id_appello);
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
 	
 	public boolean approvaDomandaTesi(DomandaTesi domanda) {
 		if(Database.getInstance().isConnected()) {

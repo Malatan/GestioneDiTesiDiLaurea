@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
+import domainModel.Determinazione;
 import domainModel.Docente;
 import domainModel.Studente;
 import domainModel.SuggerimentoSostituto;
@@ -23,29 +24,12 @@ import utils.Utils;
 public class ControllerAppello {
 	private AppelloTesi appello;
 	private ViewAppello view;
-	private String matricola;
 	private Utente utente;
 	private int ruoloDidattica;
 	private int ruoloAppello;
 	
-	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruoloDidattica) {
+	public ControllerAppello(AppelloTesi appello, Shell parent, int ruoloDidattica, int ruoloAppello, Utente utente) {
 		this.appello = appello;
-		this.matricola = matricola;
-		this.ruoloDidattica = ruoloDidattica;
-		view = new ViewAppello(parent, this);
-	}
-	
-	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruolo, Utente utente) {
-		this.appello = appello;
-		this.matricola = matricola;
-		this.ruoloDidattica = ruolo;
-		this.utente = utente;
-		view = new ViewAppello(parent, this);
-	}
-	
-	public ControllerAppello(AppelloTesi appello, Shell parent, String matricola, int ruoloDidattica, int ruoloAppello, Utente utente) {
-		this.appello = appello;
-		this.matricola = matricola;
 		this.ruoloDidattica = ruoloDidattica;
 		this.utente = utente;
 		this.setRuoloAppello(ruoloAppello);
@@ -98,6 +82,42 @@ public class ControllerAppello {
 		} else {
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
+	}
+	
+	public boolean addDeterminazione(String contenuto){
+		if (Database.getInstance().isConnected()) {
+			return Database.getInstance().addDeterminazione(utente.getMatricolaInt(), appello.getId(), contenuto);
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean updateDeterminazione(String contenuto){
+		if (Database.getInstance().isConnected()) {
+			return Database.getInstance().updateDeterminazione(utente.getMatricolaInt(), appello.getId(), contenuto);
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean ritiraDeterminazione(int id_determinazione){
+		if (Database.getInstance().isConnected()) {
+			return Database.getInstance().ritiraDeterminazione(id_determinazione);
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public Determinazione getDeterminazioneFromDB(){
+		if (Database.getInstance().isConnected()) {
+			return Database.getInstance().getDeterminazione(utente.getMatricola(), appello.getId());
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public boolean generaVerbale(ArrayList<Docente> commissione, ArrayList<Pair<Studente, Integer>> esiti, Docente presidente_commissione) {
@@ -173,7 +193,7 @@ public class ControllerAppello {
 		ArrayList<Studente> studenti = new ArrayList<Studente>();
 		ArrayList<Pair<Studente, Docente>> studentiRelatori = new ArrayList<Pair<Studente, Docente>>();
 		if (Database.getInstance().isConnected()) {
-			studenti = Database.getInstance().getMyStudenti(matricola);
+			studenti = Database.getInstance().getMyStudenti(utente.getMatricola());
 			Database.getInstance().getStudentiStatusTesi(studenti);
 			studentiRelatori = Database.getInstance().getRelatoriByStudenti(studenti);
 		} else {
@@ -369,7 +389,7 @@ public class ControllerAppello {
 	
 	public boolean prenotaAula(int id_aula) {
 		if(Database.getInstance().isConnected()) {
-			if (Database.getInstance().prenotaAula(id_aula, appello.getId(), matricola)){
+			if (Database.getInstance().prenotaAula(id_aula, appello.getId(), utente.getMatricola())){
 				Utils.createConfirmDialog(view.getShell(), "Messaggio", "L'aula prenotata con successo e orario settato correttamente.");
 				return true;
 			} else {

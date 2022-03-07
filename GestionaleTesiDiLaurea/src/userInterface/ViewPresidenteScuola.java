@@ -245,8 +245,7 @@ public class ViewPresidenteScuola {
 				public void mouseDown(MouseEvent e) {
 					AppelloTesi appello = controller.getAppelloFromDB(a.getId());
 					ControllerAppello ca = new ControllerAppello(appello, shell,
-							controller.getPresidenteScuola().getMatricola(),
-							Utils.getRuolo(controller.getPresidenteScuola()));
+							Utils.getRuolo(controller.getPresidenteScuola()), 6, controller.getPresidenteScuola());
 					ca.run();
 				}
 			});

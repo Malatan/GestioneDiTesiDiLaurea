@@ -176,9 +176,8 @@ public class ViewPresidenteCorso {
 				@Override
 				public void mouseDown(MouseEvent e) {
 					AppelloTesi appello = controller.getAppelloFromDB(a.getId());
-					ControllerAppello ca = new ControllerAppello(appello, shell,
-							controller.getPresidenteCorso().getMatricola(),
-							Utils.getRuolo(controller.getPresidenteCorso()));
+					ControllerAppello ca = new ControllerAppello(appello, shell, Utils.getRuolo(controller.getPresidenteCorso()), 
+											5, controller.getPresidenteCorso());
 					ca.run();
 				}
 			});

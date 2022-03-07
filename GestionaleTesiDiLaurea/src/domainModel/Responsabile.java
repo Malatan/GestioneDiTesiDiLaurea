@@ -1,30 +1,10 @@
 package domainModel;
 
-public class Responsabile {
+public class Responsabile extends Utente{
 
-	private String nome;
-	private String cognome;
-	private String matricola;
-	
-	public Responsabile(String m, String n, String c) {
-		this.matricola = m;
-		this.cognome = c;
-		this.nome = n;
+	public Responsabile(String matricola, String nome, String cognome) {
+		super(matricola, nome, cognome);
 	}
+
 	
-	public String getNome() {
-		return new String(nome);
-	}
-	
-	public String getCognome() {
-		return new String(cognome);
-	}
-	
-	public String getMatricola() {
-		return new String(matricola);
-	}
-	
-	public int getMatricolaInt() {
-		return Integer.parseInt(matricola);
-	}
 }

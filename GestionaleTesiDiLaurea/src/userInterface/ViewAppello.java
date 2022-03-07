@@ -27,6 +27,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import businessLogic.ControllerAppello;
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
+import domainModel.Determinazione;
 import domainModel.Docente;
 import domainModel.Studente;
 import domainModel.SuggerimentoSostituto;
@@ -300,19 +301,21 @@ public class ViewAppello {
 	public void createDocenteComposite() {
 		Composite compositeDocente = new Composite(shell, SWT.BORDER);
 		compositeDocente.setBounds(10, 370, 465, 80);
-
-		Button btnDeterminazione = new Button(compositeDocente, SWT.NONE);
+		
 		Label lblStatusAppello = new Label(compositeDocente, SWT.NONE);
 		lblStatusAppello.setBounds(10, 45, 465, 15);
 		lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
+		
+		Button btnDeterminazione = new Button(compositeDocente, SWT.NONE);
+		btnDeterminazione.setBounds(10, 10, 120, 25);
+		btnDeterminazione.setText("Determinazione");
 		btnDeterminazione.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-
+				determinazioneDialog();
 			}
 		});
-		btnDeterminazione.setBounds(10, 10, 120, 25);
-		btnDeterminazione.setText("Determinazione");
+		
 		if (controller.getAppello().getStatus() != 3) {
 			btnDeterminazione.setEnabled(false);
 		}
@@ -359,7 +362,86 @@ public class ViewAppello {
 		}
 
 	}
-
+	
+	public void determinazioneDialog() {
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		child.setText("Determinazione");
+		child.setSize(350, 405);
+		Utils.setShellToCenterParent(child, shell);
+		Determinazione d = controller.getDeterminazioneFromDB();
+		
+		Label lblTitolo = new Label(child, SWT.NONE);
+		lblTitolo.setAlignment(SWT.CENTER);
+		lblTitolo.setBounds(10, 10, 315, 15);
+		lblTitolo.setText("Determinazione:");
+		
+		Text textDeterminazione = new Text(child, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		textDeterminazione.setBounds(10, 31, 315, 300);
+		
+		Button btnInvia = new Button(child, SWT.NONE);
+		btnInvia.setBounds(10, 337, 75, 25);
+		btnInvia.setText("Invia");
+		btnInvia.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!textDeterminazione.getText().isBlank()) {
+					if (d != null) {
+						String original = d.getContenuto();
+						if (!textDeterminazione.getText().equals(original)) {
+							if (Utils.createYesNoDialog(child, "Messaggio", "Conferma di modificare la determinazione?")) {
+								if (controller.updateDeterminazione(textDeterminazione.getText())) {
+									Utils.createConfirmDialog(child, "Messaggio", "Determinazione modificata.");
+									child.close();
+								}
+							}
+						}
+					} else if (Utils.createYesNoDialog(child, "Messaggio", "Conferma di inviare la determinazione?")) {
+						if (controller.addDeterminazione(textDeterminazione.getText())) {
+							Utils.createConfirmDialog(child, "Messaggio", "Determinazione inviata.");
+							child.close();
+						}
+					}
+				} else {
+					Utils.createWarningDialog(child, "Warning", "Testo vuoto.");
+				}
+			}
+		});
+		
+		Button btnRitira = new Button(child, SWT.NONE);
+		btnRitira.setBounds(91, 337, 75, 25);
+		btnRitira.setText("Ritira");
+		btnRitira.setVisible(false);
+		
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(250, 337, 75, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				child.close();
+			}
+		});
+		
+		if (d != null) {
+			btnInvia.setText("Modifica");
+			textDeterminazione.setText(d.getContenuto());
+			btnRitira.setVisible(true);
+			btnRitira.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (Utils.createYesNoDialog(child, "Messaggio", "Conferma di ritirare la determinazione?")) {
+						if (controller.ritiraDeterminazione(d.getId())) {
+							Utils.createConfirmDialog(child, "Messaggio", "La determinazione e' stata ritirata");
+							child.close();
+						}
+					}
+				}
+			});
+		}
+		
+		child.open();
+	}
+	
 	public void fineDiscussioneDialog() {
 		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setText("Fine discussione");
