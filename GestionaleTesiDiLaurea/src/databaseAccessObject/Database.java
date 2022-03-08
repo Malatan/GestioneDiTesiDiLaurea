@@ -678,6 +678,29 @@ public class Database {
 		return verbali;
 	}
 	
+	public Pair<AppelloTesi, Integer> getEsitoTesi(int matricola) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.nota, a.status, e.voto " 
+					+"FROM appello a " 
+					+"LEFT JOIN corso c ON a.id_corso = c.id_corso "
+					+"LEFT JOIN appello_membro am ON am.id_appello = a.id_appello "
+					+"LEFT JOIN esito_tesi e ON e.matricola = am.matricola WHERE am.matricola = " + matricola;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return Pair.of(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+						rs.getString("data"), rs.getString("orario"), null, null, rs.getString("nota"), rs.getInt("status")), rs.getInt("voto"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	} 
+	
 	public SuggerimentoSostituto getSuggerimentoByAppelloAndDocente(int id_appello, int matricola) {
 		Connection connection = null;
 		try {
@@ -850,34 +873,6 @@ public class Database {
 			e.printStackTrace();
 		}
 		return domande;
-	}
-
-	public AppelloTesi getAppelloByMatricola(int matricola) {
-		Connection connection = null;
-		AppelloTesi appello = null;
-		try {
-			connection = DriverManager.getConnection(connectionString);
-			Statement stm = connection.createStatement();
-			String query = "SELECT ap.id_appello, ap.id_corso, c.nome as nome_corso, ap.data, ap.orario, ap.teleconferenza, ap.nota,"
-					+ " au.id_aula,au.nome as aula, ap.status"
-					+ " FROM appello as ap INNER JOIN appello_studentedocente as aps ON aps.id_appello = aps.id_appello"
-					+ " LEFT JOIN prenotazione_aula_giorno as pag ON ap.id_appello = pag.id_appello"
-					+ " LEFT JOIN aula as au ON au.id_aula = pag.id_aula" 
-					+ " LEFT JOIN corso c ON c.id_corso = ap.id_corso"
-					+ " WHERE aps.ruolo = 0 AND aps.matricola = " + matricola;
-			Console.print(query, "sql");
-			ResultSet rs = stm.executeQuery(query);
-			while (rs.next()) {
-
-				appello = new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
-						rs.getString("data"), rs.getString("orario"), Pair.of(rs.getInt("id_aula"), rs.getString("aula")), 
-						rs.getString("teleconferenza"), rs.getString("nota"), rs.getInt("status"));
-			}
-			connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return appello;
 	}
 
 	public AppelloTesi getAppello(int id_appello) {

@@ -29,43 +29,54 @@ import utils.Utils;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 public class ViewStudente {
-	private ControllerStudente controllerStudente;
-	private Shell studenteShell;
+	private ControllerStudente controller;
+	private Shell shell;
 	
 	private Text textStatusTesi;
 	private Button btnIscrizione;
 	private Button btnRitira;
 	private Button btnAddRepo;
 	private Composite compositeUserInfo_1;
+	private Button btnScaricaDocumento;
 	public ViewStudente(ControllerStudente cs) {
-		this.controllerStudente = cs;
+		this.controller = cs;
 	}
 	
 	public Shell getShell() {
-		return this.studenteShell;
+		return this.shell;
 	}
 	
 	public void aggiornaPagina() {
-		textStatusTesi.setText(controllerStudente.getStatusTesi());
-		Studente studente = controllerStudente.getStudente();
-		Console.print("Status tesi: " + studente.getStatusTesi(),"DEBUG");
-		switch(studente.getStatusTesi()) {
-			case 0:
-				btnIscrizione.setEnabled(true);
-				btnRitira.setEnabled(false);
-				btnAddRepo.setEnabled(false);
-				break;
-			case 1:
-				btnIscrizione.setEnabled(false);
-				btnRitira.setEnabled(true);
-				btnAddRepo.setEnabled(true);
-			case 2:	
+		Studente studente = controller.getStudente();
+		Pair<AppelloTesi, Integer> esito = controller.getEsitoTesi();
+		if (esito != null) {
+			btnIscrizione.setEnabled(false);
+			btnRitira.setEnabled(false);
+			btnAddRepo.setEnabled(false);
+			btnScaricaDocumento.setVisible(true);
+			String status = "Hai partecipato all'appello di tesi: \nCorso: " + esito.first.getCorso().second 
+					+ "\nData: " + esito.first.getData() + "\nEsito tesi: " + esito.second;
+			textStatusTesi.setText(status);
+		} else {
+			textStatusTesi.setText(controller.getStatusTesi());
+			switch(studente.getStatusTesi()) {
+				case 0:
+					btnIscrizione.setEnabled(true);
+					btnRitira.setEnabled(false);
+					btnAddRepo.setEnabled(false);
+					break;
+				case 1:
+					btnIscrizione.setEnabled(false);
+					btnRitira.setEnabled(true);
+					btnAddRepo.setEnabled(true);
+				case 2:	
+			}
 		}
 	}
 	
 	public void creazioneRitiraDomandaDialog() {
-		if(Utils.createYesNoDialog(studenteShell, "Conferma", "Confermi di volerti ritirare dall'appello?")) {
-			controllerStudente.ritiraDomanda();
+		if(Utils.createYesNoDialog(shell, "Conferma", "Confermi di volerti ritirare dall'appello?")) {
+			controller.ritiraDomanda();
 			aggiornaPagina();
 		}
 	}
@@ -74,14 +85,14 @@ public class ViewStudente {
 	 * @wbp.parser.entryPoint
 	 */
 	public void createAndRun() {
-		Studente studente = controllerStudente.getStudente();
+		Studente studente = controller.getStudente();
 		Display display = Display.getDefault();
-		studenteShell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		studenteShell.setSize(400, 567);
-		studenteShell.setText("Studente");
-		Utils.setShellToCenterMonitor(studenteShell, display);
+		shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
+		shell.setSize(400, 567);
+		shell.setText("Studente");
+		Utils.setShellToCenterMonitor(shell, display);
 		
-		Composite compositeUserInfo = new Composite(studenteShell, SWT.BORDER);
+		Composite compositeUserInfo = new Composite(shell, SWT.BORDER);
 		compositeUserInfo.setBounds(20, 10, 340, 80);
 
 		Label lblMatricola = new Label(compositeUserInfo, SWT.NONE);
@@ -96,11 +107,11 @@ public class ViewStudente {
 		lblCognome.setBounds(10, 52, 200, 15);
 		lblCognome.setText("Cognome: " + studente.getCognome());
 		
-		textStatusTesi = new Text(studenteShell, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		textStatusTesi = new Text(shell, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		textStatusTesi.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
 		textStatusTesi.setBounds(20, 96, 340, 170);
 		
-		compositeUserInfo_1 = new Composite(studenteShell, SWT.BORDER);
+		compositeUserInfo_1 = new Composite(shell, SWT.BORDER);
 		compositeUserInfo_1.setBounds(20, 272, 340, 244);
 		
 		btnIscrizione = new Button(compositeUserInfo_1, SWT.NONE);
@@ -142,19 +153,24 @@ public class ViewStudente {
 		btnLogOut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				studenteShell.close();
-				controllerStudente = null;
+				shell.close();
+				controller = null;
 				ControllerLogin cl = new ControllerLogin();
 				cl.run();
 			}
 		});
 		btnLogOut.setText("Log out");
 		
+		btnScaricaDocumento = new Button(compositeUserInfo_1, SWT.NONE);
+		btnScaricaDocumento.setText("Scarica documento esito tesi");
+		btnScaricaDocumento.setBounds(10, 133, 316, 35);
+		btnScaricaDocumento.setVisible(false);
+		
 		aggiornaPagina();
-		studenteShell.open();
-		studenteShell.layout();
+		shell.open();
+		shell.layout();
 
-		while (!studenteShell.isDisposed()) {
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -162,11 +178,11 @@ public class ViewStudente {
 	}
 	
 	public void addRepoDialog() {
-		Shell child = new Shell(studenteShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(250, 150);
 		child.setText("Repository tesi");
-		Utils.setShellToCenterParent(child, studenteShell);
-		String original = controllerStudente.getRepositoryFromDB();
+		Utils.setShellToCenterParent(child, shell);
+		String original = controller.getRepositoryFromDB();
 		
 		Text textRepository = new Text(child, SWT.BORDER);
 		textRepository.setBounds(30, 20, 171, 23);
@@ -180,7 +196,7 @@ public class ViewStudente {
 				if (s.equals("")) {
 					Utils.createWarningDialog(child, "Messaggio", "Non puo' essere vuoto");
 				} else if (!s.equals(original)){
-					controllerStudente.addRepo(s);
+					controller.addRepo(s);
 					aggiornaPagina();
 					child.close();
 				} else {
@@ -204,12 +220,12 @@ public class ViewStudente {
 	}
 	
 	public void sceglieCorsoDialog() {
-		Shell child = new Shell(studenteShell, SWT.APPLICATION_MODAL | SWT.TITLE);
+		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setSize(300, 200);
 		child.setText("Domanda Tesi");
-		Utils.setShellToCenterParent(child, studenteShell);
-		ArrayList<Pair<Integer, String>> corsi = controllerStudente.getCorsiFromDB();
-		ArrayList<Pair<Integer, String>> docenti = controllerStudente.getDocentiFromDB();
+		Utils.setShellToCenterParent(child, shell);
+		ArrayList<Pair<Integer, String>> corsi = controller.getCorsiFromDB();
+		ArrayList<Pair<Integer, String>> docenti = controller.getDocentiFromDB();
 		
 		Label lblCorsoLabel = new Label(child, SWT.NONE);
 		lblCorsoLabel.setBounds(30, 28, 45, 15);
@@ -250,7 +266,7 @@ public class ViewStudente {
 							break;
 						}
 					}
-					if (controllerStudente.iscrizione(id_corso, matricola_relatore))
+					if (controller.iscrizione(id_corso, matricola_relatore))
 						aggiornaPagina();
 					child.close();
 				} else {

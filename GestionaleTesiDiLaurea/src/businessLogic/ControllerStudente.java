@@ -47,15 +47,6 @@ public class ControllerStudente {
 		return null;
 	}
 	
-	public AppelloTesi getAppello() {
-		if(Database.getInstance().isConnected()) {
-			return Database.getInstance().getAppelloByMatricola(getStudente().getMatricolaInt());
-		}else {
-			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
-		}
-		return null;
-	}
-	
 	public String getStatusTesi() {
 		Pair<Integer, String> status = Pair.of(-1, "");
 		if(Database.getInstance().isConnected()) {
@@ -100,6 +91,16 @@ public class ControllerStudente {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
+	}
+	
+	//appello - esito
+	public Pair<AppelloTesi, Integer> getEsitoTesi() {
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getEsitoTesi(studente.getMatricolaInt());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public String getRepositoryFromDB() {
