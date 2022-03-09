@@ -854,26 +854,6 @@ public class Database {
 		return s;
 	}
 
-	public String getStatusAppello(int id_appello) {
-		Connection connection = null;
-		String s = "";
-		try {
-			connection = DriverManager.getConnection(connectionString);
-			Statement stm = connection.createStatement();
-			String query = "SELECT status FROM appello WHERE id_appello = " + id_appello;
-			Console.print(query, "sql");
-			ResultSet rs = stm.executeQuery(query);
-			if (rs.next()) {
-				int status = rs.getInt("status");
-				s = AppelloTesi.getStatusString(status);
-			}
-			connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return s;
-	}
-
 	public Docente getPresidenteCommissione(int id_appello) {
 		Connection connection = null;
 		Docente s = null;
@@ -1154,6 +1134,45 @@ public class Database {
 			e.printStackTrace();
 		}
 		return docentiDip;
+	}
+	
+	public PresidenteScuola getPresidenteScuola() {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT matricola, nome, cognome FROM utente WHERE ruolo = 2";
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return new PresidenteScuola(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public PresidenteCorso getPresidenteCorsoByAppello(AppelloTesi appello) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT u.matricola, u.nome, u.cognome, c.id_corso, c.nome as nome_corso "
+					+ "FROM utente u, corso c, appello a "
+					+ "WHERE a.id_corso = c.id_corso AND c.presidente = u.matricola AND a.id_appello = " + appello.getId();
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			if (rs.next()) {
+				return new PresidenteCorso(rs.getString("matricola"), rs.getString("nome"), rs.getString("cognome"),
+						Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public ArrayList<Docente> getDocentiPerSostituzione(int id_appello) {

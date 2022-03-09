@@ -1,6 +1,12 @@
 package userInterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
@@ -9,12 +15,16 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 import businessLogic.ControllerAppello;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerPresidenteCorso;
 import domainModel.AppelloTesi;
+import system.Messaggio;
+import system.MessaggioManager;
 import utils.Utils;
 
 public class ViewPresidenteCorso {
@@ -101,6 +111,16 @@ public class ViewPresidenteCorso {
 		Button btnLogout = new Button(compositeMenu, SWT.NONE);
 		btnLogout.setText("Log out");
 		btnLogout.setBounds(10, 276, 397, 31);
+		
+		Button btnMessaggi = new Button(compositeMenu, SWT.NONE);
+		btnMessaggi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				visualizzaMessaggi();
+			}
+		});
+		btnMessaggi.setBounds(10, 60, 397, 44);
+		btnMessaggi.setText("Messaggi");
 
 		btnLogout.addMouseListener(new MouseAdapter() {
 			@Override
@@ -139,6 +159,136 @@ public class ViewPresidenteCorso {
 
 	}
 
+	public void visualizzaMessaggi() {
+		Shell child = new Shell(shell, SWT.CLOSE | SWT.TITLE | SWT.MIN | SWT.APPLICATION_MODAL);
+		child.setText("Messaggi");
+		child.setSize(500, 450);
+		Utils.setShellToCenterParent(child, shell);
+		int[] ordine = new int[1];
+		ordine[0] = 0;
+		ArrayList<Messaggio> messaggi = MessaggioManager.getInstance(child).getMyMessaggi(controller.getPresidenteCorso());
+
+		Label lblTitolo = new Label(child, SWT.NONE);
+		lblTitolo.setAlignment(SWT.CENTER);
+		lblTitolo.setBounds(10, 10, 465, 15);
+		lblTitolo.setText("Lista messaggi");
+
+		Text textMessaggio = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		textMessaggio.setBounds(10, 31, 465, 340);
+		textMessaggio.setVisible(false);
+
+		List listMessaggi = new List(child, SWT.BORDER | SWT.V_SCROLL);
+		Object layout = listMessaggi.getLayoutData();
+		listMessaggi.setBounds(10, 31, 465, 340);
+		for (int i = 0; i < messaggi.size(); i++) {
+			listMessaggi.add(messaggi.get(i).display());
+			listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+		}
+
+		Button btnOrdinaLetto = new Button(child, SWT.NONE);
+		btnOrdinaLetto.setBounds(10, 377, 150, 25);
+		btnOrdinaLetto.setText("Ordina per letto/nuovo");
+		btnOrdinaLetto.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!messaggi.isEmpty() && ordine[0] != 1) {
+					Utils.changeIntValue(ordine, 1);
+					Collections.sort(messaggi, new Comparator<Messaggio>() {
+						@Override
+						public int compare(Messaggio m1, Messaggio m2) {
+							return m1.isLettoString().compareTo(m2.isLettoString());
+						}
+					});
+					listMessaggi.removeAll();
+					listMessaggi.setLayoutData(layout);
+					listMessaggi.setBounds(10, 31, 465, 340);
+					for (int i = 0; i < messaggi.size(); i++) {
+						listMessaggi.add(messaggi.get(i).display());
+						listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+					}
+				}
+			}
+		});
+
+		Button btnOrdinaData = new Button(child, SWT.NONE);
+		btnOrdinaData.setBounds(166, 377, 150, 25);
+		btnOrdinaData.setText("Ordina per data");
+		btnOrdinaData.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!messaggi.isEmpty() && ordine[0] != 2) {
+					Utils.changeIntValue(ordine, 2);
+					Collections.sort(messaggi, new Comparator<Messaggio>() {
+						@Override
+						public int compare(Messaggio m1, Messaggio m2) {
+							try {
+								Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(m1.getDataEmissione());
+								Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(m2.getDataEmissione()); 
+								return date1.compareTo(date2);
+							} catch (ParseException e) {
+								e.printStackTrace();
+							} 
+							return 0;
+						}
+					});
+					listMessaggi.removeAll();
+					listMessaggi.setLayoutData(layout);
+					listMessaggi.setBounds(10, 31, 465, 340);
+					for (int i = 0; i < messaggi.size(); i++) {
+						listMessaggi.add(messaggi.get(i).display());
+						listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+					}
+				}
+			}
+		});
+
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(400, 377, 75, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (textMessaggio.isVisible()) {
+					lblTitolo.setText("Lista messaggi");
+					textMessaggio.setVisible(false);
+					listMessaggi.setVisible(true);
+					btnOrdinaLetto.setVisible(true);
+					btnOrdinaData.setVisible(true);
+				} else {
+					child.close();
+				}
+			}
+		});
+
+		listMessaggi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				textMessaggio.setVisible(true);
+				listMessaggi.setVisible(false);
+				for (int i = 0; i < messaggi.size(); i++) {
+					int id = (int) listMessaggi.getData(listMessaggi.getSelectionIndex() + "");
+					if (messaggi.get(i).getId() == id) {
+						btnOrdinaLetto.setVisible(false);
+						btnOrdinaData.setVisible(false);
+						textMessaggio.setText(messaggi.get(i).getContenuto());
+						lblTitolo.setText(messaggi.get(i).getId() + "-" + messaggi.get(i).getTitolo() 
+								+ "-" + messaggi.get(i).getDataEmissione());
+						if (!messaggi.get(i).isLetto()) {
+							messaggi.get(i).setLetto(true);
+							listMessaggi.setItem(listMessaggi.getSelectionIndex(), messaggi.get(i).display());
+							MessaggioManager.getInstance(child).updateLetto(id);
+						}
+						break;
+					}
+				}
+			}
+		});
+		child.open();
+	}
+	
 	public void visualizzaListaAppelli() {
 		scrolledCompositeListaAppelli = new ScrolledComposite(shell, SWT.BORDER | SWT.V_SCROLL);
 		scrolledCompositeListaAppelli.setBounds(20, 152, 421, 297);

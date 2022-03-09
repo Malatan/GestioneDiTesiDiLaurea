@@ -8,6 +8,8 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.DomandaTesi;
+import domainModel.PresidenteCorso;
+import domainModel.PresidenteScuola;
 import domainModel.Studente;
 import domainModel.Utente;
 import utils.Pair;
@@ -71,6 +73,22 @@ public class MessaggioManager {
 		return mandaMessaggio(docente.getMatricolaInt(), domanda.getMatricolaStudente(), titolo, contenuto);
 	}
 	
+	public boolean notificaApprovareCommissione(AppelloTesi appello, PresidenteCorso presidente_c, PresidenteScuola presidente_s) {
+		String titolo = "Approvazione composizione commissione";
+		String contenuto = "Salve " + presidente_s.getNomeCognome() + ",\nIl presidente di corso " + presidente_c.getNomeCognome() + " di corso "
+				+ presidente_c.getCorso().second + " ha chiesto l'approvazione della composizione di commissione dell'appello n." 
+				+ appello.getId() + " di data " + appello.getData() + ". Puo' approvare l'appello nella pagina di dettaglio dell'appello.";
+		return mandaMessaggio(presidente_c.getMatricolaInt(), presidente_s.getMatricolaInt(), titolo, contenuto);
+	}
+	
+	public boolean notificaCorrezioneCommissione(AppelloTesi appello, PresidenteCorso presidente_c, PresidenteScuola presidente_s) {
+		String titolo = "Correzione composizione commissione";
+		String contenuto = "Salve " + presidente_c.getNomeCognome() + ",\nIl presidente di scuola " + presidente_s.getNomeCognome()
+				+ " non ha approvato la composizione di commissione di appello n." + appello.getId() + " di data " +
+				appello.getData() + ", si prega di modificarla e reinviare la richiesta." ;
+		return mandaMessaggio(presidente_s.getMatricolaInt(), presidente_c.getMatricolaInt(), titolo, contenuto);
+	}
+	
 	public void notificaConvocazione(AppelloTesi appello, ArrayList<Docente> commissione, ArrayList<Pair<Studente, Docente>> studentiRelatori) {
 		String titolo = "Convocazione per la discussione di Tesi";
 		String repos = "";
@@ -98,6 +116,7 @@ public class MessaggioManager {
 		}
 	}
 	
+	
 	public boolean updateLetto(int id) {
 		if(Database.getInstance().isConnected()) {
 			return Database.getInstance().updateMessaggioLetto(id);
@@ -106,6 +125,7 @@ public class MessaggioManager {
 		}
 		return false;
 	}
+	
 	
 	public boolean mandaMessaggio(int id_sorgente, int id_destinatario, String titolo, String contenuto) {
 		if(Database.getInstance().isConnected()) {

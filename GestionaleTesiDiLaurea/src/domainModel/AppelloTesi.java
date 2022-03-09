@@ -118,16 +118,6 @@ public class AppelloTesi {
 		this.status = new_status;
 	}
 	
-	public static String getStatusString(int status) {
-		if (status == 1) {
-			return "Approvato";
-		} else if (status == 2) {
-			return "Correzione dell'appello";
-		} else {
-			return "In Revisione";
-		}
-	}
-	
 	public String getStatusString() {
 		if (status == 1) {
 			return "Approvato";
@@ -137,6 +127,8 @@ public class AppelloTesi {
 			return "Completato";
 		} else if (status == 4) {
 			return "Verbalizzato";
+		} else if (status == 5) {
+			return "Richiesta inviata";
 		} else if (status == 0){
 			return "In Revisione";
 		} else {

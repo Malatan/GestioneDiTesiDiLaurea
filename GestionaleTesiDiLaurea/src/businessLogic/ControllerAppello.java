@@ -8,6 +8,8 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Determinazione;
 import domainModel.Docente;
+import domainModel.PresidenteCorso;
+import domainModel.PresidenteScuola;
 import domainModel.Studente;
 import domainModel.SuggerimentoSostituto;
 import domainModel.Utente;
@@ -172,19 +174,6 @@ public class ControllerAppello {
 			return "";
 	}
 	
-	public String getStatusAppello() {
-		String s = "";
-		if(Database.getInstance().isConnected()) {
-			s = Database.getInstance().getStatusAppello(appello.getId());
-		}else {
-			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
-		}
-		if (s != null)
-			return s;
-		else
-			return "";
-	}
-	
 	public ArrayList<Pair<Studente, Docente>> getStudentiRelatoriFromDB(){
 		ArrayList<Studente> studenti = new ArrayList<Studente>();
 		ArrayList<Pair<Studente, Docente>> studentiRelatori = new ArrayList<Pair<Studente, Docente>>();
@@ -216,6 +205,15 @@ public class ControllerAppello {
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return presidente;
+	}
+	
+	public PresidenteScuola getPresidenteScuolaFromDB(){
+		if (Database.getInstance().isConnected()) {
+			return Database.getInstance().getPresidenteScuola();
+		} else {
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public ArrayList<Docente> getCommissioneNoRelatoriDB(){
@@ -363,7 +361,8 @@ public class ControllerAppello {
 	
 	public boolean approvaAppello() {
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().setAppelloStatus(appello.getId(),1);
+			Database.getInstance().setAppelloStatus(appello.getId(), 1);
+			appello.setStatus(1);
 			ArrayList<Docente> commissione = getCommissioneNoRelatoriDB();
 			ArrayList<Pair<Studente, Docente>> studentiRelatori = getStudentiRelatoriFromAppelloFromDB();
 			MessaggioManager.getInstance(view.getShell()).notificaConvocazione(appello, commissione, studentiRelatori);
@@ -377,8 +376,26 @@ public class ControllerAppello {
 	
 	public boolean richiediCorrezione() {
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().setAppelloStatus(appello.getId(),2);
+			Database.getInstance().setAppelloStatus(appello.getId(), 2);
+			appello.setStatus(2);
+			PresidenteCorso pc = Database.getInstance().getPresidenteCorsoByAppello(appello);
+			MessaggioManager.getInstance(view.getShell()).notificaCorrezioneCommissione(appello, pc, (PresidenteScuola) utente);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "E' stato richiesto una correzione");
+			return true;
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return false;
+	}
+	
+	public boolean inviaRichiestaApprovazione() {
+		if(Database.getInstance().isConnected()) {
+			Database.getInstance().setAppelloStatus(appello.getId(), 5);
+			appello.setStatus(5);
+			if(MessaggioManager.getInstance(view.getShell()).notificaApprovareCommissione(appello,(PresidenteCorso) utente, 
+					getPresidenteScuolaFromDB())) {
+				Utils.createConfirmDialog(view.getShell(), "Messaggio", "La richiesta e' stata inviata al presidente di scuola.");
+			}
 			return true;
 		}else {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");

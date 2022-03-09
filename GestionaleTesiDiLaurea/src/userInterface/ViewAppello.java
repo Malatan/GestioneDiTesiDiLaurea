@@ -55,6 +55,7 @@ public class ViewAppello {
 	}
 
 	public void aggiornaPagina() {
+		Console.print("Aggiorna pagina appello", "gui");
 		this.countDocentiRelatori = 0;
 		AppelloTesi appello = controller.getAppello();
 		String no_value = "INDEFINITO";
@@ -216,7 +217,7 @@ public class ViewAppello {
 		lblStatusAppello.setBounds(10, 45, 465, 15);
 		lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
 		int appello_status = controller.getAppello().getStatus();
-		if (appello_status == 2 || appello_status == 1 || appello_status == 0) {
+		if (appello_status == 2 || appello_status == 1 || appello_status == 0 || appello_status == 5) {
 			Button approvaAppello = new Button(compositePresidenteScuola, SWT.NONE);	
 			approvaAppello.addMouseListener(new MouseAdapter() {
 				@Override
@@ -224,7 +225,7 @@ public class ViewAppello {
 					if (controller.getAppello().canApprova()) {
 						if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di approvare l'appello?")) {
 							controller.approvaAppello();
-							lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+							lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
 							aggiornaPagina();
 						}
 					} else {
@@ -241,13 +242,14 @@ public class ViewAppello {
 				public void mouseDown(MouseEvent e) {
 					if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di richiedere la correzione?")) {
 						controller.richiediCorrezione();
-						lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+						lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
 						aggiornaPagina();
 					}
 				}
 			});
 			richiediCorrezione.setBounds(136, 10, 120, 25);
 			richiediCorrezione.setText("Richiedi Correzione");
+			
 		}
 	}
 
@@ -256,7 +258,7 @@ public class ViewAppello {
 		compositeResponsabile.setBounds(10, 370, 465, 80);
 		
 		Label lblStatusAppello = new Label(compositeResponsabile, SWT.NONE);
-		lblStatusAppello.setBounds(10, 45, 465, 15);
+		lblStatusAppello.setBounds(138, 45, 300, 15);
 		lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
 		int appello_status = controller.getAppello().getStatus();
 		
@@ -290,12 +292,20 @@ public class ViewAppello {
 		btnNominaPresidente.setBounds(262, 10, 120, 25);
 		btnNominaPresidente.setText("Nomina Presidente");
 		
-		if (appello_status == 1) {
-			btnNominaPresidente.setEnabled(false);
-			btnIdentificaMembri.setEnabled(false);
-			btnData.setEnabled(false);
-		}
-		if (appello_status == 4) {
+		Button btnInviaProposta = new Button(compositeResponsabile, SWT.NONE);
+		btnInviaProposta.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if(controller.inviaRichiestaApprovazione()) {
+					aggiornaPagina();
+					lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
+				}
+			}
+		});
+		btnInviaProposta.setBounds(10, 40, 120, 25);
+		btnInviaProposta.setText("Invia Proposta");
+		
+		if (appello_status == 1 || appello_status == 3 || appello_status == 4) {
 			btnNominaPresidente.setEnabled(false);
 			btnIdentificaMembri.setEnabled(false);
 			btnData.setEnabled(false);
