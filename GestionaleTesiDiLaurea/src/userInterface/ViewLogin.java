@@ -59,7 +59,7 @@ public class ViewLogin {
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				controller.checkLogin(textFieldMatricola, textFieldPassword);
+				controller.checkLogin(textFieldMatricola.getText(), textFieldPassword.getText());
 			}
 		});
 		btnLogin.setBounds(158, 194, 184, 40);
@@ -76,7 +76,7 @@ public class ViewLogin {
 		textFieldMatricola.addKeyListener(new KeyAdapter() {
 		      public void keyPressed(KeyEvent event) {
 		    	  if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
-		    		  controller.checkLogin(textFieldMatricola, textFieldPassword);
+		    		  controller.checkLogin(textFieldMatricola.getText(), textFieldPassword.getText());
 		    	  }
 		      }
 		    });
@@ -84,7 +84,7 @@ public class ViewLogin {
 		textFieldPassword.addKeyListener(new KeyAdapter() {
 		      public void keyPressed(KeyEvent event) {
 		    	  if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
-		    		  controller.checkLogin(textFieldMatricola, textFieldPassword);
+		    		  controller.checkLogin(textFieldMatricola.getText(), textFieldPassword.getText());
 		    	  }
 		      }
 		    });

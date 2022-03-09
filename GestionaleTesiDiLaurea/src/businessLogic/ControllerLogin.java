@@ -14,14 +14,14 @@ public class ControllerLogin {
 		view = new ViewLogin(this);
 	}
 	
-	public void checkLogin(Text matricola, Text password) {
-		if(matricola.getText().equals("") || password.getText().equals("") || matricola.getText().equals("100")) {
+	public void checkLogin(String matricola, String password) {
+		if(matricola.equals("") || password.equals("") || matricola.equals("100")) {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
 		} else {
 			if(Database.getInstance().isConnected()) {
-				String[] info = Database.getInstance().verificaCredenziali(matricola.getText(), password.getText());
+				String[] info = Database.getInstance().verificaCredenziali(matricola, password);
 				if(info != null) {
-					Console.print("Utente matricola: " + matricola.getText() + " password: " + password.getText() + " loggato", "app");
+					Console.print("Utente matricola: " + matricola + " password: " + password + " loggato", "app");
 					view.close();
 					switch(Integer.parseInt(info[2])) {
 						case 0:					
