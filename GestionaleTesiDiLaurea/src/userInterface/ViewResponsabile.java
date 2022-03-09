@@ -54,15 +54,15 @@ public class ViewResponsabile {
 
 		Label lblMatricola = new Label(compositeUserInfo, SWT.NONE);
 		lblMatricola.setBounds(10, 10, 261, 15);
-		lblMatricola.setText("Matricola: " + controller.responsabile.getMatricola());
+		lblMatricola.setText("Matricola: " + controller.getResponsabile().getMatricola());
 
 		Label lblNome = new Label(compositeUserInfo, SWT.NONE);
 		lblNome.setBounds(10, 31, 261, 15);
-		lblNome.setText("Nome: " + controller.responsabile.getNome());
+		lblNome.setText("Nome: " + controller.getResponsabile().getNome());
 
 		Label lblCognome = new Label(compositeUserInfo, SWT.NONE);
 		lblCognome.setBounds(10, 52, 261, 15);
-		lblCognome.setText("Cognome: " + controller.responsabile.getCognome());
+		lblCognome.setText("Cognome: " + controller.getResponsabile().getCognome());
 
 		Composite compositeMenu = new Composite(shell, SWT.BORDER);
 		compositeMenu.setBounds(20, 127, 541, 322);

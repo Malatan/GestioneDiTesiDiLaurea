@@ -10,7 +10,7 @@ import utils.Utils;
 import domainModel.AppelloTesi;
 
 public class ControllerResponsabile {
-	public Responsabile responsabile;
+	private Responsabile responsabile;
 	private ViewResponsabile view;
 
 	public ControllerResponsabile(String matricola, String nome, String cognome) {
