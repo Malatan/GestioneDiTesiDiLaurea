@@ -14,9 +14,10 @@ public class ControllerLogin {
 		view = new ViewLogin(this);
 	}
 	
-	public void checkLogin(String matricola, String password) {
+	public boolean checkLogin(String matricola, String password) {
 		if(matricola.equals("") || password.equals("") || matricola.equals("100")) {
 			Utils.createErrorDialog(view.getShell(), "Messaggio", "Matricola o Password non puo' essere vuota");
+			return false;
 		} else {
 			if(Database.getInstance().isConnected()) {
 				String[] info = Database.getInstance().verificaCredenziali(matricola, password);
@@ -47,12 +48,15 @@ public class ControllerLogin {
 							controllerDocente.run();
 							break;
 					}
+					return true;
 				}else {
 					Utils.createErrorDialog(view.getShell(), "Messaggio", "Matricola o Password errata");
+					return false;
 				}	
 			}
 			else {
 				Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database fallita");
+				return false;
 			}
 		}
 	}
