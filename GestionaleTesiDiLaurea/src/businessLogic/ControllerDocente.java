@@ -1,13 +1,10 @@
 package businessLogic;
 
 import java.util.ArrayList;
-
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.DomandaTesi;
-import domainModel.Responsabile;
-import system.Messaggio;
 import system.MessaggioManager;
 import userInterface.ViewDocente;
 import utils.Pair;
@@ -33,15 +30,6 @@ public class ControllerDocente {
 
 	public void run() {
 		view.createAndRun();
-	}
-	
-	public ArrayList<Messaggio> getMessaggi(){
-		if(Database.getInstance().isConnected()) {
-			return Database.getInstance().getMessaggi(docente.getMatricolaInt());
-		}else {
-			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
-		}
-		return null;
 	}
 	
 	public ArrayList<DomandaTesi> getDomandeTesiFromDB(){

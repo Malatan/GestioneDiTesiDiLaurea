@@ -4,9 +4,6 @@ import userInterface.ViewLogin;
 import utils.Console;
 import utils.Pair;
 import utils.Utils;
-
-import java.util.ArrayList;
-
 import org.eclipse.swt.widgets.Text;
 import databaseAccessObject.Database;
 

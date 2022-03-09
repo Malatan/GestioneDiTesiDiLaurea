@@ -1,7 +1,5 @@
 package system;
 
-import org.eclipse.swt.widgets.Label;
-
 public class Messaggio {
 	private int id;
 	private int idSorgente;

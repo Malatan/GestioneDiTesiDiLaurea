@@ -1,12 +1,10 @@
 package businessLogic;
 
 import java.util.ArrayList;
-
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.PresidenteScuola;
 import domainModel.Verbale;
-import system.Messaggio;
 import userInterface.ViewPresidenteScuola;
 import utils.Utils;
 
@@ -25,15 +23,6 @@ public class ControllerPresidenteScuola {
 	
 	public void run() {
 		view.createAndRun();
-	}
-	
-	public ArrayList<Messaggio> getMessaggi(){
-		if(Database.getInstance().isConnected()) {
-			return Database.getInstance().getMessaggi(presidenteScuola.getMatricolaInt());
-		}else {
-			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
-		}
-		return null;
 	}
 	
 	public boolean approvaVerbale(Verbale verbale) {

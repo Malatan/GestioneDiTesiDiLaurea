@@ -1,7 +1,6 @@
 package businessLogic;
 
 import java.util.ArrayList;
-
 import databaseAccessObject.Database;
 import domainModel.Responsabile;
 import userInterface.ViewResponsabile;
@@ -9,19 +8,18 @@ import utils.Console;
 import utils.Pair;
 import utils.Utils;
 import domainModel.AppelloTesi;
-import domainModel.Aula;
 
 public class ControllerResponsabile {
 	public Responsabile responsabile;
-	private ViewResponsabile viewResponsabile;
+	private ViewResponsabile view;
 
 	public ControllerResponsabile(String matricola, String nome, String cognome) {
 		responsabile = new Responsabile(matricola, nome, cognome);
-		viewResponsabile = new ViewResponsabile(this);
+		view = new ViewResponsabile(this);
 	}
 
 	public void run() {
-		viewResponsabile.createAndRun();
+		view.createAndRun();
 	}
 
 	public Responsabile getResponsabile() {
@@ -33,7 +31,7 @@ public class ControllerResponsabile {
 		if (Database.getInstance().isConnected()) {
 			appello = Database.getInstance().getAppello(id_appello);
 		} else {
-			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appello;
 	}
@@ -43,7 +41,7 @@ public class ControllerResponsabile {
 		if (Database.getInstance().isConnected()) {
 			appelli = Database.getInstance().getAppelli();
 		} else {
-			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appelli;
 	}
@@ -53,7 +51,7 @@ public class ControllerResponsabile {
 		if (Database.getInstance().isConnected()) {
 			corsi = Database.getInstance().getCorsi();
 		} else {
-			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return corsi;
 	}
@@ -61,14 +59,14 @@ public class ControllerResponsabile {
 	public boolean creaAppello(int id_corso) {
 		if (Database.getInstance().isConnected()) {
 			if (Database.getInstance().aggiungeAppello(responsabile.getMatricolaInt(), Utils.getTodayDate(), id_corso)) {
-				Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Nuovo appello pubblicato");
+				Utils.createConfirmDialog(view.getShell(), "Messaggio", "Nuovo appello pubblicato");
 				Console.print("Creazione appello con successo", "app");
 				return true;
 			} else {
-				Utils.createErrorDialog(viewResponsabile.getShell(), "Messaggio", "Inserimento fallito");
+				Utils.createErrorDialog(view.getShell(), "Messaggio", "Inserimento fallito");
 			}
 		} else {
-			Utils.createConfirmDialog(viewResponsabile.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}

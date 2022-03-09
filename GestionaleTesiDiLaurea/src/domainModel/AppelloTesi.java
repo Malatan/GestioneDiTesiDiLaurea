@@ -1,11 +1,7 @@
 package domainModel;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
-import utils.Console;
 import utils.Pair;
 
 public class AppelloTesi {
@@ -54,7 +50,7 @@ public class AppelloTesi {
 	}
 
 	public void setData(String data) {
-		this.date = date;
+		this.date = data;
 	}
 
 	public String getNota() {

@@ -1,10 +1,7 @@
 package userInterface;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
@@ -23,9 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
-
 import businessLogic.ControllerAppello;
-import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Determinazione;
 import domainModel.Docente;

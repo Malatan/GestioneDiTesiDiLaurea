@@ -369,7 +369,7 @@ public class ViewDocente {
 		Utils.setShellToCenterParent(child, shell);
 		int[] ordine = new int[1];
 		ordine[0] = 0;
-		ArrayList<Messaggio> messaggi = controller.getMessaggi();
+		ArrayList<Messaggio> messaggi = MessaggioManager.getInstance(child).getMyMessaggi(controller.getDocente());
 
 		Label lblTitolo = new Label(child, SWT.NONE);
 		lblTitolo.setAlignment(SWT.CENTER);

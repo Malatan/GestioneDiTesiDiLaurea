@@ -1,30 +1,22 @@
 package userInterface;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
 import businessLogic.ControllerAppello;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerResponsabile;
 import domainModel.AppelloTesi;
-import domainModel.Aula;
 import utils.Pair;
 import utils.Utils;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.custom.ScrolledComposite;

@@ -1,7 +1,6 @@
 package userInterface;
 
 import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
@@ -12,15 +11,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.SWTResourceManager;
-
 import businessLogic.ControllerAppello;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerPresidenteCorso;
 import domainModel.AppelloTesi;
 import utils.Utils;
-import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.List;
 
 public class ViewPresidenteCorso {
 	private ControllerPresidenteCorso controller;

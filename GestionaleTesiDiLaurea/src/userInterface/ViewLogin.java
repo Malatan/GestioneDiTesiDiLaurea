@@ -9,9 +9,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import businessLogic.ControllerLogin;
-import utils.Console;
 import utils.Utils;
-
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;

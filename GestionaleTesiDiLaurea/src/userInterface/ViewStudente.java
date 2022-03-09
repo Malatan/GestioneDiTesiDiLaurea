@@ -4,15 +4,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,16 +19,12 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
-
-import businessLogic.ControllerAppello;
 import businessLogic.ControllerLogin;
 import businessLogic.ControllerStudente;
 import domainModel.AppelloTesi;
 import domainModel.Studente;
 import system.Messaggio;
 import system.MessaggioManager;
-import utils.Console;
 import utils.Pair;
 import utils.Utils;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -321,7 +314,7 @@ public class ViewStudente {
 		Utils.setShellToCenterParent(child, shell);
 		int[] ordine = new int[1];
 		ordine[0] = 0;
-		ArrayList<Messaggio> messaggi = controller.getMessaggi();
+		ArrayList<Messaggio> messaggi = MessaggioManager.getInstance(child).getMyMessaggi(controller.getStudente());
 
 		Label lblTitolo = new Label(child, SWT.NONE);
 		lblTitolo.setAlignment(SWT.CENTER);

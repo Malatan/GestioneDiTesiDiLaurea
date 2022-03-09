@@ -9,16 +9,16 @@ import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.DomandaTesi;
 import domainModel.Studente;
+import domainModel.Utente;
 import utils.Pair;
 import utils.Utils;
 
 public class MessaggioManager {
 	private static Shell shell;
 	private static MessaggioManager mm;
-	private ArrayList<Messaggio> messaggi;
 	
 	public MessaggioManager() {
-		messaggi = new ArrayList<Messaggio>();
+		
 	}
 
 	public static MessaggioManager getInstance(Shell s) {
@@ -28,6 +28,15 @@ public class MessaggioManager {
 		}
 		mm = new MessaggioManager();
 		return mm;
+	}
+	
+	public ArrayList<Messaggio> getMyMessaggi(Utente me){
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getMessaggi(me.getMatricolaInt());
+		}else {
+			Utils.createErrorDialog(shell, "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public boolean notificaNuovaDomanda(Studente studente, Pair<Integer, String> corso, Pair<Integer, String> relatore) {
