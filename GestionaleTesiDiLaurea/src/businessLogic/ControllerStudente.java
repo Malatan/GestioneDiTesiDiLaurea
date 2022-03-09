@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
+import domainModel.Docente;
 import domainModel.Studente;
 import system.MessaggioManager;
 import userInterface.ViewStudente;
@@ -75,7 +76,12 @@ public class ControllerStudente {
 	public boolean ritiraDomanda() {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().ritiraDomanda(studente.getMatricola());
-			MessaggioManager.getInstance(view.getShell()).notificaRitiraDomanda(studente);
+			MessaggioManager.getInstance(view.getShell()).notificaRelatoreRitiraDomanda(studente);
+			if (studente.getStatusTesi() == 2) {
+				Docente presidente = Database.getInstance().getPresidenteCommissione(studente.getIdAppello());
+				ArrayList<Docente> membri = Database.getInstance().getCommissioneNoRelatoreByAppello(studente.getIdAppello());
+				MessaggioManager.getInstance(view.getShell()).notificaCommissioneRitiraDomanda(studente, presidente, membri);
+			}
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "La domanda per la tesi e' stata ritirata.");
 			return true;
 		}else {

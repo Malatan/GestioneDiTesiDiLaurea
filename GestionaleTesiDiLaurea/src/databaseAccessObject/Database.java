@@ -104,6 +104,7 @@ public class Database {
 				} else {
 					s += "Repository Tesi: " + rs.getString("repository") + ".\n";
 				}
+				status = 1;
 				if (!rs.getBoolean("approvato")) {
 					s += "Attendi l'approvazione da parte del relatore.\n";
 				} else {
@@ -117,6 +118,7 @@ public class Database {
 					if (!rs2.next()) {
 						s += "Attendi l'assegnazione all'appello.\n";
 					} else {
+						studente.setIdAppello(rs2.getInt("id_appello"));
 						status = 2;
 						s += "Sei stato assegnato all'appello di:\n";
 						boolean data_definita = false;
@@ -141,7 +143,6 @@ public class Database {
 						}
 					}
 				}
-				status = 1;
 			} else {
 				s = "Non hai ancora prensetato nessuna domanda";
 				status = 0;

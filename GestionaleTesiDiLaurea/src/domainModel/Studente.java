@@ -3,6 +3,7 @@ package domainModel;
 import utils.Pair;
 
 public class Studente extends Utente{
+	private int idAppello;
 	private Pair<Integer, String> corso;
 	private Pair<Integer, String> relatore;
 	private String repository;
@@ -47,6 +48,14 @@ public class Studente extends Utente{
 
 	public void setRepository(String repository) {
 		this.repository = repository;
+	}
+
+	public int getIdAppello() {
+		return idAppello;
+	}
+
+	public void setIdAppello(int idAppello) {
+		this.idAppello = idAppello;
 	}
 	
 }

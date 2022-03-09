@@ -46,15 +46,30 @@ public class MessaggioManager {
 		String contenuto = "Salve " + relatore.second + ",\nlo studente " + studente.getNomeCognome() 
 				+ " | Matricola: " + studente.getMatricola() + " ha mandato una domanda di tesi di corso " + corso.second 
 				+ " e ha scelto lei come il relatore di tesi.";
-		return mandaMessaggio(studente.getMatricolaInt(), relatore.first, titolo, contenuto);
+		return mandaMessaggio(100, relatore.first, titolo, contenuto);
 	}
 	
-	public boolean notificaRitiraDomanda(Studente studente) {
+	public boolean notificaRelatoreRitiraDomanda(Studente studente) {
 		String titolo = "Ritiro domanda di tesi";
 		String contenuto = "Salve " + studente.getRelatore().second + ",\nlo studente " + studente.getNomeCognome() 
 				+ " | Matricola: " + studente.getMatricola() + " ha ritirato la domanda di tesi di corso " + studente.getCorso().second 
 				+ " e con lei come il relatore di tesi.";
-		return mandaMessaggio(studente.getMatricolaInt(), studente.getRelatore().first, titolo, contenuto);
+		return mandaMessaggio(100, studente.getRelatore().first, titolo, contenuto);
+	}
+	
+	public void notificaCommissioneRitiraDomanda(Studente studente, Docente presidente, ArrayList<Docente> membri) {
+		String titolo = "Ritiro domanda di tesi";
+		String contenuto = ",\nlo studente " + studente.getNomeCognome() 
+				+ " | Matricola: " + studente.getMatricola() + " ha ritirato la domanda di tesi di corso " + studente.getCorso().second + ".";
+		String full = "";
+		if (presidente != null) {
+			full = "Salve " + presidente.getNomeCognome() + contenuto;
+			mandaMessaggio(100, presidente.getMatricolaInt(), titolo, full);
+		}
+		for (int i = 0 ; i < membri.size() ; i++) {
+			full = "Salve " + membri.get(i).getNomeCognome() + contenuto;
+			mandaMessaggio(100, membri.get(i).getMatricolaInt(), titolo, full);
+		}
 	}
 	
 	public boolean notificaUpdateRepo(Studente studente, String repository) {
@@ -62,7 +77,7 @@ public class MessaggioManager {
 		String contenuto = "Salve " + studente.getRelatore().second + ",\nlo studente " + studente.getNomeCognome() 
 				+ " | Matricola: " + studente.getMatricola() + " ha aggiornato il link di repository di tesi."
 				+ "\nNuovo link repository: " + repository;
-		return mandaMessaggio(studente.getMatricolaInt(), studente.getRelatore().first, titolo, contenuto);
+		return mandaMessaggio(100, studente.getRelatore().first, titolo, contenuto);
 	}
 	
 	public boolean notificaApprovaDomanda(DomandaTesi domanda, Docente docente) {
