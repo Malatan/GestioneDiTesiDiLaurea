@@ -15,7 +15,7 @@ public class ControllerPresidenteCorso {
 	private PresidenteCorso presidenteCorso;
 	
 	public ControllerPresidenteCorso(String matricola, String nome, String cognome, Pair<Integer, String> corso) {
-		presidenteCorso = new PresidenteCorso(nome,cognome,matricola, corso);
+		presidenteCorso = new PresidenteCorso(matricola, nome,cognome, corso);
 		view = new ViewPresidenteCorso(this);
 	}
 	

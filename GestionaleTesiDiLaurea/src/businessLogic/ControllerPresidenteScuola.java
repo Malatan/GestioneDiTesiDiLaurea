@@ -6,16 +6,17 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.PresidenteScuola;
 import domainModel.Verbale;
+import system.Messaggio;
 import userInterface.ViewPresidenteScuola;
 import utils.Utils;
 
 public class ControllerPresidenteScuola {
 	private PresidenteScuola presidenteScuola;
-	private ViewPresidenteScuola viewPresidenteScuola;
+	private ViewPresidenteScuola view;
 	
 	public ControllerPresidenteScuola(String matricola, String nome, String cognome) {
-		presidenteScuola = new PresidenteScuola(nome,cognome,matricola);
-		viewPresidenteScuola = new ViewPresidenteScuola(this);
+		presidenteScuola = new PresidenteScuola(matricola,nome,cognome);
+		view = new ViewPresidenteScuola(this);
 	}
 	
 	public PresidenteScuola getPresidenteScuola() {
@@ -23,14 +24,23 @@ public class ControllerPresidenteScuola {
 	}
 	
 	public void run() {
-		viewPresidenteScuola.createAndRun();
+		view.createAndRun();
+	}
+	
+	public ArrayList<Messaggio> getMessaggi(){
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getMessaggi(presidenteScuola.getMatricolaInt());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public boolean approvaVerbale(Verbale verbale) {
 		if (Database.getInstance().isConnected()) {
 			return Database.getInstance().approvaVerbale(verbale);
 		} else {
-			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return false;
 	}
@@ -40,7 +50,7 @@ public class ControllerPresidenteScuola {
 		if (Database.getInstance().isConnected()) {
 			appelli = Database.getInstance().getAppelli();
 		} else {
-			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appelli;
 	}
@@ -50,7 +60,7 @@ public class ControllerPresidenteScuola {
 		if (Database.getInstance().isConnected()) {
 			appelli = Database.getInstance().getAppelliCompletati();
 		} else {
-			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appelli;
 	}
@@ -60,7 +70,7 @@ public class ControllerPresidenteScuola {
 		if (Database.getInstance().isConnected()) {
 			verbali = Database.getInstance().getVerbali();
 		} else {
-			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return verbali;
 	}
@@ -70,7 +80,7 @@ public class ControllerPresidenteScuola {
 		if (Database.getInstance().isConnected()) {
 			appello = Database.getInstance().getAppello(id_appello);
 		} else {
-			Utils.createConfirmDialog(viewPresidenteScuola.getShell(), "Messaggio", "Connessione al database persa");
+			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}
 		return appello;
 	}

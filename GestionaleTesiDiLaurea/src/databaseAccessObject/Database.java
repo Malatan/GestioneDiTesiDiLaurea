@@ -747,7 +747,7 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement();
-			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.nota, a.status, e.voto " 
+			String query = "SELECT a.id_appello, a.id_corso, c.nome as nome_corso, a.data, a.orario, a.nota, a.status, e.id, e.voto " 
 					+"FROM appello a " 
 					+"LEFT JOIN corso c ON a.id_corso = c.id_corso "
 					+"LEFT JOIN appello_membro am ON am.id_appello = a.id_appello "
@@ -755,8 +755,11 @@ public class Database {
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
-				return Pair.of(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
-						rs.getString("data"), rs.getString("orario"), null, null, rs.getString("nota"), rs.getInt("status")), rs.getInt("voto"));
+				if (rs.getInt("id") != 0) {
+					return Pair.of(new AppelloTesi(rs.getInt("id_appello"), Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")), 
+							rs.getString("data"), rs.getString("orario"), null, null, rs.getString("nota"), rs.getInt("status")), rs.getInt("voto"));
+				}
+				return null;
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -1320,7 +1323,7 @@ public class Database {
 		try {
 			connection = DriverManager.getConnection(connectionString);
 			Statement stm = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT us.matricola as matricola_studente, us.nome as nome_studente, us.cognome as cognome_studente, "
+			String query = "SELECT us.matricola as matricola_studente, us.nome as nome_studente, us.cognome as cognome_studente, d.repository, "
 					+ "ur.matricola as matricola_relatore, ur.nome as nome_relatore, ur.cognome as cognome_relatore "
 					+ "FROM appello_membro am, utente us, utente ur, domandatesi d "
 					+ "WHERE am.matricola = us.matricola AND d.matricola = am.matricola AND ur.matricola = d.relatore "
@@ -1329,7 +1332,7 @@ public class Database {
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
 				studentiRelatori.add(Pair.of(new Studente(rs.getString("nome_studente"), rs.getString("cognome_studente"), 
-															rs.getString("matricola_studente")), 
+															rs.getString("matricola_studente"), rs.getString("repository")), 
 											new Docente(rs.getString("matricola_relatore"), rs.getString("nome_relatore"), 
 															rs.getString("cognome_relatore"))));
 			}

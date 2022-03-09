@@ -5,14 +5,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -23,6 +29,8 @@ import businessLogic.ControllerLogin;
 import businessLogic.ControllerStudente;
 import domainModel.AppelloTesi;
 import domainModel.Studente;
+import system.Messaggio;
+import system.MessaggioManager;
 import utils.Console;
 import utils.Pair;
 import utils.Utils;
@@ -38,6 +46,7 @@ public class ViewStudente {
 	private Button btnAddRepo;
 	private Composite compositeUserInfo_1;
 	private Button btnScaricaDocumento;
+	private Button btnMessaggi;
 	public ViewStudente(ControllerStudente cs) {
 		this.controller = cs;
 	}
@@ -88,7 +97,7 @@ public class ViewStudente {
 		Studente studente = controller.getStudente();
 		Display display = Display.getDefault();
 		shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-		shell.setSize(400, 567);
+		shell.setSize(400, 600);
 		shell.setText("Studente");
 		Utils.setShellToCenterMonitor(shell, display);
 		
@@ -112,7 +121,7 @@ public class ViewStudente {
 		textStatusTesi.setBounds(20, 96, 340, 170);
 		
 		compositeUserInfo_1 = new Composite(shell, SWT.BORDER);
-		compositeUserInfo_1.setBounds(20, 272, 340, 244);
+		compositeUserInfo_1.setBounds(20, 272, 340, 275);
 		
 		btnIscrizione = new Button(compositeUserInfo_1, SWT.NONE);
 		btnIscrizione.setLocation(10, 10);
@@ -148,7 +157,7 @@ public class ViewStudente {
 		btnAddRepo.setText("Repository tesi");
 		
 		Button btnLogOut = new Button(compositeUserInfo_1, SWT.NONE);
-		btnLogOut.setLocation(10, 205);
+		btnLogOut.setLocation(10, 236);
 		btnLogOut.setSize(316, 25);
 		btnLogOut.addMouseListener(new MouseAdapter() {
 			@Override
@@ -162,9 +171,25 @@ public class ViewStudente {
 		btnLogOut.setText("Log out");
 		
 		btnScaricaDocumento = new Button(compositeUserInfo_1, SWT.NONE);
+		btnScaricaDocumento.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+			}
+		});
 		btnScaricaDocumento.setText("Scarica documento esito tesi");
-		btnScaricaDocumento.setBounds(10, 133, 316, 35);
+		btnScaricaDocumento.setBounds(10, 174, 316, 35);
 		btnScaricaDocumento.setVisible(false);
+		
+		btnMessaggi = new Button(compositeUserInfo_1, SWT.NONE);
+		btnMessaggi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				visualizzaMessaggi();
+			}
+		});
+		btnMessaggi.setBounds(10, 133, 316, 35);
+		btnMessaggi.setText("Messaggi");
 		
 		aggiornaPagina();
 		shell.open();
@@ -286,6 +311,136 @@ public class ViewStudente {
 		});
 		btnNo.setBounds(176, 115, 75, 25);
 		btnNo.setText("Indietro");
+		child.open();
+	}
+
+	public void visualizzaMessaggi() {
+		Shell child = new Shell(shell, SWT.CLOSE | SWT.TITLE | SWT.MIN | SWT.APPLICATION_MODAL);
+		child.setText("Messaggi");
+		child.setSize(500, 450);
+		Utils.setShellToCenterParent(child, shell);
+		int[] ordine = new int[1];
+		ordine[0] = 0;
+		ArrayList<Messaggio> messaggi = controller.getMessaggi();
+
+		Label lblTitolo = new Label(child, SWT.NONE);
+		lblTitolo.setAlignment(SWT.CENTER);
+		lblTitolo.setBounds(10, 10, 465, 15);
+		lblTitolo.setText("Lista messaggi");
+
+		Text textMessaggio = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		textMessaggio.setBounds(10, 31, 465, 340);
+		textMessaggio.setVisible(false);
+
+		List listMessaggi = new List(child, SWT.BORDER | SWT.V_SCROLL);
+		Object layout = listMessaggi.getLayoutData();
+		listMessaggi.setBounds(10, 31, 465, 340);
+		for (int i = 0; i < messaggi.size(); i++) {
+			listMessaggi.add(messaggi.get(i).display());
+			listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+		}
+
+		Button btnOrdinaLetto = new Button(child, SWT.NONE);
+		btnOrdinaLetto.setBounds(10, 377, 150, 25);
+		btnOrdinaLetto.setText("Ordina per letto/nuovo");
+		btnOrdinaLetto.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!messaggi.isEmpty() && ordine[0] != 1) {
+					Utils.changeIntValue(ordine, 1);
+					Collections.sort(messaggi, new Comparator<Messaggio>() {
+						@Override
+						public int compare(Messaggio m1, Messaggio m2) {
+							return m1.isLettoString().compareTo(m2.isLettoString());
+						}
+					});
+					listMessaggi.removeAll();
+					listMessaggi.setLayoutData(layout);
+					listMessaggi.setBounds(10, 31, 465, 340);
+					for (int i = 0; i < messaggi.size(); i++) {
+						listMessaggi.add(messaggi.get(i).display());
+						listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+					}
+				}
+			}
+		});
+
+		Button btnOrdinaData = new Button(child, SWT.NONE);
+		btnOrdinaData.setBounds(166, 377, 150, 25);
+		btnOrdinaData.setText("Ordina per data");
+		btnOrdinaData.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!messaggi.isEmpty() && ordine[0] != 2) {
+					Utils.changeIntValue(ordine, 2);
+					Collections.sort(messaggi, new Comparator<Messaggio>() {
+						@Override
+						public int compare(Messaggio m1, Messaggio m2) {
+							try {
+								Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(m1.getDataEmissione());
+								Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(m2.getDataEmissione()); 
+								return date1.compareTo(date2);
+							} catch (ParseException e) {
+								e.printStackTrace();
+							} 
+							return 0;
+						}
+					});
+					listMessaggi.removeAll();
+					listMessaggi.setLayoutData(layout);
+					listMessaggi.setBounds(10, 31, 465, 340);
+					for (int i = 0; i < messaggi.size(); i++) {
+						listMessaggi.add(messaggi.get(i).display());
+						listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+					}
+				}
+			}
+		});
+
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(400, 377, 75, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (textMessaggio.isVisible()) {
+					lblTitolo.setText("Lista messaggi");
+					textMessaggio.setVisible(false);
+					listMessaggi.setVisible(true);
+					btnOrdinaLetto.setVisible(true);
+					btnOrdinaData.setVisible(true);
+				} else {
+					child.close();
+				}
+			}
+		});
+
+		listMessaggi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				textMessaggio.setVisible(true);
+				listMessaggi.setVisible(false);
+				for (int i = 0; i < messaggi.size(); i++) {
+					int id = (int) listMessaggi.getData(listMessaggi.getSelectionIndex() + "");
+					if (messaggi.get(i).getId() == id) {
+						btnOrdinaLetto.setVisible(false);
+						btnOrdinaData.setVisible(false);
+						textMessaggio.setText(messaggi.get(i).getContenuto());
+						lblTitolo.setText(messaggi.get(i).getId() + "-" + messaggi.get(i).getTitolo() 
+								+ "-" + messaggi.get(i).getDataEmissione());
+						if (!messaggi.get(i).isLetto()) {
+							messaggi.get(i).setLetto(true);
+							listMessaggi.setItem(listMessaggi.getSelectionIndex(), messaggi.get(i).display());
+							MessaggioManager.getInstance(child).updateLetto(id);
+						}
+						break;
+					}
+				}
+			}
+		});
 		child.open();
 	}
 }

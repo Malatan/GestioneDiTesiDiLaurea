@@ -147,4 +147,8 @@ public class AppelloTesi {
 			return "Error";
 		}
 	}
+	
+	public boolean canApprova() {
+		return aula != null && date != null && linkTeleconferenza != null && startTime != null;
+	}
 }

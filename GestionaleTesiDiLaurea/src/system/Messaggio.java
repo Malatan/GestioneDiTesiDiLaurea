@@ -1,5 +1,7 @@
 package system;
 
+import org.eclipse.swt.widgets.Label;
+
 public class Messaggio {
 	private int id;
 	private int idSorgente;
@@ -87,10 +89,11 @@ public class Messaggio {
 
 	public String display() {
 		String output = "[" + isLettoString() + "] [" + dataEmissione + "] [" + titolo + "] [";
-		if (contenuto.length() <= 20) {
+		int label_length = 85;
+		if (output.length() + contenuto.length() <= label_length) {
 			output += contenuto;
 		} else {
-			output += contenuto.substring(0, 40) + "...";
+			output += contenuto.substring(0, label_length - output.length()) + "...";
 		}
 		return output;
 	}

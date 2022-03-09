@@ -8,6 +8,7 @@ import domainModel.Docente;
 import domainModel.DomandaTesi;
 import domainModel.Responsabile;
 import system.Messaggio;
+import system.MessaggioManager;
 import userInterface.ViewDocente;
 import utils.Pair;
 import utils.Utils;
@@ -85,6 +86,7 @@ public class ControllerDocente {
 		if(Database.getInstance().isConnected()) {
 			if(Utils.createYesNoDialog(view.getShell(), "Conferma", "Vuole confermare l'approvazione della domanda di tesi dello studente?")) {
 				Database.getInstance().approvaDomandaTesi(domanda);
+				MessaggioManager.getInstance(view.getShell()).notificaApprovaDomanda(domanda, docente);
 				Utils.createConfirmDialog(view.getShell(), "Messaggio", "Domanda di tesi approvata");
 				return true;
 			}

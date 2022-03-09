@@ -9,6 +9,7 @@ public class Studente {
 	private String matricola;
 	private Pair<Integer, String> corso;
 	private Pair<Integer, String> relatore;
+	private String repository;
 	private int statusTesi;
 	
 	public Studente(String nome, String cognome, String matricola) {
@@ -17,7 +18,15 @@ public class Studente {
 		this.cognome = cognome;
 		this.matricola = matricola;
 	}
-
+	
+	public Studente(String nome, String cognome, String matricola, String repository) {
+		super();
+		this.nome = nome;
+		this.cognome = cognome;
+		this.matricola = matricola;
+		this.repository = repository;
+	}
+	
 	public String getNome() {
 		return nome;
 	}
@@ -72,6 +81,14 @@ public class Studente {
 
 	public void setRelatore(Pair<Integer, String> relatore) {
 		this.relatore = relatore;
+	}
+
+	public String getRepository() {
+		return repository;
+	}
+
+	public void setRepository(String repository) {
+		this.repository = repository;
 	}
 	
 }

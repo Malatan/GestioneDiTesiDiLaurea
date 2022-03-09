@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Studente;
+import system.Messaggio;
 import system.MessaggioManager;
 import userInterface.ViewStudente;
 import utils.Pair;
@@ -28,6 +29,15 @@ public class ControllerStudente {
 	
 	public void run() {
 		view.createAndRun();
+	}
+	
+	public ArrayList<Messaggio> getMessaggi(){
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getMessaggi(studente.getMatricolaInt());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public ArrayList<Pair<Integer, String>> getCorsiFromDB() {
@@ -88,6 +98,7 @@ public class ControllerStudente {
 	public boolean addRepo(String file) {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().addRepo(file, studente.getMatricola());
+			MessaggioManager.getInstance(view.getShell()).notificaUpdateRepo(studente, file);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Il repository e' stato aggiornato");
 			return true;
 		}else {

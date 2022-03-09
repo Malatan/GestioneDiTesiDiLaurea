@@ -16,6 +16,7 @@ import domainModel.Docente;
 import domainModel.Studente;
 import domainModel.SuggerimentoSostituto;
 import domainModel.Utente;
+import system.MessaggioManager;
 import userInterface.ViewAppello;
 import utils.Console;
 import utils.Pair;
@@ -368,6 +369,9 @@ public class ControllerAppello {
 	public boolean approvaAppello() {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().setAppelloStatus(appello.getId(),1);
+			ArrayList<Docente> commissione = getCommissioneNoRelatoriDB();
+			ArrayList<Pair<Studente, Docente>> studentiRelatori = getStudentiRelatoriFromAppelloFromDB();
+			MessaggioManager.getInstance(view.getShell()).notificaConvocazione(appello, commissione, studentiRelatori);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "L'appello e' stato approvato correttamente!");
 			return true;
 		}else {

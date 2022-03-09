@@ -226,10 +226,14 @@ public class ViewAppello {
 			approvaAppello.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di approvare l'appello?")) {
-						controller.approvaAppello();
-						lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
-						aggiornaPagina();
+					if (controller.getAppello().canApprova()) {
+						if (Utils.createYesNoDialog(shell, "Conferma", "Confermi di approvare l'appello?")) {
+							controller.approvaAppello();
+							lblStatusAppello.setText("Status Appello: " + controller.getStatusAppello());
+							aggiornaPagina();
+						}
+					} else {
+						Utils.createWarningDialog(parentShell, "Warning", "Ci sono campi indefiniti da definire.");
 					}
 				}
 			});
@@ -358,7 +362,7 @@ public class ViewAppello {
 				btnFineAppello.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-						fineDiscussioneDialog();
+						fineDiscussioneDialog(lblStatusAppello);
 					}
 				});
 			} else {
@@ -448,7 +452,7 @@ public class ViewAppello {
 		child.open();
 	}
 	
-	public void fineDiscussioneDialog() {
+	public void fineDiscussioneDialog(Label lblStatusAppello) {
 		Shell child = new Shell(shell, SWT.APPLICATION_MODAL | SWT.TITLE);
 		child.setText("Fine discussione");
 		child.setSize(430, 500);
@@ -626,6 +630,7 @@ public class ViewAppello {
 							controller.generaVerbale(commissione, esiti, presidenteC);
 							Utils.createConfirmDialog(child, "Messaggio", "Valutazione inserita con successo.");
 							controller.getAppello().setStatus(3);
+							lblStatusAppello.setText("Status Appello: " + controller.getAppello().getStatusString());
 							aggiornaPagina();
 							child.close();
 						}
