@@ -20,6 +20,7 @@ public class ViewLogin {
 
 	public ViewLogin(ControllerLogin cl) {
 		this.controller = cl;
+		this.shell = new Shell();
 	}
 
 	public Shell getShell() {

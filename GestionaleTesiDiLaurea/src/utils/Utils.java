@@ -31,42 +31,53 @@ public class Utils {
 	}
 
 	public static void createConfirmDialog(Shell s, String title, String text) {
-		MessageBox messageBox = new MessageBox(s, SWT.ICON_INFORMATION | SWT.YES);
-		messageBox.setMessage(text);
-		messageBox.setText(title);
-		messageBox.open();
+		if (s != null) {
+			MessageBox messageBox = new MessageBox(s, SWT.ICON_INFORMATION | SWT.YES);
+			messageBox.setMessage(text);
+			messageBox.setText(title);
+			messageBox.open();
+		}
 	}
 	
 	public static void createErrorDialog(Shell s, String title, String text) {
-		MessageBox messageBox = new MessageBox(s, SWT.ICON_ERROR | SWT.YES);
-		messageBox.setMessage(text);
-		messageBox.setText(title);
-		messageBox.open();
+		if (s != null) {
+			MessageBox messageBox = new MessageBox(s, SWT.ICON_ERROR | SWT.YES);
+			messageBox.setMessage(text);
+			messageBox.setText(title);
+			messageBox.open();
+		}
 	}
 	
 	public static void createWarningDialog(Shell s, String title, String text) {
-		MessageBox messageBox = new MessageBox(s, SWT.ICON_WARNING | SWT.YES);
-		messageBox.setMessage(text);
-		messageBox.setText(title);
-		messageBox.open();
+		if (s != null) {
+			MessageBox messageBox = new MessageBox(s, SWT.ICON_WARNING | SWT.YES);
+			messageBox.setMessage(text);
+			messageBox.setText(title);
+			messageBox.open();
+		}
 	}
 	
 	public static void createCancelDialog(Shell s, String title, String text) {
-		MessageBox messageBox = new MessageBox(s, SWT.ICON_CANCEL | SWT.YES);
-		messageBox.setMessage(text);
-		messageBox.setText(title);
-		messageBox.open();
+		if (s != null) {
+			MessageBox messageBox = new MessageBox(s, SWT.ICON_CANCEL | SWT.YES);
+			messageBox.setMessage(text);
+			messageBox.setText(title);
+			messageBox.open();
+		}
 	}
 	
 	public static Boolean createYesNoDialog(Shell s, String title, String text) {
-		MessageBox messageBox = new MessageBox(s, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-		messageBox.setMessage(text);
-		messageBox.setText(title);
-		int response = messageBox.open();
-        if (response == SWT.YES)
-        	return true;
-        else
-        	return false;
+		if (s != null) {
+			MessageBox messageBox = new MessageBox(s, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+			messageBox.setMessage(text);
+			messageBox.setText(title);
+			int response = messageBox.open();
+	        if (response == SWT.YES)
+	        	return true;
+	        else
+	        	return false;
+		}
+		return false;
 	}
 	
 	public static String getTodayDate() {
