@@ -1,10 +1,14 @@
 package domainModel;
 
+import utils.Pair;
+
 public class Studente {
 
 	private String nome;
 	private String cognome;
 	private String matricola;
+	private Pair<Integer, String> corso;
+	private Pair<Integer, String> relatore;
 	private int statusTesi;
 	
 	public Studente(String nome, String cognome, String matricola) {
@@ -52,6 +56,22 @@ public class Studente {
 	
 	public String getNomeCognome() {
 		return new String(nome + " " + cognome);
+	}
+
+	public Pair<Integer, String> getCorso() {
+		return corso;
+	}
+
+	public void setCorso(Pair<Integer, String> corso) {
+		this.corso = corso;
+	}
+
+	public Pair<Integer, String> getRelatore() {
+		return relatore;
+	}
+
+	public void setRelatore(Pair<Integer, String> relatore) {
+		this.relatore = relatore;
 	}
 	
 }

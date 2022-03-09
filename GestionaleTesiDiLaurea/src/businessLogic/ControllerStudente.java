@@ -51,7 +51,7 @@ public class ControllerStudente {
 	public String getStatusTesi() {
 		Pair<Integer, String> status = Pair.of(-1, "");
 		if(Database.getInstance().isConnected()) {
-			status = Database.getInstance().getStatusTesiAndString(studente.getMatricolaInt());
+			status = Database.getInstance().getStatusTesiAndString(studente);
 			studente.setStatusTesi(status.first);	
 		}else {
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
@@ -64,7 +64,7 @@ public class ControllerStudente {
 		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().iscrizioneTesi(studente, data, corso.first, relatore.first);
-			MessaggioManager.getInstance(view.getShell()).notificaNuovaDomandaTesi(studente, corso, relatore);
+			MessaggioManager.getInstance(view.getShell()).notificaNuovaDomanda(studente, corso, relatore);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Iscrizione e' avvenuta con successo!");
 			return true;
 		}else {
@@ -76,6 +76,7 @@ public class ControllerStudente {
 	public boolean ritiraDomanda() {
 		if(Database.getInstance().isConnected()) {
 			Database.getInstance().ritiraDomanda(studente.getMatricola());
+			MessaggioManager.getInstance(view.getShell()).notificaRitiraDomanda(studente);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "La domanda per la tesi e' stata ritirata.");
 			return true;
 		}else {

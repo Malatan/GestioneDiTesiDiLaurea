@@ -27,12 +27,20 @@ public class MessaggioManager {
 		return mm;
 	}
 	
-	public boolean notificaNuovaDomandaTesi(Studente studente, Pair<Integer, String> corso, Pair<Integer, String> relatore) {
+	public boolean notificaNuovaDomanda(Studente studente, Pair<Integer, String> corso, Pair<Integer, String> relatore) {
 		String titolo = "Nuova domanda di tesi";
 		String contenuto = "Salve " + relatore.second + ",\nlo studente " + studente.getNomeCognome() 
 				+ " | Matricola: " + studente.getMatricola() + " ha mandato una domanda di tesi di corso " + corso.second 
 				+ " e ha scelto lei come il relatore di tesi.";
 		return mandaMessaggio(studente.getMatricolaInt(), relatore.first, titolo, contenuto);
+	}
+	
+	public boolean notificaRitiraDomanda(Studente studente) {
+		String titolo = "Ritiro domanda di tesi";
+		String contenuto = "Salve " + studente.getRelatore().second + ",\nlo studente " + studente.getNomeCognome() 
+				+ " | Matricola: " + studente.getMatricola() + " ha ritirato la domanda di tesi di corso " + studente.getCorso().second 
+				+ " e con lei come il relatore di tesi.";
+		return mandaMessaggio(studente.getMatricolaInt(), studente.getRelatore().first, titolo, contenuto);
 	}
 	
 	public boolean updateLetto(int id) {

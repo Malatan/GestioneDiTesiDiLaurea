@@ -78,7 +78,7 @@ public class Database {
 	 * 0 = non e' presenta la domanda, 1 = e' presente la domanda ma non ancora in
 	 * appello, 2 = e' stato assegnato ad un appello
 	 */
-	public Pair<Integer, String> getStatusTesiAndString(int matricola) {
+	public Pair<Integer, String> getStatusTesiAndString(Studente studente) {
 		Connection connection = null;
 		int status = -1;
 		String s = "";
@@ -88,10 +88,13 @@ public class Database {
 			String query = "SELECT d.id_corso, c.nome as nome_corso, d.relatore, u.nome as relatore_nome, "
 					+ "u.cognome as relatore_cognome, d.data, d.repository, d.approvato "
 					+ "FROM domandatesi d, corso c, utente u "
-					+ "where d.id_corso = c.id_corso and d.relatore = u.matricola and d.matricola = " + matricola;
+					+ "where d.id_corso = c.id_corso and d.relatore = u.matricola and d.matricola = " + studente.getMatricola();
 			Console.print(query, "sql");
 			ResultSet rs = stm.executeQuery(query);
 			if (rs.next()) {
+				studente.setCorso(Pair.of(rs.getInt("id_corso"), rs.getString("nome_corso")));
+				studente.setRelatore(Pair.of(rs.getInt("relatore"), rs.getString("relatore_nome") + " "
+						+ rs.getString("relatore_cognome")));
 				s = "Hai presentato la domanda di tesi per il corso " + rs.getString("nome_corso") + ".\n"
 						+ "Il relatore della tesi: " + rs.getString("relatore_nome") + " "
 						+ rs.getString("relatore_cognome") + ".\n" + "Data domanda tesi: " + rs.getString("data")
@@ -108,7 +111,7 @@ public class Database {
 					query = "SELECT a.id_appello, a.data, a.orario, au.id_aula, au.nome as nome_aula "
 							+ "FROM appello_membro am, appello a, aula au, prenotazione_aula_giorno pag "
 							+ "WHERE am.id_appello = a.id_appello AND am.id_appello = pag.id_appello "
-							+ "AND pag.id_aula = au.id_aula AND am.matricola = " + matricola;
+							+ "AND pag.id_aula = au.id_aula AND am.matricola = " + studente.getMatricola();
 					Console.print(query, "sql");
 					ResultSet rs2 = stm.executeQuery(query);
 					if (!rs2.next()) {
