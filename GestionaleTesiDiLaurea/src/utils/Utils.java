@@ -154,4 +154,8 @@ public class Utils {
 				return "error";
 		}
 	}
+	
+	public static void changeIntValue(int[] value, int new_value) {
+		value[0] = new_value;
+	}
 }

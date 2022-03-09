@@ -7,6 +7,7 @@ import domainModel.AppelloTesi;
 import domainModel.Docente;
 import domainModel.DomandaTesi;
 import domainModel.Responsabile;
+import system.Messaggio;
 import userInterface.ViewDocente;
 import utils.Pair;
 import utils.Utils;
@@ -31,6 +32,15 @@ public class ControllerDocente {
 
 	public void run() {
 		view.createAndRun();
+	}
+	
+	public ArrayList<Messaggio> getMessaggi(){
+		if(Database.getInstance().isConnected()) {
+			return Database.getInstance().getMessaggi(docente.getMatricolaInt());
+		}else {
+			Utils.createErrorDialog(view.getShell(), "Messaggio", "Connessione al database persa");
+		}
+		return null;
 	}
 	
 	public ArrayList<DomandaTesi> getDomandeTesiFromDB(){

@@ -252,21 +252,21 @@ public class ViewStudente {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (comboCorsi.getSelectionIndex() != -1 && comboDocenti.getSelectionIndex() != -1) {
-					int id_corso = 0;
-					int matricola_relatore = 0;
+					Pair<Integer, String> corso = null;
+					Pair<Integer, String> relatore = null;
 					for(Pair<Integer, String> p : corsi) {
 						if(comboCorsi.getText().equals(p.second)) {
-							id_corso = p.first;
+							corso = p;
 							break;
 						}
 					}
 					for(Pair<Integer, String> d : docenti) {
 						if(comboDocenti.getText().equals(d.second)) {
-							matricola_relatore = d.first;
+							relatore = d;
 							break;
 						}
 					}
-					if (controller.iscrizione(id_corso, matricola_relatore))
+					if (controller.iscrizione(corso, relatore))
 						aggiornaPagina();
 					child.close();
 				} else {

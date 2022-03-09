@@ -1,30 +1,36 @@
 package system;
 
-public class Messagio {
-	private int idMessage;
+public class Messaggio {
+	private int id;
 	private int idSorgente;
 	private int idDestinatario;
 	private String dataEmissione;
+	private String titolo;
 	private String contenuto;
 	private boolean letto;
 	
-	public Messagio(int idMessage, int idSorgente, int idDestinatario, String dataEmissione, String contenuto,
+	public Messaggio(int idMessage, int idSorgente, int idDestinatario, String dataEmissione, String titolo, String contenuto,
 			boolean letto) {
 		super();
-		this.idMessage = idMessage;
+		this.id = idMessage;
 		this.idSorgente = idSorgente;
 		this.idDestinatario = idDestinatario;
 		this.dataEmissione = dataEmissione;
+		this.titolo = titolo;
 		this.contenuto = contenuto;
 		this.letto = letto;
 	}
 
-	public int getIdMessage() {
-		return idMessage;
+	public int getId() {
+		return id;
 	}
-
-	public void setIdMessage(int idMessage) {
-		this.idMessage = idMessage;
+	
+	public String getIdString() {
+		return new String(id+"");
+	}
+	
+	public void setId(int idMessage) {
+		this.id = idMessage;
 	}
 
 	public int getIdSorgente() {
@@ -58,7 +64,11 @@ public class Messagio {
 	public void setContenuto(String contenuto) {
 		this.contenuto = contenuto;
 	}
-
+	
+	public String isLettoString() {
+		return letto ? "Letto" : "Nuovo";
+	}
+	
 	public boolean isLetto() {
 		return letto;
 	}
@@ -67,6 +77,22 @@ public class Messagio {
 		this.letto = letto;
 	}
 	
-	
+	public String getTitolo() {
+		return titolo;
+	}
+
+	public void setTitolo(String titolo) {
+		this.titolo = titolo;
+	}
+
+	public String display() {
+		String output = "[" + isLettoString() + "] [" + dataEmissione + "] [" + titolo + "] [";
+		if (contenuto.length() <= 20) {
+			output += contenuto;
+		} else {
+			output += contenuto.substring(0, 40) + "...";
+		}
+		return output;
+	}
 	
 }

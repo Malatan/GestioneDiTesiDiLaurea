@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.Studente;
+import system.MessaggioManager;
 import userInterface.ViewStudente;
 import utils.Pair;
 import utils.Utils;
@@ -58,11 +59,12 @@ public class ControllerStudente {
 		return status.second;
 	}
 	
-	public boolean iscrizione(int id_corso, int matricola_relatore) {
+	public boolean iscrizione(Pair<Integer, String> corso, Pair<Integer, String> relatore) {
 		LocalDate today = LocalDate.now();
 		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		if(Database.getInstance().isConnected()) {
-			Database.getInstance().iscrizioneTesi(studente, data, id_corso, matricola_relatore);
+			Database.getInstance().iscrizioneTesi(studente, data, corso.first, relatore.first);
+			MessaggioManager.getInstance(view.getShell()).notificaNuovaDomandaTesi(studente, corso, relatore);
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Iscrizione e' avvenuta con successo!");
 			return true;
 		}else {
@@ -115,4 +117,5 @@ public class ControllerStudente {
 		else
 			return "";
 	}
+	
 }

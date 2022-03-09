@@ -1,6 +1,11 @@
 package userInterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -8,6 +13,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -17,6 +23,8 @@ import businessLogic.ControllerDocente;
 import businessLogic.ControllerLogin;
 import domainModel.AppelloTesi;
 import domainModel.DomandaTesi;
+import system.Messaggio;
+import system.MessaggioManager;
 import utils.Pair;
 import utils.Utils;
 import org.eclipse.swt.events.MouseAdapter;
@@ -39,7 +47,7 @@ public class ViewDocente {
 	private Label lblAppelloData;
 	private Label lblAppelloRuolo;
 	private Label lblAppelloDeterminazione;
-	
+
 	public ViewDocente(ControllerDocente cd) {
 		this.controller = cd;
 	}
@@ -159,14 +167,14 @@ public class ViewDocente {
 		lblAppelloRuolo.setBounds(273, 125, 55, 15);
 		lblAppelloRuolo.setText("Ruolo");
 		lblAppelloRuolo.setVisible(false);
-		
+
 		lblAppelloDeterminazione = new Label(shell, SWT.NONE);
 		lblAppelloDeterminazione.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
 		lblAppelloDeterminazione.setAlignment(SWT.CENTER);
 		lblAppelloDeterminazione.setBounds(442, 125, 100, 15);
 		lblAppelloDeterminazione.setText("Determinazione");
 		lblAppelloDeterminazione.setVisible(false);
-		
+
 		Button btnListaAppelli = new Button(compositeMenu, SWT.NONE);
 		btnListaAppelli.addMouseListener(new MouseAdapter() {
 			@Override
@@ -181,6 +189,16 @@ public class ViewDocente {
 		});
 		btnListaAppelli.setBounds(10, 56, 687, 40);
 		btnListaAppelli.setText("Visualizza gli appelli appartenenti");
+
+		Button btnMessagi = new Button(compositeMenu, SWT.NONE);
+		btnMessagi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				visualizzaMessaggi();
+			}
+		});
+		btnMessagi.setBounds(10, 102, 687, 40);
+		btnMessagi.setText("Messaggi");
 
 		Button btnIndietro = new Button(shell, SWT.NONE);
 		btnIndietro.addMouseListener(new MouseAdapter() {
@@ -303,7 +321,7 @@ public class ViewDocente {
 			lblAppelloId.setAlignment(SWT.CENTER);
 			lblAppelloId.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblAppelloId.setBounds(10, offset_y + 3, 60, 25);
-			lblAppelloId.setText(p.first.getId()+"");
+			lblAppelloId.setText(p.first.getId() + "");
 
 			Label lblAppelloData = new Label(compositeDomandeTesi, SWT.NONE);
 			lblAppelloData.setAlignment(SWT.CENTER);
@@ -316,25 +334,25 @@ public class ViewDocente {
 			lblAppelloRuolo.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblAppelloRuolo.setBounds(180, offset_y + 3, 200, 25);
 			lblAppelloRuolo.setText(Utils.getAppelloRuoloByInt(p.second));
-			
+
 			Label lblAppelloDeterminazione = new Label(compositeDomandeTesi, SWT.NONE);
 			lblAppelloDeterminazione.setAlignment(SWT.CENTER);
 			lblAppelloDeterminazione.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
 			lblAppelloDeterminazione.setBounds(400, offset_y + 3, 140, 25);
 			lblAppelloDeterminazione.setText(ceDeterminazione ? "Inviata" : "Da inserire");
-			
+
 			Button btnDettaglio = new Button(compositeDomandeTesi, SWT.NONE);
 			btnDettaglio.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseDown(MouseEvent e) {
-					ControllerAppello ca = new ControllerAppello(p.first, shell, Utils.getRuolo(controller.getDocente()), 
-							p.second, controller.getDocente());
+					ControllerAppello ca = new ControllerAppello(p.first, shell,
+							Utils.getRuolo(controller.getDocente()), p.second, controller.getDocente());
 					ca.run();
 				}
 			});
 			btnDettaglio.setBounds(570, offset_y, 130, 25);
 			btnDettaglio.setText("Dettagli");
-			
+
 			Label lblSeperator = new Label(compositeDomandeTesi, SWT.SEPARATOR | SWT.HORIZONTAL);
 			lblSeperator.setBounds(10, offset_y - 5, 685, 2);
 
@@ -342,5 +360,136 @@ public class ViewDocente {
 		}
 		scrolledCompositeDomandeTesi.setContent(compositeDomandeTesi);
 		scrolledCompositeDomandeTesi.setMinSize(compositeDomandeTesi.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	}
+
+	public void visualizzaMessaggi() {
+		Shell child = new Shell(shell, SWT.CLOSE | SWT.TITLE | SWT.MIN | SWT.APPLICATION_MODAL);
+		child.setText("Messaggi");
+		child.setSize(500, 450);
+		Utils.setShellToCenterParent(child, shell);
+		int[] ordine = new int[1];
+		ordine[0] = 0;
+		ArrayList<Messaggio> messaggi = controller.getMessaggi();
+
+		Label lblTitolo = new Label(child, SWT.NONE);
+		lblTitolo.setAlignment(SWT.CENTER);
+		lblTitolo.setBounds(10, 10, 465, 15);
+		lblTitolo.setText("Lista messaggi");
+
+		Text textMessaggio = new Text(child, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		textMessaggio.setBounds(10, 31, 465, 340);
+		textMessaggio.setVisible(false);
+
+		List listMessaggi = new List(child, SWT.BORDER | SWT.V_SCROLL);
+		Object layout = listMessaggi.getLayoutData();
+		listMessaggi.setBounds(10, 31, 465, 340);
+		for (int i = 0; i < messaggi.size(); i++) {
+			listMessaggi.add(messaggi.get(i).display());
+			listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+		}
+
+		Button btnOrdinaLetto = new Button(child, SWT.NONE);
+		btnOrdinaLetto.setBounds(10, 377, 150, 25);
+		btnOrdinaLetto.setText("Ordina per letto/nuovo");
+		btnOrdinaLetto.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!messaggi.isEmpty() && ordine[0] != 1) {
+					System.out.println("11111111");
+					Utils.changeIntValue(ordine, 1);
+					Collections.sort(messaggi, new Comparator<Messaggio>() {
+						@Override
+						public int compare(Messaggio m1, Messaggio m2) {
+							return m1.isLettoString().compareTo(m2.isLettoString());
+						}
+					});
+					listMessaggi.removeAll();
+					listMessaggi.setLayoutData(layout);
+					listMessaggi.setBounds(10, 31, 465, 340);
+					for (int i = 0; i < messaggi.size(); i++) {
+						listMessaggi.add(messaggi.get(i).display());
+						listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+					}
+				}
+			}
+		});
+
+		Button btnOrdinaData = new Button(child, SWT.NONE);
+		btnOrdinaData.setBounds(166, 377, 150, 25);
+		btnOrdinaData.setText("Ordina per data");
+		btnOrdinaData.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (!messaggi.isEmpty() && ordine[0] != 2) {
+					Utils.changeIntValue(ordine, 2);
+					Collections.sort(messaggi, new Comparator<Messaggio>() {
+						@Override
+						public int compare(Messaggio m1, Messaggio m2) {
+							try {
+								Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(m1.getDataEmissione());
+								Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(m2.getDataEmissione()); 
+								return date1.compareTo(date2);
+							} catch (ParseException e) {
+								e.printStackTrace();
+							} 
+							return 0;
+						}
+					});
+					listMessaggi.removeAll();
+					listMessaggi.setLayoutData(layout);
+					listMessaggi.setBounds(10, 31, 465, 340);
+					for (int i = 0; i < messaggi.size(); i++) {
+						listMessaggi.add(messaggi.get(i).display());
+						listMessaggi.setData(i + "", messaggi.get(i).getId());
+
+					}
+				}
+			}
+		});
+
+		Button btnIndietro = new Button(child, SWT.NONE);
+		btnIndietro.setBounds(400, 377, 75, 25);
+		btnIndietro.setText("Indietro");
+		btnIndietro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (textMessaggio.isVisible()) {
+					lblTitolo.setText("Lista messaggi");
+					textMessaggio.setVisible(false);
+					listMessaggi.setVisible(true);
+					btnOrdinaLetto.setVisible(true);
+					btnOrdinaData.setVisible(true);
+				} else {
+					child.close();
+				}
+			}
+		});
+
+		listMessaggi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				textMessaggio.setVisible(true);
+				listMessaggi.setVisible(false);
+				for (int i = 0; i < messaggi.size(); i++) {
+					int id = (int) listMessaggi.getData(listMessaggi.getSelectionIndex() + "");
+					if (messaggi.get(i).getId() == id) {
+						btnOrdinaLetto.setVisible(false);
+						btnOrdinaData.setVisible(false);
+						textMessaggio.setText(messaggi.get(i).getContenuto());
+						lblTitolo.setText(messaggi.get(i).getId() + "-" + messaggi.get(i).getTitolo() 
+								+ "-" + messaggi.get(i).getDataEmissione());
+						if (!messaggi.get(i).isLetto()) {
+							messaggi.get(i).setLetto(true);
+							listMessaggi.setItem(listMessaggi.getSelectionIndex(), messaggi.get(i).display());
+							MessaggioManager.getInstance(child).updateLetto(id);
+						}
+						break;
+					}
+				}
+			}
+		});
+		child.open();
 	}
 }

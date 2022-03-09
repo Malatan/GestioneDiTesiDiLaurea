@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import domainModel.*;
+import system.Messaggio;
 import utils.*;
 
 public class Database {
@@ -181,7 +182,67 @@ public class Database {
 		}
 		return true;
 	}
-
+	
+	public boolean mandaMessaggio(int id_sorgente, int id_destinatario, String titolo, String contenuto) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "INSERT INTO messaggio (id_sorgente, id_destinatario, titolo, contenuto, data) values (?,?,?,?,?)";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id_sorgente);
+			prepared.setInt(2, id_destinatario);
+			prepared.setString(3, titolo);
+			prepared.setString(4, contenuto);
+			prepared.setString(5, Utils.getTodayDate());
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean updateMessaggioLetto(int id) {
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			String query = "UPDATE messaggio SET letto = 1 WHERE id = ?";
+			PreparedStatement prepared = connection.prepareStatement(query);
+			prepared.setInt(1, id);
+			Console.print(prepared.toString(), "sql");
+			prepared.executeUpdate();
+			connection.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public ArrayList<Messaggio> getMessaggi(int id_destinatario){
+		Connection connection = null;
+		ArrayList<Messaggio> messaggi = new ArrayList<Messaggio>();
+		try {
+			connection = DriverManager.getConnection(connectionString);
+			Statement stm = connection.createStatement();
+			String query = "SELECT id, id_sorgente, titolo, contenuto, data, letto "
+					+ "FROM messaggio "
+					+ "WHERE id_destinatario = " + id_destinatario;
+			Console.print(query, "sql");
+			ResultSet rs = stm.executeQuery(query);
+			while (rs.next()) {
+				messaggi.add(new Messaggio(rs.getInt("id"), rs.getInt("id_sorgente"), id_destinatario, rs.getString("data"), rs.getString("titolo"), 
+						rs.getString("contenuto"), rs.getBoolean("letto")));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return messaggi;
+	}
+	
 	public void iscrizioneTesi(Studente studente, String data, int id_corso, int matricola_relatore) {
 		Connection connection = null;
 		try {
