@@ -396,7 +396,6 @@ public class ViewDocente {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if (!messaggi.isEmpty() && ordine[0] != 1) {
-					System.out.println("11111111");
 					Utils.changeIntValue(ordine, 1);
 					Collections.sort(messaggi, new Comparator<Messaggio>() {
 						@Override
