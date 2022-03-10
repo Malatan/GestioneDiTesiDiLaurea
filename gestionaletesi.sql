@@ -171,26 +171,26 @@ VALUES("Tizio", "Caio", 123, 0), -- 10000 Studente
 ("Delfino", "Pirozzi", 123, 3), -- 10006 Presidente del corso di Informatica 
 ("Brancaleone", "Lucciano", 123, 3), -- 10007 Presidente del corso di Meccanica 
 ("Biagio", "Bellucci", 123, 3), -- 10008 Presidente del corso di Edile 
-("Liberato", "Zetticci", 123, 4), 
-("Cristiano", "Calabresi", 123, 4), 
-("Marino", "Lorenzo", 123, 4), 
-("Eugenio", "Nucci", 123, 4), 
-("Marzio", "Milanesi", 123, 4), 
-("Valentino", "Sabbatini", 123, 4), 
-("Baldassarre", "Lucciano", 123, 4),
-("Romeo", "Dellucci", 123, 4),
-("Alvise", "Pagnotto", 123, 4),
-("Pio", "Lori", 123, 4),
-("Carola", "Davide", 123, 4),
-("Geronimo", "Bianchi", 123, 4),
-("Lino", "Toscano", 123, 4),
-("Lino", "Bellucci", 123, 4),
-("Caton", "Toscano", 123, 4),
-("Toscano", "Rossi", 123, 4),
-("Beato", "Romani", 123, 4),
-("Beato", "Dellucci", 123, 4),
-("Cino", "Mancini", 123, 4),
-("Cino", "Esposito", 123, 4);
+("Liberato", "Zetticci", 123, 4), -- 10009 Docente Dipartimento di Medicina Sperimentale e Clinica
+("Cristiano", "Calabresi", 123, 4), -- 10010 Docente Dipartimento di Medicina Sperimentale e Clinica
+("Marino", "Lorenzo", 123, 4), -- 10011 Docente Dipartimento di Medicina Sperimentale e Clinica
+("Eugenio", "Nucci", 123, 4), -- 10012 Docente Dipartimento di Medicina Sperimentale e Clinica
+("Marzio", "Milanesi", 123, 4), -- 10013 Docente Dipartimento di Architettura
+("Valentino", "Sabbatini", 123, 4), -- 10014 Docente Dipartimento di Architettura
+("Baldassarre", "Lucciano", 123, 4),-- 10015 Docente Dipartimento di Architettura
+("Romeo", "Dellucci", 123, 4),-- 10016 Docente Dipartimento di Architettura
+("Alvise", "Pagnotto", 123, 4),-- 10017 Docente Dipartimento di Ingegneria dell'Informazione
+("Pio", "Lori", 123, 4),-- 10018 Docente Dipartimento di Ingegneria dell'Informazione
+("Carola", "Davide", 123, 4),-- 10019 Docente Dipartimento di Ingegneria dell'Informazione
+("Geronimo", "Bianchi", 123, 4),-- 10020 Docente Dipartimento di Ingegneria dell'Informazione
+("Lino", "Toscano", 123, 4),-- 10021 Docente Dipartimento di Ingegneria Industriale
+("Lino", "Bellucci", 123, 4),-- 10022 Docente Dipartimento di Ingegneria Industriale
+("Caton", "Toscano", 123, 4),-- 10023 Docente Dipartimento di Ingegneria Industriale
+("Toscano", "Rossi", 123, 4),-- 10024 Docente Dipartimento di Ingegneria Industriale
+("Beato", "Romani", 123, 4),-- 10025 Docente Dipartimento di Biologia
+("Beato", "Dellucci", 123, 4),-- 10026 Docente Dipartimento di Biologia
+("Cino", "Mancini", 123, 4),-- 10027 Docente Dipartimento di Biologia
+("Cino", "Esposito", 123, 4);-- 10028 Docente Dipartimento di Biologia
 
 -- popolamento corso
 INSERT INTO corso (nome, presidente)
