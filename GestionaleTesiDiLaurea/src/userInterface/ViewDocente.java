@@ -285,7 +285,7 @@ public class ViewDocente {
 							Utils.createWarningDialog(shell, "Attenzione",
 									"Impossibile approvare la tesi, lo studente non ha ancora inserito un repository tesi");
 						} else {
-							if (controller.approvaDomandaTesi(d)) {
+							if (controller.approvaDomandaTesi(d,false)) {
 								btnApprova.setText("Domanda approvata");
 								btnApprova.setEnabled(false);
 								d.setApprovato(true);

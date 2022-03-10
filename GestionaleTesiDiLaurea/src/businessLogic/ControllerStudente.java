@@ -8,6 +8,7 @@ import domainModel.Docente;
 import domainModel.Studente;
 import system.MessaggioManager;
 import userInterface.ViewStudente;
+import utils.Console;
 import utils.Pair;
 import utils.Utils;
 
@@ -60,6 +61,7 @@ public class ControllerStudente {
 	}
 	
 	public boolean iscrizione(Pair<Integer, String> corso, Pair<Integer, String> relatore) {
+		Console.print(corso.first+" " +corso.second + " " + relatore.first + " " + relatore.second,"DEBUG");
 		LocalDate today = LocalDate.now();
 		String data = today.getYear() + "-" + today.getMonthValue() + "-" + today.getDayOfMonth();
 		if(Database.getInstance().isConnected()) {

@@ -1130,8 +1130,12 @@ public class ViewAppello {
 						}
 					}
 					if (controller.updateMembriAppello(controller.getAppello().getId(), matricoleStudenti,
-							matricoleRelatori, matricoleCommissioni))
+							matricoleRelatori, matricoleCommissioni)) {
+						
+
+						
 						aggiornaPagina();
+					}
 					child.close();
 				} else {
 					Utils.createWarningDialog(child, "Messaggio", "Devi inserire almeno 5 membri delle commissione");

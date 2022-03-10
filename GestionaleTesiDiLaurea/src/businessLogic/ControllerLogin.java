@@ -87,6 +87,7 @@ public class ControllerLogin {
 		Pair<Integer, String> corso = null;
 		if (Database.getInstance().isConnected()) {
 			corso = Database.getInstance().getDipByDocente(matricola);
+			Console.print(corso.first + " " +corso.second, "DEBUG");
 		} else {
 			Utils.createConfirmDialog(view.getShell(), "Messaggio", "Connessione al database persa");
 		}

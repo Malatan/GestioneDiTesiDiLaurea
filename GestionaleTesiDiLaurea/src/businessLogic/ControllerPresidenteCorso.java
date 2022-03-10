@@ -6,6 +6,7 @@ import databaseAccessObject.Database;
 import domainModel.AppelloTesi;
 import domainModel.PresidenteCorso;
 import userInterface.ViewPresidenteCorso;
+import utils.Console;
 import utils.Pair;
 import utils.Utils;
 
@@ -15,6 +16,7 @@ public class ControllerPresidenteCorso {
 	private PresidenteCorso presidenteCorso;
 	
 	public ControllerPresidenteCorso(String matricola, String nome, String cognome, Pair<Integer, String> corso) {
+		Console.print(corso.first+" "+corso.second, "DEBUG");
 		presidenteCorso = new PresidenteCorso(matricola, nome,cognome, corso);
 		view = new ViewPresidenteCorso(this);
 	}

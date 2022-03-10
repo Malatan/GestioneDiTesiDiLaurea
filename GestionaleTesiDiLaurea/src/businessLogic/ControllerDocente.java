@@ -70,9 +70,9 @@ public class ControllerDocente {
 		return false;
 	}
 	
-	public boolean approvaDomandaTesi(DomandaTesi domanda) {
+	public boolean approvaDomandaTesi(DomandaTesi domanda, boolean forceConfirm) {
 		if(Database.getInstance().isConnected()) {
-			if(Utils.createYesNoDialog(view.getShell(), "Conferma", "Vuole confermare l'approvazione della domanda di tesi dello studente?")) {
+			if(forceConfirm || Utils.createYesNoDialog(view.getShell(), "Conferma", "Vuole confermare l'approvazione della domanda di tesi dello studente?")) {
 				Database.getInstance().approvaDomandaTesi(domanda);
 				MessaggioManager.getInstance(view.getShell()).notificaApprovaDomanda(domanda, docente);
 				Utils.createConfirmDialog(view.getShell(), "Messaggio", "Domanda di tesi approvata");

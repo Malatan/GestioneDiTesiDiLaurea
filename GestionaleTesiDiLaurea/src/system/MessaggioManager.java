@@ -73,11 +73,14 @@ public class MessaggioManager {
 	}
 	
 	public boolean notificaUpdateRepo(Studente studente, String repository) {
-		String titolo = "Aggiornamento Repository Tesi";
-		String contenuto = "Salve " + studente.getRelatore().second + ",\nlo studente " + studente.getNomeCognome() 
-				+ " | Matricola: " + studente.getMatricola() + " ha aggiornato il link di repository di tesi."
-				+ "\nNuovo link repository: " + repository;
-		return mandaMessaggio(100, studente.getRelatore().first, titolo, contenuto);
+		if(studente.getRelatore() != null) {
+			String titolo = "Aggiornamento Repository Tesi";
+			String contenuto = "Salve " + studente.getRelatore().second + ",\nlo studente " + studente.getNomeCognome() 
+					+ " | Matricola: " + studente.getMatricola() + " ha aggiornato il link di repository di tesi."
+					+ "\nNuovo link repository: " + repository;
+			return mandaMessaggio(100, studente.getRelatore().first, titolo, contenuto);
+		}
+		return true;
 	}
 	
 	public boolean notificaApprovaDomanda(DomandaTesi domanda, Docente docente) {
